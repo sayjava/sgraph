@@ -4,14 +4,6 @@ import { createMemory } from '../src/init'
 import { mapTypesToModel } from '../src/models'
 
 describe('Models', () => {
-    let composer: SchemaComposer
-    let sequelize: Sequelize
-
-    beforeEach(() => {
-        composer = new SchemaComposer()
-        sequelize = new Sequelize('sqlite::memory:')
-    })
-
     describe('@models directives', () => {
         const { composer, sequelize } = createMemory(
             `
