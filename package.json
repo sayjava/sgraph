@@ -1,0 +1,21 @@
+{
+  "name": "sql-server",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": "true",
+  "keywords": [
+    "graphql",
+    "sequelize",
+    "sql",
+    "server"
+  ],
+  "scripts": {
+    "pretty": "prettier --write packages/**/*.{ts,js}"
+  },
+  "devDependencies": {
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1"
+  }
+}
