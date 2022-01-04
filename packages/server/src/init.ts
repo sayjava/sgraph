@@ -5,9 +5,8 @@ import { extendSchemaWithDirectives } from './directives'
 export const createMemory = (typeDefs: string) => {
     const composer = new SchemaComposer()
 
-    const sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: 'northwind.sqlite',
+    const sequelize = new Sequelize('sqlite::memory:', {
+        logging: false,
     })
 
     extendSchemaWithDirectives(composer)

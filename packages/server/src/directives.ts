@@ -7,7 +7,6 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     // TODO: Add @unique
     // TODO: Add @autoIncrement
     // TODO: Add @default
-    // TODO: custom column names
     composer.addTypeDefs(
         `
     """ Marks this type as a model """
@@ -16,8 +15,49 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
       tableName: String
     ) on OBJECT
 
-     """ Marks this type as a model """
+    """ Renames a column """
+    directive @column(name: String) on FIELD_DEFINITION
+
+    """ Marks the field as a primary key"""
     directive @primaryKey on FIELD_DEFINITION
+
+    """ Marks the field as a primary key"""
+    directive @unique on FIELD_DEFINITION
+
+    """ Relationships """
+    directive @hasOne(
+      foreignKey: String
+      sourceKey: String
+      onDelete: String
+      onUpdate: String
+      through: String
+    ) on FIELD_DEFINITION
+
+    directive @belongsTo(
+      foreignKey: String
+      sourceKey: String
+      onDelete: String
+      onUpdate: String
+      through: String
+    ) on FIELD_DEFINITION
+
+    directive @hasMany(
+      foreignKey: String
+      sourceKey: String
+      onDelete: String
+      onUpdate: String
+      through: String
+    ) on FIELD_DEFINITION
+
+    directive @belongsToMany(
+      foreignKey: String
+      sourceKey: String
+      targetKey: String
+      onDelete: String
+      onUpdate: String
+      through: String
+    ) on FIELD_DEFINITION
+
     `
     )
 }

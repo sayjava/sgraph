@@ -23,12 +23,21 @@ const typeToAttributes = (
                 (d) => d.name === 'primaryKey'
             )
 
+            const isUnique = !!field.directives.find((d) => d.name === 'unique')
             const nonNull = field.astNode.type.kind === 'NonNullType'
+            const columnName = field.directives.find(
+                (d) => d.name === 'column'
+            ) || { args: { name: key } }
+
             attributes[key] = {
                 type: typeName,
+                unique: isUnique,
                 primaryKey: isPrimaryKey,
                 allowNull: isPrimaryKey || !nonNull,
+                field: columnName.args.name,
             }
+
+            isUnique && console.log(attributes)
         }
     })
 

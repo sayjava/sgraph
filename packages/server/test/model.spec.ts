@@ -1,5 +1,3 @@
-import { SchemaComposer } from 'graphql-compose'
-import { Sequelize } from 'sequelize'
 import { createMemory } from '../src/init'
 import { mapTypesToModel } from '../src/models'
 
@@ -37,6 +35,10 @@ describe('Models', () => {
         it('creates comments', () => {
             expect(sequelize.models.User).not.toBe(undefined)
         })
+
+        it('uses table name from the directive', () => {
+            expect(sequelize.models.Comment.tableName).toEqual('comments')
+        })
     })
 
     describe('Validation', () => {
@@ -66,6 +68,7 @@ describe('Models', () => {
           blocked: Boolean
           age: Int
           hobbies: [String!]
+          locationPlace: String @column(name: "location_place")
         }
 
       `
@@ -85,6 +88,7 @@ describe('Models', () => {
                     "fieldName": "age",
                     "primaryKey": false,
                     "type": "Int",
+                    "unique": false,
                   },
                   "blocked": Object {
                     "Model": [Function],
@@ -94,6 +98,7 @@ describe('Models', () => {
                     "fieldName": "blocked",
                     "primaryKey": false,
                     "type": "Boolean",
+                    "unique": false,
                   },
                   "email": Object {
                     "Model": [Function],
@@ -103,6 +108,7 @@ describe('Models', () => {
                     "fieldName": "email",
                     "primaryKey": false,
                     "type": "String",
+                    "unique": false,
                   },
                   "hobbies": Object {
                     "Model": [Function],
@@ -112,6 +118,7 @@ describe('Models', () => {
                     "fieldName": "hobbies",
                     "primaryKey": false,
                     "type": "String",
+                    "unique": false,
                   },
                   "id": Object {
                     "Model": [Function],
@@ -121,6 +128,17 @@ describe('Models', () => {
                     "fieldName": "id",
                     "primaryKey": true,
                     "type": "ID",
+                    "unique": false,
+                  },
+                  "locationPlace": Object {
+                    "Model": [Function],
+                    "_modelAttribute": true,
+                    "allowNull": true,
+                    "field": "location_place",
+                    "fieldName": "locationPlace",
+                    "primaryKey": false,
+                    "type": "String",
+                    "unique": false,
                   },
                   "name": Object {
                     "Model": [Function],
@@ -130,6 +148,7 @@ describe('Models', () => {
                     "fieldName": "name",
                     "primaryKey": false,
                     "type": "String",
+                    "unique": false,
                   },
                 }
             `)
