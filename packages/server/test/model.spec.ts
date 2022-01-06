@@ -1,5 +1,5 @@
 import { createMemory } from '../src/init'
-import { mapTypesToModel } from '../src/models'
+import { createTypeModels } from '../src/models'
 
 describe('Models', () => {
     describe('@models directives', () => {
@@ -22,7 +22,7 @@ describe('Models', () => {
       `
         )
 
-        mapTypesToModel({ composer, sequelize })
+        createTypeModels({ composer, sequelize })
 
         it('does not create a Post model', () => {
             expect(sequelize.models.Post).toBe(undefined)
@@ -52,7 +52,7 @@ describe('Models', () => {
         )
 
         it('validates no unique', () => {
-            expect(() => mapTypesToModel({ composer, sequelize })).toThrow(
+            expect(() => createTypeModels({ composer, sequelize })).toThrow(
                 'User has no unique fields'
             )
         })
@@ -74,7 +74,7 @@ describe('Models', () => {
       `
         )
 
-        mapTypesToModel({ composer, sequelize })
+        createTypeModels({ composer, sequelize })
 
         it('generates attributes', () => {
             expect(sequelize.models.User.getAttributes())

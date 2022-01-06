@@ -1,5 +1,6 @@
+import { createInputFilters } from '../src/filters'
 import { createMemory } from '../src/init'
-import { mapTypesToModel } from '../src/models'
+import { createTypeModels } from '../src/models'
 import { createRelationships } from '../src/relationships'
 
 describe('Relationships', () => {
@@ -39,7 +40,8 @@ describe('Relationships', () => {
     )
 
     beforeAll(async () => {
-        mapTypesToModel({ composer, sequelize })
+        createTypeModels({ composer, sequelize })
+        createInputFilters({ composer, sequelize })
         createRelationships({ composer, sequelize })
         await sequelize.sync()
 

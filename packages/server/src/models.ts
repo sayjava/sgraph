@@ -50,7 +50,7 @@ const hasUniqueField = (attrs: { [key: string]: ModelAttributes }) => {
     })
 }
 
-export const mapTypesToModel = ({ composer, sequelize }: Arg) => {
+export const createTypeModels = ({ composer, sequelize }: Arg) => {
     composer.types.forEach((t) => {
         if (composer.isObjectType(t)) {
             const obj = t as ObjectTypeComposer<any, any>

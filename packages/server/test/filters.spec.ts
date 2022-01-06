@@ -2,7 +2,7 @@ import { SchemaComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
 import { createMemory } from '../src/init'
 import { createInputFilters } from '../src/filters'
-import { mapTypesToModel } from '../src/models'
+import { createTypeModels } from '../src/models'
 
 describe('Filters', () => {
     describe('String', () => {
@@ -17,7 +17,7 @@ describe('Filters', () => {
       `
         )
 
-        mapTypesToModel({ composer, sequelize })
+        createTypeModels({ composer, sequelize })
         createInputFilters({ composer, sequelize })
 
         it('creates string filters', () => {
@@ -176,7 +176,7 @@ describe('Filters', () => {
       `
         )
 
-        mapTypesToModel({ composer, sequelize })
+        createTypeModels({ composer, sequelize })
         createInputFilters({ composer, sequelize })
 
         it('creates int filters', () => {
@@ -206,7 +206,7 @@ describe('Filters', () => {
       `
         )
 
-        mapTypesToModel({ composer, sequelize })
+        createTypeModels({ composer, sequelize })
         createInputFilters({ composer, sequelize })
 
         it('creates int filters', () => {

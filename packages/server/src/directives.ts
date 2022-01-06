@@ -4,7 +4,6 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     // models
     // TODO: Add database types
     // TODO: Add @timestamps
-    // TODO: Add @unique
     // TODO: Add @autoIncrement
     // TODO: Add @default
     composer.addTypeDefs(

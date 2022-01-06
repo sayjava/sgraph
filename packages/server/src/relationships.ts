@@ -1,5 +1,10 @@
-import { SchemaComposer, ObjectTypeComposer } from 'graphql-compose'
+import {
+    SchemaComposer,
+    ObjectTypeComposer,
+    ComposeInputType,
+} from 'graphql-compose'
 import { Sequelize } from 'sequelize'
+import { createTypeListResolver } from './resolvers/list'
 import { getModelTypes, normalizeTypeName } from './utils'
 
 interface Arg {
@@ -23,6 +28,7 @@ const makeTypeRelationship = (
 
         if (!sourceType.schemaComposer.isScalarType(targetTypeName)) {
             const targetModel = sequelize.models[targetTypeName]
+            const targetType = sourceType.schemaComposer.getOTC(targetTypeName)
 
             field.directives.forEach((d) => {
                 if (RELATIONSHIPS.includes(d.name)) {
@@ -33,6 +39,13 @@ const makeTypeRelationship = (
                     sourceModel[d.name](targetModel, relationshipArgs)
                 }
             })
+
+            if (field.astNode.type.kind === 'ListType') {
+                sourceType.setField(
+                    name,
+                    createTypeListResolver(targetType, sequelize)
+                )
+            }
         }
     })
 
