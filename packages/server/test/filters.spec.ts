@@ -40,7 +40,7 @@ describe('Filters', () => {
                   \\"\\"\\"Not same as\\"\\"\\"
                   not: String
 
-                  \\"\\"\\"Not same as\\"\\"\\"
+                  \\"\\"\\"Either value\\"\\"\\"
                   or: [String!]
                 }"
             `)
@@ -62,32 +62,31 @@ describe('Filters', () => {
                   \\"\\"\\"Not same as\\"\\"\\"
                   not: Boolean
 
-                  \\"\\"\\"Not same as\\"\\"\\"
+                  \\"\\"\\"Either value\\"\\"\\"
                   or: [Boolean!]
                 }"
             `)
         })
 
         it('creates number filters', () => {
-            expect(composer.getITC('NumberFilter').toSDL())
-                .toMatchInlineSnapshot(`
-                "input NumberFilter {
-                  \\"\\"\\"greater than\\"\\"\\"
+            expect(composer.getITC('IntFilter').toSDL()).toMatchInlineSnapshot(`
+                "input IntFilter {
+                  \\"\\"\\"Greater than\\"\\"\\"
                   gt: Int
 
-                  \\"\\"\\"greater than or equal to\\"\\"\\"
+                  \\"\\"\\"Greater than or equal to\\"\\"\\"
                   gte: Int
 
-                  \\"\\"\\"less than\\"\\"\\"
+                  \\"\\"\\"Less than\\"\\"\\"
                   lt: Int
 
-                  \\"\\"\\"less than or equal to\\"\\"\\"
+                  \\"\\"\\"Less than or equal to\\"\\"\\"
                   lte: Int
 
-                  \\"\\"\\"is between\\"\\"\\"
+                  \\"\\"\\"Is between\\"\\"\\"
                   between: [Int!]
 
-                  \\"\\"\\"is not between\\"\\"\\"
+                  \\"\\"\\"Is not between\\"\\"\\"
                   notBetween: [Int!]
 
                   \\"\\"\\"Equal to\\"\\"\\"
@@ -102,7 +101,7 @@ describe('Filters', () => {
                   \\"\\"\\"Not same as\\"\\"\\"
                   not: Int
 
-                  \\"\\"\\"Not same as\\"\\"\\"
+                  \\"\\"\\"Either value\\"\\"\\"
                   or: [Int!]
                 }"
             `)
@@ -139,7 +138,7 @@ describe('Filters', () => {
                   \\"\\"\\"Not same as\\"\\"\\"
                   not: String
 
-                  \\"\\"\\"Not same as\\"\\"\\"
+                  \\"\\"\\"Either value\\"\\"\\"
                   or: [String!]
                 }"
             `)
@@ -187,10 +186,10 @@ describe('Filters', () => {
                   id: StringFilter
 
                   \\"\\"\\"Filter for age\\"\\"\\"
-                  age: NumberFilter
+                  age: IntFilter
 
                   \\"\\"\\"Filter for coords\\"\\"\\"
-                  coords: NumberFilter
+                  coords: FloatFilter
                 }"
             `)
         })

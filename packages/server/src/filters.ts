@@ -22,38 +22,38 @@ const createBasicAttributes = (dataType: string) => {
         },
         [Op.or.description]: {
             type: `[${dataType}!]`,
-            description: 'Not same as',
+            description: 'Either value',
         },
     }
 }
 
-const NumberFilters = {
+const createNumberFilter = (type: string) => ({
     [Op.gt.description]: {
-        type: 'Int',
-        description: 'greater than',
+        type: `${type}`,
+        description: 'Greater than',
     },
     [Op.gte.description]: {
-        type: 'Int',
-        description: 'greater than or equal to',
+        type: `${type}`,
+        description: 'Greater than or equal to',
     },
     [Op.lt.description]: {
-        type: 'Int',
-        description: 'less than',
+        type: `${type}`,
+        description: 'Less than',
     },
     [Op.lte.description]: {
-        type: 'Int',
-        description: 'less than or equal to',
+        type: `${type}`,
+        description: 'Less than or equal to',
     },
     [Op.between.description]: {
-        type: '[Int!]',
-        description: 'is between',
+        type: `[${type}!]`,
+        description: 'Is between',
     },
     [Op.notBetween.description]: {
-        type: '[Int!]',
-        description: 'is not between',
+        type: `[${type}!]`,
+        description: 'Is not between',
     },
-    ...createBasicAttributes('Int'),
-}
+    ...createBasicAttributes(`${type}`),
+})
 
 const StringFilters = {
     [Op.like.description]: {
@@ -93,9 +93,14 @@ export const createInputFilters = ({
         fields: StringFilters,
     })
 
-    const NumberFilter = composer.createInputTC({
-        name: 'NumberFilter',
-        fields: NumberFilters,
+    const IntFilter = composer.createInputTC({
+        name: 'IntFilter',
+        fields: createNumberFilter('Int'),
+    })
+
+    const FloatFilter = composer.createInputTC({
+        name: 'FloatFilter',
+        fields: createNumberFilter('Float'),
     })
 
     const BooleanFilter = composer.createInputTC({
@@ -131,12 +136,19 @@ export const createInputFilters = ({
                                 break
 
                             case 'Int':
-                            case 'Float':
                                 tc.setField(name, {
-                                    type: NumberFilter,
+                                    type: IntFilter,
                                     description: `Filter for ${name}`,
                                 })
                                 break
+
+                            case 'Float':
+                                tc.setField(name, {
+                                    type: FloatFilter,
+                                    description: `Filter for ${name}`,
+                                })
+                                break
+
                             case 'Boolean':
                                 tc.setField(name, {
                                     type: BooleanFilter,

@@ -68,16 +68,6 @@ export const createTypeListResolver = (
     const model = sequelize.models[typeName]
     return {
         name: `find${pluralize(typeName)}`,
-        // type: t.schemaComposer.getOrCreateOTC(`${typeName}Response`, (tc) => {
-        //     tc.addFields({
-        //         items: {
-        //             type: t.List.NonNull,
-        //         },
-        //         count: {
-        //             type: 'Int',
-        //         },
-        //     })
-        // }),
         type: t.List.NonNull,
         args: {
             limit: 'Int',
