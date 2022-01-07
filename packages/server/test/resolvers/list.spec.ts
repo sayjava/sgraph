@@ -541,4 +541,66 @@ describe('List Resolvers', () => {
             })
         })
     })
+
+    describe('Relationships', () => {
+        it('basic', async () => {
+            const res = await request(app)
+                .post('/')
+                .send({
+                    query: `query {
+                        users: findUsers(where: { name: { eq: "maschiko" } }) {
+                            id
+                            name
+                            posts (limit: 1) {
+                                title
+                            }
+                         }
+                    }`,
+                })
+
+            expect(res.body.data.users).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "id": "id-2",
+                    "name": "maschiko",
+                    "posts": Array [
+                      Object {
+                        "title": "Post Title 1",
+                      },
+                    ],
+                  },
+                ]
+            `)
+        })
+
+        it('filter', async () => {
+            const res = await request(app)
+                .post('/')
+                .send({
+                    query: `query {
+                        users: findUsers(where: { name: { eq: "maschiko" } }) {
+                            id
+                            name
+                            posts ( where: { body: { endsWith: "2 post" } }) {
+                                title
+                            }
+                         }
+                    }`,
+                })
+
+            expect(res.body.data.users).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "id": "id-2",
+                    "name": "maschiko",
+                    "posts": Array [
+                      Object {
+                        "title": "Post Title 2",
+                      },
+                    ],
+                  },
+                ]
+            `)
+        })
+    })
 })
