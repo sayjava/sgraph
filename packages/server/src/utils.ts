@@ -28,15 +28,22 @@ const mappedSequelizeFields = () => {
     return OpFields
 }
 
-export const argsToSequelizeWhere = ({ where = {} }: any) => {
+export const argsToSequelizeWhere = (where: any = {}) => {
     const sequelizeOpFields = mappedSequelizeFields()
     const newWhere = {}
     Object.keys(where).forEach((attrKey) => {
-        const ops = {}
-        Object.keys(where[attrKey]).forEach(
-            (opKey) => (ops[sequelizeOpFields[opKey]] = where[attrKey][opKey])
-        )
-        newWhere[attrKey] = ops
+        let ops = {}
+        const value = where[attrKey]
+
+        if (sequelizeOpFields[attrKey]) {
+            newWhere[sequelizeOpFields[attrKey]] =
+                value.map(argsToSequelizeWhere)
+        } else {
+            Object.keys(value).forEach((opKey) => {
+                ops[sequelizeOpFields[opKey]] = value[opKey]
+            })
+            newWhere[attrKey] = ops
+        }
     })
     return newWhere
 }

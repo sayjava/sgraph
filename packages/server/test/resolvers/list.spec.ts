@@ -216,6 +216,51 @@ describe('List Resolvers', () => {
                     ]
                 `)
             })
+
+            it('combined or', async () => {
+                const res = await request(app)
+                    .post('/')
+                    .send({
+                        query: `query {
+                        users: findUsers( where: {
+                            or: [{ name: { substring: "nla" } }, { name: { substring: "chi" } }]
+                        } ) {
+                            id
+                            name
+                        }
+                    }`,
+                    })
+
+                expect(res.body.data.users).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "id": "id-1",
+                        "name": "danlard",
+                      },
+                      Object {
+                        "id": "id-2",
+                        "name": "maschiko",
+                      },
+                    ]
+                `)
+            })
+
+            it('combined or', async () => {
+                const res = await request(app)
+                    .post('/')
+                    .send({
+                        query: `query {
+                        users: findUsers( where: {
+                            and: [{ name: { substring: "nla" } }, { name: { substring: "chi" } }]
+                        } ) {
+                            id
+                            name
+                        }
+                    }`,
+                    })
+
+                expect(res.body.data.users).toMatchInlineSnapshot(`Array []`)
+            })
         })
 
         describe('String', () => {

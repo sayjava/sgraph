@@ -120,50 +120,59 @@ export const createInputFilters = ({
             const modelDirective = obj.getDirectiveByName('model')
 
             if (modelDirective) {
-                composer.getOrCreateITC(`${typeName}Filter`, (tc) => {
-                    const model = sequelize.models[typeName]
-                    const attrs = Object.entries(model.getAttributes())
+                composer
+                    .getOrCreateITC(`${typeName}Filter`, (tc) => {
+                        const model = sequelize.models[typeName]
+                        const attrs = Object.entries(model.getAttributes())
 
-                    attrs.forEach(([name, atr]) => {
-                        switch (atr.type) {
-                            case 'String':
-                            case 'ID':
-                            case 'Text':
-                                tc.setField(name, {
-                                    type: StringInputFilter,
-                                    description: `Filter for ${name}`,
-                                })
-                                break
+                        attrs.forEach(([name, atr]) => {
+                            switch (atr.type) {
+                                case 'String':
+                                case 'ID':
+                                case 'Text':
+                                    tc.setField(name, {
+                                        type: StringInputFilter,
+                                        description: `Filter for ${name}`,
+                                    })
+                                    break
 
-                            case 'Int':
-                                tc.setField(name, {
-                                    type: IntFilter,
-                                    description: `Filter for ${name}`,
-                                })
-                                break
+                                case 'Int':
+                                    tc.setField(name, {
+                                        type: IntFilter,
+                                        description: `Filter for ${name}`,
+                                    })
+                                    break
 
-                            case 'Float':
-                                tc.setField(name, {
-                                    type: FloatFilter,
-                                    description: `Filter for ${name}`,
-                                })
-                                break
+                                case 'Float':
+                                    tc.setField(name, {
+                                        type: FloatFilter,
+                                        description: `Filter for ${name}`,
+                                    })
+                                    break
 
-                            case 'Boolean':
-                                tc.setField(name, {
-                                    type: BooleanFilter,
-                                    description: `Filter for ${name}`,
-                                })
-                                break
+                                case 'Boolean':
+                                    tc.setField(name, {
+                                        type: BooleanFilter,
+                                        description: `Filter for ${name}`,
+                                    })
+                                    break
 
-                            default:
-                                tc.setField(name, {
-                                    type: BasicFilter,
-                                    description: `Filter for ${name}`,
-                                })
-                        }
+                                default:
+                                    tc.setField(name, {
+                                        type: BasicFilter,
+                                        description: `Filter for ${name}`,
+                                    })
+                            }
+                        })
                     })
-                })
+                    .setField(Op.or.description, {
+                        type: `[${typeName}Filter!]`,
+                        description: `OR Combine Filters`,
+                    })
+                    .setField(Op.and.description, {
+                        type: `[${typeName}Filter!]`,
+                        description: `AND Combine Filters`,
+                    })
             }
         }
     })

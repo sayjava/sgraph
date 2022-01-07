@@ -159,6 +159,12 @@ describe('Filters', () => {
 
                   \\"\\"\\"Filter for tags\\"\\"\\"
                   tags: StringFilter
+
+                  \\"\\"\\"OR Combine Filters\\"\\"\\"
+                  or: [UserFilter!]
+
+                  \\"\\"\\"AND Combine Filters\\"\\"\\"
+                  and: [UserFilter!]
                 }"
             `)
         })
@@ -190,6 +196,12 @@ describe('Filters', () => {
 
                   \\"\\"\\"Filter for coords\\"\\"\\"
                   coords: FloatFilter
+
+                  \\"\\"\\"OR Combine Filters\\"\\"\\"
+                  or: [UserFilter!]
+
+                  \\"\\"\\"AND Combine Filters\\"\\"\\"
+                  and: [UserFilter!]
                 }"
             `)
         })
@@ -217,6 +229,12 @@ describe('Filters', () => {
 
                   \\"\\"\\"Filter for blocked\\"\\"\\"
                   blocked: BooleanFilter
+
+                  \\"\\"\\"OR Combine Filters\\"\\"\\"
+                  or: [UserFilter!]
+
+                  \\"\\"\\"AND Combine Filters\\"\\"\\"
+                  and: [UserFilter!]
                 }"
             `)
         })

@@ -42,7 +42,7 @@ const createProjection = (tree: any, sequelize: Sequelize) => {
     const projection = {
         limit,
         offset,
-        where: argsToSequelizeWhere(args),
+        where: argsToSequelizeWhere(args.where),
         attributes: extractAttributes(type),
         include: extractChildren(type).map((tree) =>
             createProjection(tree, sequelize)
