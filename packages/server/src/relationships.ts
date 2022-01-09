@@ -1,8 +1,4 @@
-import {
-    SchemaComposer,
-    ObjectTypeComposer,
-    ComposeInputType,
-} from 'graphql-compose'
+import { SchemaComposer, ObjectTypeComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
 import { createTypeListResolver } from './resolvers/list'
 import { getModelTypes, normalizeTypeName } from './utils'

@@ -1,6 +1,7 @@
 import { createInputFilters } from '../src/filters'
 import { createMemory } from '../src/init'
 import { createTypeModels } from '../src/models'
+import { createOder } from '../src/order'
 import { createRelationships } from '../src/relationships'
 
 describe('Relationships', () => {
@@ -41,6 +42,7 @@ describe('Relationships', () => {
 
     beforeAll(async () => {
         createTypeModels({ composer, sequelize })
+        createOder({ composer, sequelize })
         createInputFilters({ composer, sequelize })
         createRelationships({ composer, sequelize })
         await sequelize.sync()

@@ -1,5 +1,9 @@
-import { ObjectTypeComposer, SchemaComposer, graphql } from 'graphql-compose'
-import { Op } from 'sequelize'
+import {
+    ObjectTypeComposer,
+    SchemaComposer,
+    ObjectTypeComposerFieldConfig,
+} from 'graphql-compose'
+import { ModelStatic, Op, Sequelize } from 'sequelize'
 
 export const normalizeTypeName = (typeName: string): string => {
     return typeName.replace(/\[|\]|\!/g, '')
@@ -46,4 +50,34 @@ export const argsToSequelizeWhere = (where: any = {}) => {
         }
     })
     return newWhere
+}
+
+interface CreateOrderArg {
+    sequelize: Sequelize
+    order: any
+    modelName: string
+}
+
+export const argsToSequelizeOrder = ({
+    order = {},
+    modelName,
+    sequelize,
+}: CreateOrderArg) => {
+    const model = sequelize.models[modelName]
+
+    return Object.keys(order).map((field) => {
+        const orderVal = order[field]
+        const [fieldName, fn] = field.split('_').reverse()
+
+        if (model.getAttributes()[fieldName]) {
+            if (fn) {
+                return [sequelize.fn(fn, sequelize.col(fieldName)), orderVal]
+            }
+            return [fieldName, orderVal]
+        }
+    })
+}
+
+export const isNumberField = (f: ObjectTypeComposerFieldConfig<any, any>) => {
+    return ['Float', 'Int'].includes(normalizeTypeName(f.type.getTypeName()))
 }

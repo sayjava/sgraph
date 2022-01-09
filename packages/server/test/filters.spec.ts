@@ -1,5 +1,3 @@
-import { SchemaComposer } from 'graphql-compose'
-import { Sequelize } from 'sequelize'
 import { createMemory } from '../src/init'
 import { createInputFilters } from '../src/filters'
 import { createTypeModels } from '../src/models'

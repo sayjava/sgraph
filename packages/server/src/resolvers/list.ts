@@ -3,6 +3,7 @@ import { parseResolveInfo } from 'graphql-parse-resolve-info'
 import { Sequelize } from 'sequelize'
 
 import {
+    argsToSequelizeOrder,
     argsToSequelizeWhere,
     getModelTypes,
     normalizeTypeName,
@@ -42,7 +43,12 @@ const createProjection = (tree: any, sequelize: Sequelize) => {
     const projection = {
         limit,
         offset,
-        where: argsToSequelizeWhere(args.where),
+        where: argsToSequelizeWhere(args.where || {}),
+        order: argsToSequelizeOrder({
+            order: args.order || {},
+            sequelize,
+            modelName: typeName,
+        }),
         attributes: extractAttributes(type),
         include: extractChildren(type).map((tree) =>
             createProjection(tree, sequelize)
@@ -72,6 +78,7 @@ export const createTypeListResolver = (
         args: {
             limit: 'Int',
             offset: 'Int',
+            order: t.schemaComposer.getITC(`${typeName}OrderBy`),
             where: t.schemaComposer.getITC(`${typeName}Filter`),
         },
         resolve: async (source, args, context, info) => {
@@ -82,7 +89,6 @@ export const createTypeListResolver = (
 
             const items = result.rows.map((r) => r.toJSON())
             return items
-            // return { items, count: result.count }
         },
     }
 }

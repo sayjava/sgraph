@@ -9,7 +9,7 @@ describe('List Resolvers', () => {
 
     beforeEach(async () => {
         app = express()
-        sequelize = new Sequelize('sqlite::memory:', { logging: false })
+        sequelize = new Sequelize('sqlite::memory:', { logging: true })
         const graphqlHttp = createHTTPGraphql({
             sequelize,
             typeDefs: `
@@ -601,6 +601,91 @@ describe('List Resolvers', () => {
                   },
                 ]
             `)
+        })
+    })
+
+    describe.only('Order', () => {
+        describe('Basic', () => {
+            it('order by asc', async () => {
+                const res = await request(app)
+                    .post('/')
+                    .send({
+                        query: `query {
+                        users: findUsers( order: { name: ASC } ) {
+                            name
+                         }
+                    }`,
+                    })
+
+                expect(res.body.data.users).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "name": "danlard",
+                      },
+                      Object {
+                        "name": "marseil",
+                      },
+                      Object {
+                        "name": "maschiko",
+                      },
+                    ]
+                `)
+            })
+
+            it('order by desc', async () => {
+                const res = await request(app)
+                    .post('/')
+                    .send({
+                        query: `query {
+                        users: findUsers( order: { name: DESC } ) {
+                            name
+                         }
+                    }`,
+                    })
+
+                expect(res.body.data.users).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "name": "maschiko",
+                      },
+                      Object {
+                        "name": "marseil",
+                      },
+                      Object {
+                        "name": "danlard",
+                      },
+                    ]
+                `)
+            })
+
+            it.skip('order by aggregate desc', async () => {
+                const res = await request(app)
+                    .post('/')
+                    .send({
+                        query: `query {
+                        users: findUsers( order: { min_age: DESC } ) {
+                            name
+                            age
+                         }
+                    }`,
+                    })
+
+                console.log(res.body.errors)
+
+                expect(res.body.data.users).toMatchInlineSnapshot(`
+                    Array [
+                      Object {
+                        "name": "maschiko",
+                      },
+                      Object {
+                        "name": "marseil",
+                      },
+                      Object {
+                        "name": "danlard",
+                      },
+                    ]
+                `)
+            })
         })
     })
 })
