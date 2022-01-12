@@ -1,6 +1,6 @@
 import { SchemaComposer, ObjectTypeComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
-import { createTypeListResolver } from './resolvers/list'
+import { createRelationship } from './resolvers/list'
 import { getModelTypes, normalizeTypeName } from './utils'
 
 interface Arg {
@@ -37,10 +37,7 @@ const makeTypeRelationship = (
             })
 
             if (field.astNode.type.kind === 'ListType') {
-                sourceType.setField(
-                    name,
-                    createTypeListResolver(targetType, sequelize)
-                )
+                sourceType.setField(name, createRelationship(targetType))
             }
         }
     })

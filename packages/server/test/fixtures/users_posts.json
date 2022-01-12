@@ -1,0 +1,57 @@
+{
+    "users": [
+        {
+            "id": "id-1",
+            "name": "danlard",
+            "email": "user-1@email.com",
+            "blocked": true,
+            "age": 10
+        },
+        {
+            "id": "id-2",
+            "name": "maschiko",
+            "email": "user-2@email.com",
+            "blocked": false,
+            "age": 15
+        },
+        {
+            "id": "id-3",
+            "name": "marseil",
+            "email": "user-3@email.com",
+            "blocked": false,
+            "age": 25
+        }
+    ],
+    "posts": [
+        {
+            "id": "post-1",
+            "title": "Post Title 1",
+            "body": "The body of number 1 post",
+            "authorId": "id-1"
+        },
+        {
+            "id": "post-2",
+            "title": "Post Title 2",
+            "body": "The body of number 2 post",
+            "authorId": "id-1"
+        },
+        {
+            "id": "post-3",
+            "title": "Post Title 3",
+            "body": "The body of number 3 post",
+            "authorId": "id-2"
+        },
+        {
+            "id": "post-4",
+            "title": "Post Title 4",
+            "body": "The body of number 4 post",
+            "authorId": "id-2"
+        },
+        {
+            "id": "post-5",
+            "title": "Post Title 5",
+            "body": "The body of number 5 post",
+            "authorId": "id-3"
+        }
+    ]
+}

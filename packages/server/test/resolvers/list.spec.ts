@@ -1,7 +1,8 @@
 import request from 'supertest'
 import express from 'express'
 import { createHTTPGraphql } from '../../src/server'
-import { Sequelize } from 'sequelize/dist'
+import { Sequelize } from 'sequelize'
+import { readFileSync } from 'fs'
 
 describe('List Resolvers', () => {
     let app
@@ -9,29 +10,17 @@ describe('List Resolvers', () => {
 
     beforeEach(async () => {
         app = express()
-        sequelize = new Sequelize('sqlite::memory:', { logging: true })
+        sequelize = new Sequelize('sqlite::memory:', { logging: false })
+        const typeDefs = readFileSync(
+            'test/fixtures/users_posts.graphql',
+            'utf-8'
+        )
+        const { users, posts } = JSON.parse(
+            readFileSync('test/fixtures/users_posts.json', 'utf-8')
+        )
         const graphqlHttp = createHTTPGraphql({
             sequelize,
-            typeDefs: `
-                 type User @model {
-                    id: ID @primaryKey 
-                    name: String
-                    email: String!
-                    blocked: Boolean
-                    age: Int
-
-                    posts: [Post] @hasMany(foreignKey: "authorId")
-                }
-
-                type Post @model {
-                    id: String @primaryKey
-                    title: String
-                    body: String
-
-                    authorId: String!
-                    author: User @belongsTo(sourceKey: "authorId")
-                }
-                `,
+            typeDefs,
         })
 
         app.use(graphqlHttp)
@@ -39,62 +28,8 @@ describe('List Resolvers', () => {
             force: true,
         })
 
-        await sequelize.models.User.bulkCreate([
-            {
-                id: 'id-1',
-                name: 'danlard',
-                email: 'user-1@email.com',
-                blocked: true,
-                age: 10,
-            },
-            {
-                id: 'id-2',
-                name: 'maschiko',
-                email: 'user-2@email.com',
-                blocked: false,
-                age: 15,
-            },
-            {
-                id: 'id-3',
-                name: 'marseil',
-                email: 'user-3@email.com',
-                blocked: false,
-                age: 25,
-            },
-        ])
-
-        await sequelize.models.Post.bulkCreate([
-            {
-                id: 'post-1',
-                title: 'Post Title 1',
-                body: 'The body of number 1 post',
-                authorId: 'id-1',
-            },
-            {
-                id: 'post-2',
-                title: 'Post Title 2',
-                body: 'The body of number 2 post',
-                authorId: 'id-1',
-            },
-            {
-                id: 'post-3',
-                title: 'Post Title 3',
-                body: 'The body of number 3 post',
-                authorId: 'id-2',
-            },
-            {
-                id: 'post-4',
-                title: 'Post Title 4',
-                body: 'The body of number 4 post',
-                authorId: 'id-2',
-            },
-            {
-                id: 'post-5',
-                title: 'Post Title 5',
-                body: 'The body of number 5 post',
-                authorId: 'id-3',
-            },
-        ])
+        await sequelize.models.User.bulkCreate(users)
+        await sequelize.models.Post.bulkCreate(posts)
     })
 
     describe('Filtering', () => {

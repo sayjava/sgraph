@@ -93,6 +93,20 @@ export const createTypeListResolver = (
     }
 }
 
+export const createRelationship = (t: ObjectTypeComposer) => {
+    const typeName = normalizeTypeName(t.getTypeName())
+    return {
+        name: `find${pluralize(typeName)}`,
+        type: t.List.NonNull,
+        args: {
+            limit: 'Int',
+            offset: 'Int',
+            order: t.schemaComposer.getITC(`${typeName}OrderBy`),
+            where: t.schemaComposer.getITC(`${typeName}Filter`),
+        },
+    }
+}
+
 export const createListResolver = ({ composer, sequelize }: Arg) => {
     const types = getModelTypes(composer)
     types.forEach((t) => {
