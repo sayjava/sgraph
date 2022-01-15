@@ -12,6 +12,8 @@ type Post @model {
     id: String @primaryKey
     title: String
     body: String
+    views: Float
+    performance: Float
 
     authorId: String!
     author: User @belongsTo(sourceKey: "authorId")

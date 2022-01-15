@@ -7,6 +7,8 @@ import { createInputFilters } from './filters'
 import { createRelationships } from './relationships'
 import { createResolvers } from './resolvers'
 import { createOder } from './order'
+import { getModelTypes } from './utils'
+import { createAggregates } from './resolvers/aggregate'
 
 export interface ServerConfig {
     typeDefs: string
@@ -22,11 +24,15 @@ export const createHTTPGraphql = ({
     composer = schemaComposer,
 }: ServerConfig) => {
     composer.addTypeDefs(typeDefs)
+
+    const types = getModelTypes(composer)
+
     createTypeModels({ composer, sequelize })
     createInputFilters({ composer, sequelize })
     createOder({ composer, sequelize })
     createRelationships({ composer, sequelize })
     createResolvers({ composer, sequelize })
+    createAggregates({ types, sequelize })
 
     return graphqlHTTP({
         schema: composer.buildSchema(),
