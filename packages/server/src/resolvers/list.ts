@@ -8,6 +8,7 @@ import {
     getModelTypes,
     normalizeTypeName,
 } from '../utils'
+import { aggregateFieldsToFn } from './aggregate'
 
 interface Arg {
     composer: SchemaComposer
@@ -37,9 +38,19 @@ const createProjection = (tree: any, sequelize: Sequelize) => {
     const [type] = Object.values(fieldsByTypeName)
     const [typeName] = Object.keys(fieldsByTypeName)
     const topOfTree = name.includes('find')
+    const isAggregate = name.includes('Aggregate')
+
+    if (isAggregate) {
+        const [aggregateType] = typeName.split('Aggregate')
+        return {
+            model: sequelize.models[aggregateType],
+            as: name,
+            where: argsToSequelizeWhere(args.where || {}),
+            attributes: aggregateFieldsToFn(tree, sequelize),
+        }
+    }
 
     const { limit = DEFAULT_LIMIT, offset = 0 } = args
-
     const projection = {
         limit,
         offset,

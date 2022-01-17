@@ -7,6 +7,7 @@ import {
     getModelTypes,
     normalizeTypeName,
 } from '../utils'
+import { aggregateFieldsToFn } from './aggregate'
 import { attributesFromTree, childrenFromTree } from './utils'
 
 const createProjection = (tree, sequelize) => {
@@ -17,6 +18,17 @@ const createProjection = (tree, sequelize) => {
 
     const topTree = name.includes('ByPk')
     const extras = {}
+
+    const isAggregate = name.includes('Aggregate')
+    if (isAggregate) {
+        const [aggrType] = typeName.split('Aggregate')
+        return {
+            model: sequelize.models[aggrType],
+            as: name,
+            where: argsToSequelizeWhere(args.where || {}),
+            attributes: aggregateFieldsToFn(tree, sequelize),
+        }
+    }
 
     if (!topTree) {
         Object.assign(extras, {

@@ -26,13 +26,31 @@ const makeTypeRelationship = (
             const targetModel = sequelize.models[targetTypeName]
             const targetType = sourceType.schemaComposer.getOTC(targetTypeName)
 
-            field.directives.forEach((d) => {
-                if (RELATIONSHIPS.includes(d.name)) {
-                    const relationshipArgs = Object.assign({}, d.args, {
-                        as: name,
-                    })
+            field.directives.forEach((relationshipDirective) => {
+                if (RELATIONSHIPS.includes(relationshipDirective.name)) {
+                    const relationshipArgs = Object.assign(
+                        {},
+                        relationshipDirective.args,
+                        {
+                            as: name,
+                        }
+                    )
 
-                    sourceModel[d.name](targetModel, relationshipArgs)
+                    sourceModel[relationshipDirective.name](
+                        targetModel,
+                        relationshipArgs
+                    )
+
+                    /**
+                     * An aggregate relationship is created to allow for the querying
+                     * of aggregate relationships of one-to-many types
+                     */
+                    if (relationshipDirective.name === 'hasMany') {
+                        sourceModel.hasOne(targetModel, {
+                            ...relationshipArgs,
+                            as: `${name}Aggregate`,
+                        })
+                    }
                 }
             })
 
