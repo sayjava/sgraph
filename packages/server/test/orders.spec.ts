@@ -1,5 +1,6 @@
 import { createMemory } from '../src/init'
 import { createOder } from '../src/order'
+import { getModelTypes } from '../src/utils'
 
 describe('Order', () => {
     describe('Basic', () => {
@@ -16,7 +17,9 @@ describe('Order', () => {
       `
         )
 
-        createOder({ composer, sequelize })
+        const types = getModelTypes(composer)
+
+        createOder({ types, sequelize })
 
         it('creates a basic order by enum', () => {
             expect(composer.getITC('UserOrderBy').toSDL())

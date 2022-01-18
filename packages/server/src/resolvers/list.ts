@@ -5,13 +5,12 @@ import { Sequelize } from 'sequelize'
 import {
     argsToSequelizeOrder,
     argsToSequelizeWhere,
-    getModelTypes,
     normalizeTypeName,
 } from '../utils'
 import { aggregateFieldsToFn } from './aggregate'
 
 interface Arg {
-    composer: SchemaComposer
+    types: ObjectTypeComposer[]
     sequelize: Sequelize
 }
 
@@ -118,11 +117,10 @@ export const createRelationship = (t: ObjectTypeComposer) => {
     }
 }
 
-export const createListResolver = ({ composer, sequelize }: Arg) => {
-    const types = getModelTypes(composer)
+export const createListResolver = ({ types, sequelize }: Arg) => {
     types.forEach((t) => {
         const typeName = normalizeTypeName(t.getTypeName())
-        composer.Query.setField(
+        t.schemaComposer.Query.setField(
             `find${pluralize(typeName)}`,
             createTypeListResolver(t, sequelize)
         )

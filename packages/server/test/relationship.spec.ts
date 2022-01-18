@@ -3,6 +3,7 @@ import { createMemory } from '../src/init'
 import { createTypeModels } from '../src/models'
 import { createOder } from '../src/order'
 import { createRelationships } from '../src/relationships'
+import { getModelTypes } from '../src/utils'
 
 describe('Relationships', () => {
     let user
@@ -41,10 +42,11 @@ describe('Relationships', () => {
     )
 
     beforeAll(async () => {
-        createTypeModels({ composer, sequelize })
-        createOder({ composer, sequelize })
-        createInputFilters({ composer, sequelize })
-        createRelationships({ composer, sequelize })
+        const types = getModelTypes(composer)
+        createTypeModels({ types, sequelize })
+        createOder({ types, sequelize })
+        createInputFilters({ types, sequelize })
+        createRelationships({ types, sequelize })
         await sequelize.sync()
 
         user = await sequelize.models.User.create(

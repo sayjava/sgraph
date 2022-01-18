@@ -1,9 +1,9 @@
-import { SchemaComposer, ObjectTypeComposer } from 'graphql-compose'
+import { ObjectTypeComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
-import { getModelTypes, isNumberField, normalizeTypeName } from './utils'
+import { normalizeTypeName } from './utils'
 
 interface Arg {
-    composer: SchemaComposer
+    types: ObjectTypeComposer[]
     sequelize: Sequelize
 }
 
@@ -34,8 +34,9 @@ const createTypeOrderBy = (tc: ObjectTypeComposer) => {
     })
 }
 
-export const createOder = ({ composer }: Arg) => {
-    composer.createEnumTC({
+export const createOder = ({ types }: Arg) => {
+    const [firstType] = types
+    firstType.schemaComposer.createEnumTC({
         name: 'OrderBy',
         description: 'Order By',
         values: {
@@ -50,6 +51,5 @@ export const createOder = ({ composer }: Arg) => {
         },
     })
 
-    const types = getModelTypes(composer)
     types.forEach(createTypeOrderBy)
 }

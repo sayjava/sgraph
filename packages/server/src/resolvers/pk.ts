@@ -2,11 +2,7 @@ import { ObjectTypeComposer } from 'graphql-compose'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
 import { Sequelize } from 'sequelize'
 
-import {
-    argsToSequelizeWhere,
-    getModelTypes,
-    normalizeTypeName,
-} from '../utils'
+import { argsToSequelizeWhere, normalizeTypeName } from '../utils'
 import { aggregateFieldsToFn } from './aggregate'
 import { attributesFromTree, childrenFromTree } from './utils'
 
@@ -69,11 +65,10 @@ const createTypePKResolver = (t: ObjectTypeComposer, sequelize: Sequelize) => {
     }
 }
 
-export const createPKResolver = ({ composer, sequelize }) => {
-    const types = getModelTypes(composer)
+export const createPKResolver = ({ types, sequelize }) => {
     types.forEach((t) => {
         const typeName = normalizeTypeName(t.getTypeName())
-        composer.Query.setField(
+        t.schemaComposer.Query.setField(
             `${typeName.toLocaleLowerCase()}ByPk`,
             createTypePKResolver(t, sequelize)
         )

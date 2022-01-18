@@ -3,7 +3,7 @@ import { ModelAttributes, Sequelize } from 'sequelize'
 import { normalizeTypeName } from './utils'
 
 interface Arg {
-    composer: SchemaComposer
+    types: ObjectTypeComposer[]
     sequelize: Sequelize
 }
 
@@ -50,10 +50,11 @@ const hasUniqueField = (attrs: { [key: string]: ModelAttributes }) => {
     })
 }
 
-export const createTypeModels = ({ composer, sequelize }: Arg) => {
-    composer.types.forEach((t) => {
-        if (composer.isObjectType(t)) {
-            const obj = t as ObjectTypeComposer<any, any>
+export const createTypeModels = ({ types, sequelize }: Arg) => {
+    types.forEach((tc) => {
+        const composer = tc.schemaComposer
+        if (composer.isObjectType(tc)) {
+            const obj = tc as ObjectTypeComposer<any, any>
             const typeName = obj.getTypeName()
             const modelDirective = obj.getDirectiveByName('model')
 

@@ -1,6 +1,7 @@
 import { createMemory } from '../src/init'
 import { createInputFilters } from '../src/filters'
 import { createTypeModels } from '../src/models'
+import { getModelTypes } from '../src/utils'
 
 describe('Filters', () => {
     describe('String', () => {
@@ -15,8 +16,10 @@ describe('Filters', () => {
       `
         )
 
-        createTypeModels({ composer, sequelize })
-        createInputFilters({ composer, sequelize })
+        const types = getModelTypes(composer)
+
+        createTypeModels({ types, sequelize })
+        createInputFilters({ types, sequelize })
 
         it('creates string filters', () => {
             expect(composer.getITC('UserFilter')).toBeTruthy()
@@ -179,8 +182,10 @@ describe('Filters', () => {
       `
         )
 
-        createTypeModels({ composer, sequelize })
-        createInputFilters({ composer, sequelize })
+        const types = getModelTypes(composer)
+
+        createTypeModels({ types, sequelize })
+        createInputFilters({ types, sequelize })
 
         it('creates int filters', () => {
             expect(composer.getITC('UserFilter').toSDL())
@@ -215,8 +220,9 @@ describe('Filters', () => {
       `
         )
 
-        createTypeModels({ composer, sequelize })
-        createInputFilters({ composer, sequelize })
+        const types = getModelTypes(composer)
+        createTypeModels({ types, sequelize })
+        createInputFilters({ types, sequelize })
 
         it('creates int filters', () => {
             expect(composer.getITC('UserFilter').toSDL())

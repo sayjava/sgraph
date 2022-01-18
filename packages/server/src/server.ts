@@ -27,11 +27,11 @@ export const createHTTPGraphql = ({
 
     const types = getModelTypes(composer)
 
-    createTypeModels({ composer, sequelize })
-    createInputFilters({ composer, sequelize })
-    createOder({ composer, sequelize })
-    createRelationships({ composer, sequelize })
-    createResolvers({ composer, sequelize })
+    createTypeModels({ types, sequelize })
+    createInputFilters({ types, sequelize })
+    createOder({ types, sequelize })
+    createRelationships({ types, sequelize })
+    createResolvers({ types, sequelize })
     createAggregates({ types, sequelize })
 
     return graphqlHTTP({

@@ -82,12 +82,15 @@ const StringFilters = {
 }
 
 export const createInputFilters = ({
-    composer,
+    types,
     sequelize,
 }: {
-    composer: SchemaComposer
+    types: ObjectTypeComposer[]
     sequelize: Sequelize
 }) => {
+    const [firstType] = types
+    const composer = firstType.schemaComposer
+
     const StringInputFilter = composer.createInputTC({
         name: 'StringFilter',
         fields: StringFilters,

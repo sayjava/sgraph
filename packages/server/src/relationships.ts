@@ -1,10 +1,10 @@
-import { SchemaComposer, ObjectTypeComposer } from 'graphql-compose'
+import { ObjectTypeComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
 import { createRelationship } from './resolvers/list'
-import { getModelTypes, normalizeTypeName } from './utils'
+import { normalizeTypeName } from './utils'
 
 interface Arg {
-    composer: SchemaComposer
+    types: ObjectTypeComposer[]
     sequelize: Sequelize
 }
 
@@ -44,6 +44,8 @@ const makeTypeRelationship = (
                     /**
                      * An aggregate relationship is created to allow for the querying
                      * of aggregate relationships of one-to-many types
+                     *
+                     * e.g findUsers { postAggregate { max_views } }
                      */
                     if (relationshipDirective.name === 'hasMany') {
                         sourceModel.hasOne(targetModel, {
@@ -63,7 +65,6 @@ const makeTypeRelationship = (
     return fields
 }
 
-export const createRelationships = ({ composer, sequelize }: Arg) => {
-    const types = getModelTypes(composer)
+export const createRelationships = ({ types, sequelize }: Arg) => {
     types.forEach((t) => makeTypeRelationship(t, sequelize))
 }
