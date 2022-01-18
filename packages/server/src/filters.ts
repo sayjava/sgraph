@@ -1,4 +1,4 @@
-import { SchemaComposer, ObjectTypeComposer } from 'graphql-compose'
+import { ObjectTypeComposer } from 'graphql-compose'
 import { Op, Sequelize } from 'sequelize'
 import { normalizeTypeName } from './utils'
 
