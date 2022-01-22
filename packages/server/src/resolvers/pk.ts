@@ -3,29 +3,18 @@ import { parseResolveInfo } from 'graphql-parse-resolve-info'
 import { Sequelize } from 'sequelize'
 
 import { argsToSequelizeWhere, normalizeTypeName } from '../utils'
-import { aggregateFieldsToFn } from './aggregate'
-import { attributesFromTree, childrenFromTree } from './utils'
+import { extractAttributesFromTree, extractChildrenFromTree } from './utils'
 
 const createProjection = (tree, sequelize) => {
     const { args, fieldsByTypeName, name } = tree
     const [type] = Object.values(fieldsByTypeName)
     const [typeName] = Object.keys(fieldsByTypeName)
-    const attributes = attributesFromTree(type)
 
+    const model = sequelize.models[typeName]
     const topTree = name.includes('ByPk')
+    const attributes = extractAttributesFromTree(type, model)
+
     const extras = {}
-
-    const isAggregate = name.includes('Aggregate')
-    if (isAggregate) {
-        const [aggrType] = typeName.split('Aggregate')
-        return {
-            model: sequelize.models[aggrType],
-            as: name,
-            where: argsToSequelizeWhere(args.where || {}),
-            attributes: aggregateFieldsToFn(tree, sequelize),
-        }
-    }
-
     if (!topTree) {
         Object.assign(extras, {
             model: sequelize.models[normalizeTypeName(typeName)],
@@ -37,7 +26,7 @@ const createProjection = (tree, sequelize) => {
     return {
         ...extras,
         attributes,
-        include: childrenFromTree(type).map((t) =>
+        include: extractChildrenFromTree(type, model).map((t) =>
             createProjection(t, sequelize)
         ),
     }

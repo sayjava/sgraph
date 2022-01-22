@@ -1,33 +1,17 @@
-import { SchemaComposer, ObjectTypeComposer, pluralize } from 'graphql-compose'
+import { ObjectTypeComposer, pluralize } from 'graphql-compose'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
-import { Sequelize } from 'sequelize'
+import { ModelCtor, Sequelize } from 'sequelize'
 
 import {
     argsToSequelizeOrder,
     argsToSequelizeWhere,
     normalizeTypeName,
 } from '../utils'
-import { aggregateFieldsToFn } from './aggregate'
+import { extractAttributesFromTree, extractChildrenFromTree } from './utils'
 
 interface Arg {
     types: ObjectTypeComposer[]
     sequelize: Sequelize
-}
-
-const extractAttributes = (attrs: any) => {
-    return Object.keys(attrs).filter((attrKey) => {
-        const children = attrs[attrKey].fieldsByTypeName
-        return Object.keys(children).length === 0
-    })
-}
-
-const extractChildren = (attrs: any) => {
-    return Object.keys(attrs)
-        .filter((attrKey) => {
-            const children = attrs[attrKey].fieldsByTypeName
-            return Object.keys(children).length > 0
-        })
-        .map((key) => attrs[key])
 }
 
 const DEFAULT_LIMIT = 10
@@ -36,18 +20,8 @@ const createProjection = (tree: any, sequelize: Sequelize) => {
     const { args, fieldsByTypeName, name } = tree
     const [type] = Object.values(fieldsByTypeName)
     const [typeName] = Object.keys(fieldsByTypeName)
+    const model = sequelize.models[typeName]
     const topOfTree = name.includes('find')
-    const isAggregate = name.includes('Aggregate')
-
-    if (isAggregate) {
-        const [aggregateType] = typeName.split('Aggregate')
-        return {
-            model: sequelize.models[aggregateType],
-            as: name,
-            where: argsToSequelizeWhere(args.where || {}),
-            attributes: aggregateFieldsToFn(tree, sequelize),
-        }
-    }
 
     const { limit = DEFAULT_LIMIT, offset = 0 } = args
     const projection = {
@@ -59,8 +33,8 @@ const createProjection = (tree: any, sequelize: Sequelize) => {
             sequelize,
             modelName: typeName,
         }),
-        attributes: extractAttributes(type),
-        include: extractChildren(type).map((tree) =>
+        attributes: extractAttributesFromTree(type, model),
+        include: extractChildrenFromTree(type, model).map((tree) =>
             createProjection(tree, sequelize)
         ),
     }

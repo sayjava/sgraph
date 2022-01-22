@@ -1,5 +1,5 @@
 import { ObjectTypeComposer, pluralize } from 'graphql-compose'
-import { Sequelize } from 'sequelize'
+import { Association, Op, Sequelize } from 'sequelize'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
 import { argsToSequelizeWhere, normalizeTypeName } from '../utils'
 
@@ -19,7 +19,8 @@ export const aggregateFieldsToFn = (tree: any, sequelize: Sequelize) => {
 
 const createAggregateResolver = (
     tc: ObjectTypeComposer,
-    sequelize: Sequelize
+    sequelize: Sequelize,
+    association: Association = null
 ) => {
     const typeName = normalizeTypeName(tc.getTypeName())
     const model = sequelize.models[typeName]
@@ -28,6 +29,18 @@ const createAggregateResolver = (
         const tree = parseResolveInfo(info)
         const where = argsToSequelizeWhere(args.where)
         const include = aggregateFieldsToFn(tree, sequelize)
+
+        /**
+         * potentially, this could be an association aggregate call,
+         * we need to account for parent to child association
+         */
+        if (source && association) {
+            // @ts-ignore
+            const { sourceKey, foreignKey } = association
+            where[foreignKey] = {
+                [Op.eq]: source[sourceKey],
+            }
+        }
 
         const result = (await model.findOne({
             where,
@@ -49,50 +62,62 @@ export const createAggregates = ({
     const numberTypes = ['Float', 'Int']
     const aggregateTypes = ['min', 'max', 'avg', 'sum', 'total']
 
-    types.forEach((t) => {
-        const typeName = normalizeTypeName(t.getTypeName())
+    types.forEach((tc) => {
+        const typeName = normalizeTypeName(tc.getTypeName())
         const model = sequelize.models[typeName]
+        const composer = tc.schemaComposer
 
-        t.schemaComposer.getOrCreateOTC(
-            `${typeName}Aggregate`,
-            (aggregateType) => {
-                aggregateType.setField('count', { type: 'Int!' })
+        composer.getOrCreateOTC(`${typeName}Aggregate`, (aggregateType) => {
+            aggregateType.setField('count', { type: 'Int!' })
 
-                Object.entries(model.getAttributes())
-                    .filter(([_, field]) => {
-                        return numberTypes.includes(field.type.toString({}))
-                    })
-                    .forEach(([fieldName]) => {
-                        aggregateTypes.forEach((fn) => {
-                            aggregateType.setField(`${fn}_${fieldName}`, {
-                                type: 'Float!',
-                            })
-                        })
-                    })
-
-                t.schemaComposer.Query.setField(
-                    `${pluralize(typeName.toLocaleLowerCase())}Aggregate`,
-                    {
-                        type: aggregateType,
-                        args: { where: { type: `${typeName}Filter` } },
-                        resolve: createAggregateResolver(t, sequelize),
-                    }
-                )
-
-                Object.keys(model.associations).forEach((assoc) => {
-                    const association = model.associations[assoc]
-                    if (association.associationType === 'HasMany') {
-                        t.setField(`${association.as}Aggregate`, {
-                            type: `${association.target.name}Aggregate`,
-                            args: {
-                                where: {
-                                    type: `${association.target.name}Filter`,
-                                },
-                            },
-                        })
-                    }
+            /**
+             * Generate Aggregation (Number) fields
+             *  */
+            Object.entries(model.getAttributes())
+                .filter(([_, field]) => {
+                    return numberTypes.includes(field.type.toString({}))
                 })
-            }
-        )
+                .forEach(([fieldName]) => {
+                    aggregateTypes.forEach((fn) => {
+                        aggregateType.setField(`${fn}_${fieldName}`, {
+                            type: 'Float!',
+                        })
+                    })
+                })
+
+            /**
+             * Create Query level association resolver
+             */
+            composer.Query.setField(
+                `${pluralize(typeName.toLocaleLowerCase())}Aggregate`,
+                {
+                    type: aggregateType,
+                    args: { where: { type: `${typeName}Filter` } },
+                    resolve: createAggregateResolver(tc, sequelize),
+                }
+            )
+
+            Object.keys(model.associations).forEach((assoc) => {
+                const association = model.associations[assoc]
+                if (association.associationType === 'HasMany') {
+                    const assocTypeName = association.target.name
+                    const assocType = composer.getOTC(assocTypeName)
+
+                    tc.setField(`${association.as}Aggregate`, {
+                        type: `${assocTypeName}Aggregate`,
+                        args: {
+                            where: {
+                                type: `${assocTypeName}Filter`,
+                            },
+                        },
+                        resolve: createAggregateResolver(
+                            assocType,
+                            sequelize,
+                            association
+                        ),
+                    })
+                }
+            })
+        })
     })
 }

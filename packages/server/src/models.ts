@@ -54,19 +54,22 @@ export const createTypeModels = ({ types, sequelize }: Arg) => {
     types.forEach((tc) => {
         const composer = tc.schemaComposer
         if (composer.isObjectType(tc)) {
-            const obj = tc as ObjectTypeComposer<any, any>
-            const typeName = obj.getTypeName()
-            const modelDirective = obj.getDirectiveByName('model')
+            const typeName = tc.getTypeName()
+            const modelDirective = tc.getDirectiveByName('model')
+
+            tc.addResolver({
+                name: `find${typeName}`,
+            })
 
             if (modelDirective) {
-                const attributes = typeToAttributes(obj, composer)
+                const attributes = typeToAttributes(tc, composer)
                 const tableName = modelDirective.tableName || typeName
 
                 if (!hasUniqueField(attributes)) {
                     throw Error(`${typeName} has no unique fields`)
                 }
 
-                sequelize.define(obj.getTypeName(), attributes, {
+                sequelize.define(tc.getTypeName(), attributes, {
                     tableName,
                     timestamps: false,
                 })

@@ -40,19 +40,6 @@ const makeTypeRelationship = (
                         targetModel,
                         relationshipArgs
                     )
-
-                    /**
-                     * An aggregate relationship is created to allow for the querying
-                     * of aggregate relationships of one-to-many types
-                     *
-                     * e.g findUsers { postAggregate { max_views } }
-                     */
-                    if (relationshipDirective.name === 'hasMany') {
-                        sourceModel.hasOne(targetModel, {
-                            ...relationshipArgs,
-                            as: `${name}Aggregate`,
-                        })
-                    }
                 }
             })
 
