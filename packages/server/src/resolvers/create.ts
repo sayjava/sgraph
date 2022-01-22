@@ -5,7 +5,14 @@ import { normalizeTypeName } from '../utils'
 const associationsToInclude = (model: ModelCtor<Model>, tree: any) => {
     return Object.keys(tree)
         .filter((attr) => model.associations[attr])
-        .map((attr) => attr)
+        .map((attr) => {
+            const assoc = model.associations[attr]
+            return {
+                as: assoc.as,
+                model: assoc.target,
+                includes: associationsToInclude(assoc.target, tree[attr]),
+            }
+        })
 }
 
 export const createCreateResolver = ({
