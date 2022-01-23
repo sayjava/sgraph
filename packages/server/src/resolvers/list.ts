@@ -16,12 +16,12 @@ interface Arg {
 
 const DEFAULT_LIMIT = 10
 
-const createProjection = (tree: any, sequelize: Sequelize) => {
+export const createProjection = (tree: any, sequelize: Sequelize) => {
     const { args, fieldsByTypeName, name } = tree
     const [type] = Object.values(fieldsByTypeName)
     const [typeName] = Object.keys(fieldsByTypeName)
     const model = sequelize.models[typeName]
-    const topOfTree = name.includes('find')
+    const topOfTree = name.match(/find*|update*/)
 
     const { limit = DEFAULT_LIMIT, offset = 0 } = args
     const projection = {

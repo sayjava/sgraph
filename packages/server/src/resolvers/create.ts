@@ -1,19 +1,7 @@
-import { ObjectTypeComposer } from 'graphql-compose'
-import { Model, ModelCtor, Sequelize } from 'sequelize/dist'
+import { ObjectTypeComposer, pluralize } from 'graphql-compose'
+import { Sequelize } from 'sequelize/dist'
 import { normalizeTypeName } from '../utils'
-
-const associationsToInclude = (model: ModelCtor<Model>, tree: any) => {
-    return Object.keys(tree)
-        .filter((attr) => model.associations[attr])
-        .map((attr) => {
-            const assoc = model.associations[attr]
-            return {
-                as: assoc.as,
-                model: assoc.target,
-                includes: associationsToInclude(assoc.target, tree[attr]),
-            }
-        })
-}
+import { associationsToInclude } from './utils'
 
 export const createCreateResolver = ({
     types,
@@ -25,38 +13,39 @@ export const createCreateResolver = ({
     types.forEach((tc) => {
         const typeName = normalizeTypeName(tc.getTypeName())
         const model = sequelize.models[typeName]
-        const input = tc.getITC()
-
-        input.getFieldNames().forEach((field) => {
-            const association = model.associations[field]
-            if (association) {
-                if (
-                    association.associationType
-                        .toLowerCase()
-                        .includes('belongs')
-                ) {
-                    input.removeField(field)
-                    input.makeFieldNullable(association.foreignKey)
-                }
-
-                if (association.associationType.toLowerCase().includes('has')) {
-                    input.makeFieldNullable(field)
-                }
-            }
-        })
+        const singleType = typeName.toLocaleLowerCase()
+        const pluralType = pluralize(singleType)
 
         tc.schemaComposer.Mutation.setField(`create${typeName}`, {
             type: tc,
             args: {
-                [typeName.toLocaleLowerCase()]: input,
+                [singleType]: {
+                    type: `${typeName}Input`,
+                },
             },
             resolve: async (src, args, ctx, info) => {
-                const modelArgs = args[typeName.toLocaleLowerCase()]
-
+                const modelArgs = args[singleType]
                 const newModel = await model.create(modelArgs, {
                     include: associationsToInclude(model, modelArgs),
                 })
                 return newModel.toJSON()
+            },
+        })
+
+        tc.schemaComposer.Mutation.setField(`create${pluralize(typeName)}`, {
+            type: tc,
+            args: {
+                [pluralType]: {
+                    type: `[${typeName}Input!]!`,
+                },
+            },
+            resolve: async (src, args, ctx, info) => {
+                const modelArgs = args[pluralType] as any[]
+                const newModel = await model.bulkCreate(modelArgs, {
+                    include: associationsToInclude(model, modelArgs),
+                    validate: true,
+                })
+                return newModel.map((m) => m.toJSON())
             },
         })
     })

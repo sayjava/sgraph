@@ -1,4 +1,4 @@
-import { ModelCtor } from 'sequelize/dist'
+import { ModelCtor, Model } from 'sequelize/dist'
 
 export const extractAttributesFromTree = (tree: any, model: ModelCtor<any>) => {
     const selected = Object.keys(tree).filter(
@@ -27,4 +27,17 @@ export const extractChildrenFromTree = (tree: any, model: ModelCtor<any>) => {
     return Object.keys(tree)
         .filter((attrKey) => model.associations[attrKey])
         .map((key) => tree[key])
+}
+
+export const associationsToInclude = (model: ModelCtor<Model>, tree: any) => {
+    return Object.keys(tree)
+        .filter((attr) => model.associations[attr])
+        .map((attr) => {
+            const assoc = model.associations[attr]
+            return {
+                as: assoc.as,
+                model: assoc.target,
+                includes: associationsToInclude(assoc.target, tree[attr]),
+            }
+        })
 }
