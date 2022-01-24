@@ -57,6 +57,32 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
       through: String
     ) on FIELD_DEFINITION
 
+
+    """ Validation """
+    directive @validate_isEmail            on FIELD_DEFINITION 
+    directive @validate_isUrl              on FIELD_DEFINITION 
+    directive @validate_isIP               on FIELD_DEFINITION 
+    directive @validate_isIPv4             on FIELD_DEFINITION 
+    directive @validate_isIPv6             on FIELD_DEFINITION 
+    directive @validate_isAlpha            on FIELD_DEFINITION 
+    directive @validate_isAlphanumeric     on FIELD_DEFINITION 
+    directive @validate_isNumeric          on FIELD_DEFINITION 
+    directive @validate_isLowercase        on FIELD_DEFINITION 
+    directive @validate_isUppercase        on FIELD_DEFINITION 
+    directive @validate_notEmpty           on FIELD_DEFINITION 
+    directive @validate_equals             on FIELD_DEFINITION 
+    directive @validate_isDate             on FIELD_DEFINITION
+    directive @validate_isCreditCard       on FIELD_DEFINITION
+    
+    directive @validate_contains           (value: String!)     on FIELD_DEFINITION
+    directive @validate_isUUID             (value: Int!)        on FIELD_DEFINITION
+    directive @validate_len                (value: [String!]!)  on FIELD_DEFINITION
+    directive @validate_isAfter            (value: String!)     on FIELD_DEFINITION
+    directive @validate_isBefore           (value: String!)     on FIELD_DEFINITION
+    directive @validate_max                (value: Int!)        on FIELD_DEFINITION
+    directive @validate_min                (value: Int!)        on FIELD_DEFINITION
+    directive @validate_is                 (value: String!)     on FIELD_DEFINITION
+    directive @validate_not                (value: String!)     on FIELD_DEFINITION
     `
     )
 }

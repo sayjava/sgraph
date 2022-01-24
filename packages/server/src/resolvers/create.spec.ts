@@ -4,7 +4,7 @@ import { createHTTPGraphql } from '../server'
 import { Sequelize } from 'sequelize'
 import { readFileSync } from 'fs'
 
-describe('PK Resolver', () => {
+describe('Create Resolver', () => {
     let app
     let sequelize: Sequelize
 

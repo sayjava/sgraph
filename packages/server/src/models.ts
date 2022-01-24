@@ -1,10 +1,22 @@
-import { SchemaComposer, ObjectTypeComposer } from 'graphql-compose'
+import { SchemaComposer, ObjectTypeComposer, Directive } from 'graphql-compose'
 import { ModelAttributes, Sequelize } from 'sequelize'
 import { normalizeTypeName } from './utils'
 
 interface Arg {
     types: ObjectTypeComposer[]
     sequelize: Sequelize
+}
+
+const createValidations = (directives: Directive[]) => {
+    const validate = {}
+    directives
+        .filter((d) => d.name.includes('validate_'))
+        .forEach((d) => {
+            const [validation] = d.name.split('validate_').reverse()
+            validate[validation] = d.args.value || true
+        })
+
+    return validate
 }
 
 const typeToAttributes = (
@@ -17,27 +29,27 @@ const typeToAttributes = (
     Object.entries(fields).forEach(([key, config]) => {
         const typeName = normalizeTypeName(config.type.getTypeName())
         const field = fields[key]
+        const directives = field.directives || []
 
         if (composer.isScalarType(typeName)) {
             const isPrimaryKey = !!field.directives.find(
                 (d) => d.name === 'primaryKey'
             )
 
-            const isUnique = !!field.directives.find((d) => d.name === 'unique')
+            const isUnique = !!directives.find((d) => d.name === 'unique')
             const nonNull = field.astNode.type.kind === 'NonNullType'
-            const columnName = field.directives.find(
-                (d) => d.name === 'column'
-            ) || { args: { name: key } }
+            const columnName = directives.find((d) => d.name === 'column') || {
+                args: { name: key },
+            }
 
             attributes[key] = {
                 type: typeName,
                 unique: isUnique,
                 primaryKey: isPrimaryKey,
-                allowNull: isPrimaryKey || !nonNull,
+                allowNull: !nonNull,
                 field: columnName.args.name,
+                validate: createValidations(directives || []),
             }
-
-            isUnique && console.log(attributes)
         }
     })
 

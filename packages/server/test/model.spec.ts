@@ -94,6 +94,7 @@ describe('Models', () => {
                     "primaryKey": false,
                     "type": "Int",
                     "unique": false,
+                    "validate": Object {},
                   },
                   "blocked": Object {
                     "Model": [Function],
@@ -104,6 +105,7 @@ describe('Models', () => {
                     "primaryKey": false,
                     "type": "Boolean",
                     "unique": false,
+                    "validate": Object {},
                   },
                   "email": Object {
                     "Model": [Function],
@@ -114,6 +116,7 @@ describe('Models', () => {
                     "primaryKey": false,
                     "type": "String",
                     "unique": false,
+                    "validate": Object {},
                   },
                   "hobbies": Object {
                     "Model": [Function],
@@ -124,6 +127,7 @@ describe('Models', () => {
                     "primaryKey": false,
                     "type": "String",
                     "unique": false,
+                    "validate": Object {},
                   },
                   "id": Object {
                     "Model": [Function],
@@ -134,6 +138,7 @@ describe('Models', () => {
                     "primaryKey": true,
                     "type": "ID",
                     "unique": false,
+                    "validate": Object {},
                   },
                   "locationPlace": Object {
                     "Model": [Function],
@@ -144,6 +149,7 @@ describe('Models', () => {
                     "primaryKey": false,
                     "type": "String",
                     "unique": false,
+                    "validate": Object {},
                   },
                   "name": Object {
                     "Model": [Function],
@@ -154,6 +160,7 @@ describe('Models', () => {
                     "primaryKey": false,
                     "type": "String",
                     "unique": false,
+                    "validate": Object {},
                   },
                 }
             `)
