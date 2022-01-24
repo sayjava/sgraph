@@ -1,6 +1,6 @@
 import request from 'supertest'
 import express from 'express'
-import { createHTTPGraphql } from '../../src/server'
+import { createHTTPGraphql } from '../server'
 import { Sequelize } from 'sequelize'
 import { readFileSync } from 'fs'
 
@@ -108,6 +108,49 @@ describe('PK Resolver', () => {
                 "max_views": 20,
               },
             }
+        `)
+    })
+
+    it('bulk creates records', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: createUsers(users: 
+                        [
+                            { 
+                                id: "new-id-1", 
+                                name: "new-user", 
+                                email: "a@b.com", 
+                                blocked: false, 
+                                age: 19
+                            },
+                             { 
+                                id: "new-id-2", 
+                                name: "new-user", 
+                                email: "a@b.com", 
+                                blocked: false, 
+                                age: 19 
+                            }
+                        ]
+                        ) {
+                            id
+                            name
+                        }
+                    }`,
+            })
+
+        expect(res.body.data.user).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "id": "new-id-1",
+                "name": "new-user",
+              },
+              Object {
+                "id": "new-id-2",
+                "name": "new-user",
+              },
+            ]
         `)
     })
 })

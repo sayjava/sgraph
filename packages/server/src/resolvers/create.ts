@@ -33,7 +33,7 @@ export const createCreateResolver = ({
         })
 
         tc.schemaComposer.Mutation.setField(`create${pluralize(typeName)}`, {
-            type: tc,
+            type: tc.List.NonNull,
             args: {
                 [pluralType]: {
                     type: `[${typeName}Input!]!`,
