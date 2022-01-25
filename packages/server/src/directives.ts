@@ -3,7 +3,6 @@ import { SchemaComposer } from 'graphql-compose'
 export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     // models
     // TODO: Add database types
-    // TODO: Add @timestamps
     // TODO: Add @default
     composer.addTypeDefs(
         `
