@@ -4,7 +4,6 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     // models
     // TODO: Add database types
     // TODO: Add @timestamps
-    // TODO: Add @autoIncrement
     // TODO: Add @default
     composer.addTypeDefs(
         `
@@ -14,14 +13,27 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
       tableName: String
     ) on OBJECT
 
+    """ Enable AutoTimestamp  """
+    directive @autoTimestamp on FIELD_DEFINITION
+
     """ Renames a column """
     directive @column(name: String) on FIELD_DEFINITION
 
     """ Marks the field as a primary key"""
     directive @primaryKey on FIELD_DEFINITION
 
-    """ Marks the field as a primary key"""
+    """ Marks the field as a unique key"""
     directive @unique on FIELD_DEFINITION
+
+    """ Auto increment """
+    directive @autoIncrement on FIELD_DEFINITION
+    
+    """ UUID  """
+    directive @uuidv4 on FIELD_DEFINITION
+    directive @uuidv1 on FIELD_DEFINITION
+    
+    directive @dateTime on FIELD_DEFINITION
+    directive @date on FIELD_DEFINITION
 
     """ Relationships """
     directive @hasOne(
@@ -73,7 +85,7 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     directive @validate_equals             on FIELD_DEFINITION 
     directive @validate_isDate             on FIELD_DEFINITION
     directive @validate_isCreditCard       on FIELD_DEFINITION
-    
+
     directive @validate_contains           (value: String!)     on FIELD_DEFINITION
     directive @validate_isUUID             (value: Int!)        on FIELD_DEFINITION
     directive @validate_len                (value: [String!]!)  on FIELD_DEFINITION

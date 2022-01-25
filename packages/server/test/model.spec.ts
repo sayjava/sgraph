@@ -57,7 +57,7 @@ describe('Models', () => {
 
         it('validates no unique', () => {
             expect(() => createTypeModels({ types, sequelize })).toThrow(
-                'User has no unique fields'
+                'User has no primary key field'
             )
         })
     })
@@ -89,6 +89,7 @@ describe('Models', () => {
                     "Model": [Function],
                     "_modelAttribute": true,
                     "allowNull": true,
+                    "autoIncrement": false,
                     "field": "age",
                     "fieldName": "age",
                     "primaryKey": false,
@@ -100,6 +101,7 @@ describe('Models', () => {
                     "Model": [Function],
                     "_modelAttribute": true,
                     "allowNull": true,
+                    "autoIncrement": false,
                     "field": "blocked",
                     "fieldName": "blocked",
                     "primaryKey": false,
@@ -111,6 +113,7 @@ describe('Models', () => {
                     "Model": [Function],
                     "_modelAttribute": true,
                     "allowNull": false,
+                    "autoIncrement": false,
                     "field": "email",
                     "fieldName": "email",
                     "primaryKey": false,
@@ -122,6 +125,7 @@ describe('Models', () => {
                     "Model": [Function],
                     "_modelAttribute": true,
                     "allowNull": true,
+                    "autoIncrement": false,
                     "field": "hobbies",
                     "fieldName": "hobbies",
                     "primaryKey": false,
@@ -133,6 +137,7 @@ describe('Models', () => {
                     "Model": [Function],
                     "_modelAttribute": true,
                     "allowNull": true,
+                    "autoIncrement": false,
                     "field": "id",
                     "fieldName": "id",
                     "primaryKey": true,
@@ -144,6 +149,7 @@ describe('Models', () => {
                     "Model": [Function],
                     "_modelAttribute": true,
                     "allowNull": true,
+                    "autoIncrement": false,
                     "field": "location_place",
                     "fieldName": "locationPlace",
                     "primaryKey": false,
@@ -155,6 +161,7 @@ describe('Models', () => {
                     "Model": [Function],
                     "_modelAttribute": true,
                     "allowNull": true,
+                    "autoIncrement": false,
                     "field": "name",
                     "fieldName": "name",
                     "primaryKey": false,

@@ -19,6 +19,7 @@ describe('Validations', () => {
                     ipAddress: String @validate_isIP
                     address: String @validate_contains(value: "UK_")
                     postcode: String @validate_is(value: "^([A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$")
+                    queue: Int @autoIncrement
                 }
               `,
         })
@@ -115,5 +116,36 @@ describe('Validations', () => {
         expect(res.body.errors[0].message).toMatchInlineSnapshot(
             `"Validation error: Validation is on postcode failed"`
         )
+    })
+
+    it('bulk validation', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: createUsers(users: 
+                            [
+                                { 
+                                    id: "email", 
+                                    email: "bademail.com"
+                                },
+                                { 
+                                    id: "email", 
+                                    email: "faike@email.com", 
+                                    ipAddress: "127.0.0.1",
+                                    address: "UK_No_10"
+                                    postcode: "12343"
+                                }
+                            ]
+                        ) {
+                            id
+                        }
+                    }`,
+            })
+
+        expect(res.body.errors[0].message).toMatchInlineSnapshot(`
+            "Validation error: Validation isEmail on email failed
+            Validation error: Validation is on postcode failed"
+        `)
     })
 })

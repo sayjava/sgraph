@@ -1,5 +1,5 @@
 import { ObjectTypeComposer, pluralize } from 'graphql-compose'
-import { Sequelize } from 'sequelize/dist'
+import { AggregateError, Sequelize } from 'sequelize/dist'
 import { normalizeTypeName } from '../utils'
 import { associationsToInclude } from './utils'
 
@@ -40,12 +40,19 @@ export const createCreateResolver = ({
                 },
             },
             resolve: async (src, args, ctx, info) => {
-                const modelArgs = args[pluralType] as any[]
-                const newModel = await model.bulkCreate(modelArgs, {
-                    include: associationsToInclude(model, modelArgs),
-                    validate: true,
-                })
-                return newModel.map((m) => m.toJSON())
+                try {
+                    const modelArgs = args[pluralType] as any[]
+                    const newModel = await model.bulkCreate(modelArgs, {
+                        include: associationsToInclude(model, modelArgs),
+                        validate: true,
+                    })
+                    return newModel.map((m) => m.toJSON())
+                } catch (error: any) {
+                    const messages = error.errors
+                        .map((e) => e.message)
+                        .join('\n')
+                    throw new Error(messages)
+                }
             },
         })
     })

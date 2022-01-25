@@ -1,5 +1,5 @@
 import { SchemaComposer, ObjectTypeComposer, Directive } from 'graphql-compose'
-import { ModelAttributes, Sequelize } from 'sequelize'
+import { DataTypes, ModelAttributes, Sequelize } from 'sequelize'
 import { normalizeTypeName } from './utils'
 
 interface Arg {
@@ -19,6 +19,41 @@ const createValidations = (directives: Directive[]) => {
     return validate
 }
 
+const DBTypes = {
+    uuidv1: {
+        type: DataTypes.UUIDV1,
+        defaultValue: DataTypes.UUIDV1,
+    },
+    uuidv4: {
+        type: DataTypes.UUIDV4,
+        defaultValue: DataTypes.UUIDV4,
+    },
+    dateTime: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+    },
+    date: {
+        type: DataTypes.DATEONLY,
+        defaultValue: DataTypes.NOW,
+    },
+}
+
+const getDBType = ({
+    directives,
+    typeName,
+}: {
+    directives: Directive[]
+    typeName: string
+}) => {
+    const typeDirective = directives.find((d) => !!DBTypes[d.name])
+
+    if (typeDirective) {
+        return DBTypes[typeDirective.name]
+    }
+
+    return { type: typeName }
+}
+
 const typeToAttributes = (
     obj: ObjectTypeComposer,
     composer: SchemaComposer
@@ -32,23 +67,29 @@ const typeToAttributes = (
         const directives = field.directives || []
 
         if (composer.isScalarType(typeName)) {
-            const isPrimaryKey = !!field.directives.find(
+            const primaryKey = !!field.directives.find(
                 (d) => d.name === 'primaryKey'
             )
 
-            const isUnique = !!directives.find((d) => d.name === 'unique')
-            const nonNull = field.astNode.type.kind === 'NonNullType'
-            const columnName = directives.find((d) => d.name === 'column') || {
-                args: { name: key },
-            }
+            const defaultCol = { args: { name: key } }
+            const unique = !!directives.find((d) => d.name === 'unique')
+            const allowNull = field.astNode.type.kind !== 'NonNullType'
+            const column = directives.find((d) => d.name === 'column')
+            const validate = createValidations(directives || [])
 
+            const autoIncrement = !!directives.find(
+                (d) => d.name === 'autoIncrement'
+            )
+
+            const type = getDBType({ directives, typeName })
             attributes[key] = {
-                type: typeName,
-                unique: isUnique,
-                primaryKey: isPrimaryKey,
-                allowNull: !nonNull,
-                field: columnName.args.name,
-                validate: createValidations(directives || []),
+                ...type,
+                unique,
+                primaryKey,
+                allowNull,
+                autoIncrement,
+                validate,
+                field: (column || defaultCol).args.name,
             }
         }
     })
@@ -68,22 +109,24 @@ export const createTypeModels = ({ types, sequelize }: Arg) => {
         if (composer.isObjectType(tc)) {
             const typeName = tc.getTypeName()
             const modelDirective = tc.getDirectiveByName('model')
-
-            tc.addResolver({
-                name: `find${typeName}`,
-            })
+            const timestamps = !!tc.getDirectiveByName('autoTimestamp')
 
             if (modelDirective) {
                 const attributes = typeToAttributes(tc, composer)
                 const tableName = modelDirective.tableName || typeName
 
                 if (!hasUniqueField(attributes)) {
-                    throw Error(`${typeName} has no unique fields`)
+                    throw Error(`${typeName} has no primary key field`)
+                }
+
+                if (timestamps) {
+                    tc.setField('createdAt', { type: 'String' })
+                    tc.setField('updatedAt', { type: 'String' })
                 }
 
                 sequelize.define(tc.getTypeName(), attributes, {
                     tableName,
-                    timestamps: false,
+                    timestamps,
                 })
             }
         }
