@@ -1,6 +1,6 @@
 import { ObjectTypeComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
-import { createRelationship } from './resolvers/list'
+import { createRelationship } from './resolvers/find'
 import { normalizeTypeName } from './utils'
 
 interface Arg {

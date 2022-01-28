@@ -1,7 +1,8 @@
 import { ObjectTypeComposer, pluralize } from 'graphql-compose'
 import { Association, Op, Sequelize } from 'sequelize'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
-import { argsToSequelizeWhere, normalizeTypeName } from '../utils'
+import { normalizeTypeName } from '../utils'
+import { argsToSequelizeWhere } from './utils'
 
 export const aggregateFieldsToFn = (tree: any, sequelize: Sequelize) => {
     const [aggregateType] = Object.values(tree.fieldsByTypeName)

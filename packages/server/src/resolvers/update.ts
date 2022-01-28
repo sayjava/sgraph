@@ -1,8 +1,8 @@
 import { ObjectTypeComposer } from 'graphql-compose'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
 import { Op, Sequelize } from 'sequelize'
-import { argsToSequelizeWhere, normalizeTypeName } from '../utils'
-import { createProjection } from './list'
+import { normalizeTypeName } from '../utils'
+import { argsToSequelizeWhere, createProjection } from './utils'
 
 const newWhereFromValues = (values: any) => {
     const newWhere = {}

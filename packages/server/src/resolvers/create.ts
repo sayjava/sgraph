@@ -1,5 +1,5 @@
 import { ObjectTypeComposer, pluralize } from 'graphql-compose'
-import { AggregateError, Sequelize } from 'sequelize/dist'
+import { Sequelize } from 'sequelize/dist'
 import { normalizeTypeName } from '../utils'
 import { associationsToInclude } from './utils'
 

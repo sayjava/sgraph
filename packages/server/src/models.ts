@@ -106,29 +106,27 @@ const hasUniqueField = (attrs: { [key: string]: ModelAttributes }) => {
 export const createTypeModels = ({ types, sequelize }: Arg) => {
     types.forEach((tc) => {
         const composer = tc.schemaComposer
-        if (composer.isObjectType(tc)) {
-            const typeName = tc.getTypeName()
-            const modelDirective = tc.getDirectiveByName('model')
-            const timestamps = !!tc.getDirectiveByName('autoTimestamp')
+        const typeName = tc.getTypeName()
+        const modelDirective = tc.getDirectiveByName('model')
+        const timestamps = !!tc.getDirectiveByName('autoTimestamp')
 
-            if (modelDirective) {
-                const attributes = typeToAttributes(tc, composer)
-                const tableName = modelDirective.tableName || typeName
+        if (modelDirective) {
+            const attributes = typeToAttributes(tc, composer)
+            const tableName = modelDirective.tableName || typeName
 
-                if (!hasUniqueField(attributes)) {
-                    throw Error(`${typeName} has no primary key field`)
-                }
-
-                if (timestamps) {
-                    tc.setField('createdAt', { type: 'String' })
-                    tc.setField('updatedAt', { type: 'String' })
-                }
-
-                sequelize.define(tc.getTypeName(), attributes, {
-                    tableName,
-                    timestamps,
-                })
+            if (!hasUniqueField(attributes)) {
+                throw Error(`${typeName} has no primary key field`)
             }
+
+            if (timestamps) {
+                tc.setField('createdAt', { type: 'String' })
+                tc.setField('updatedAt', { type: 'String' })
+            }
+
+            sequelize.define(tc.getTypeName(), attributes, {
+                tableName,
+                timestamps,
+            })
         }
     })
 }
