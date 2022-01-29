@@ -4,69 +4,70 @@ import { createHTTPGraphql } from '../server'
 import { Sequelize } from 'sequelize'
 import { readFileSync } from 'fs'
 
-describe('PK Resolver', () => {
+describe('Delete Resolver', () => {
     let app
     let sequelize: Sequelize
 
     beforeAll(async () => {
         app = express()
-        sequelize = new Sequelize('sqlite::memory:', { logging: false })
+        sequelize = new Sequelize({
+            dialect: 'sqlite',
+            storage: './test/fixtures/northwind.sqlite',
+            logging: false,
+        })
         const typeDefs = readFileSync(
-            'test/fixtures/users_posts.graphql',
+            './test/fixtures/northwind.graphql',
             'utf-8'
         )
-        const { users, posts } = JSON.parse(
-            readFileSync('test/fixtures/users_posts.json', 'utf-8')
-        )
+
         const graphqlHttp = createHTTPGraphql({
             sequelize,
             typeDefs,
         })
 
         app.use(graphqlHttp)
-        await sequelize.sync({
-            force: true,
-        })
-
-        await sequelize.models.User.bulkCreate(users)
-        await sequelize.models.Post.bulkCreate(posts)
     })
 
-    it('simple record update', async () => {
-        const res = await request(app)
+    it('delete an order, deletes details', async () => {
+        const orderId = 22656
+        const deleteRes = await request(app)
             .post('/')
             .send({
-                query: `mutation {
-                        response: deleteUsers(where: { id: { eq: "id-1" } }) {
+                query: `
+                    mutation($orderId: Int) {
+                        response: deleteOrders(where: { Id: { eq: $orderId } }) {
                            affected
                         }
                     }`,
+                variables: {
+                    orderId,
+                },
             })
 
-        expect(res.body.data.response).toMatchInlineSnapshot(`
-            Object {
-              "affected": 1,
-            }
-        `)
-    })
-
-    it.skip('simple record update', async () => {
-        const res = await request(app)
+        const detailsRes = await request(app)
             .post('/')
             .send({
-                query: `query {
-                        response: findPosts(where: { authorId: { eq: "id-1" } }) {
-                           title
-                           author {
-                               id
-                           }
+                query: `query($orderId: String) {
+                        response: findOrderDetails(where: { OrderId: { eq: $orderId } }, limit: 1) {
+                           OrderId
+                           UnitPrice
                         }
                     }`,
+                variables: {
+                    orderId: String(orderId),
+                },
             })
 
-        console.log(res.body)
+        expect(detailsRes.body.data.response).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "OrderId": "22656",
+                "UnitPrice": 14,
+              },
+            ]
+        `)
 
-        expect(res.body.data.response).toMatchInlineSnapshot(`
+        expect(deleteRes.body.data.response).toMatchInlineSnapshot(`
             Object {
               "affected": 1,
             }
