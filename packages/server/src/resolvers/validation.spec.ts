@@ -33,7 +33,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "email", 
                                 email: "faike_email.com", 
@@ -54,7 +54,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "email", 
                                 email: "faike@email.com", 
@@ -76,7 +76,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "email", 
                                 email: "faike@email.com", 
@@ -99,7 +99,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "email", 
                                 email: "faike@email.com", 
@@ -123,7 +123,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUsers(users: 
+                        user: createUsers(inputs: 
                             [
                                 { 
                                     id: "email", 

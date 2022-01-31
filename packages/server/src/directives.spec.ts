@@ -34,7 +34,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "email", 
                                 email: "faike@email.com", 
@@ -59,10 +59,10 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "email", 
-                                email: "faike@email.com", 
+                                email: "faike@email.com"
                             }
                         ) {
                             id
@@ -75,21 +75,24 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: updateUser(user: 
+                        users: update_users(input: 
                             { 
                                 email: "new@email.com", 
                             },
                             where: { id: { eq: "email" } }
                         ) {
-                            id
-                            queue
-                            createdAt
-                            updatedAt
+                            records {
+                                id
+                                queue
+                                createdAt
+                                updatedAt
+                            }
+                          
                         }
                     }`,
             })
 
-        expect(res.body.data.user[0]).toEqual(
+        expect(res.body.data.users.records[0]).toEqual(
             expect.objectContaining({
                 createdAt: expect.any(String),
                 updatedAt: expect.any(String),
@@ -102,7 +105,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "uuid-user", 
                                 email: "faike@email.com", 
@@ -128,7 +131,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "date-user", 
                                 email: "faike@email.com", 

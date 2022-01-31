@@ -19,12 +19,12 @@ export const createCreateResolver = ({
         tc.schemaComposer.Mutation.setField(`create${typeName}`, {
             type: tc,
             args: {
-                [singleType]: {
+                input: {
                     type: `${typeName}Input`,
                 },
             },
             resolve: async (src, args, ctx, info) => {
-                const modelArgs = args[singleType]
+                const modelArgs = args.input
                 const newModel = await model.create(modelArgs, {
                     include: associationsToInclude(model, modelArgs),
                 })
@@ -35,13 +35,13 @@ export const createCreateResolver = ({
         tc.schemaComposer.Mutation.setField(`create${pluralize(typeName)}`, {
             type: tc.List.NonNull,
             args: {
-                [pluralType]: {
+                inputs: {
                     type: `[${typeName}Input!]!`,
                 },
             },
             resolve: async (src, args, ctx, info) => {
                 try {
-                    const modelArgs = args[pluralType] as any[]
+                    const modelArgs = args.inputs as any[]
                     const newModel = await model.bulkCreate(modelArgs, {
                         include: associationsToInclude(model, modelArgs),
                         validate: true,

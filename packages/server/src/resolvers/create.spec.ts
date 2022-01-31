@@ -37,7 +37,7 @@ describe('Create Resolver', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "new-id", 
                                 name: "new-user", 
@@ -65,7 +65,7 @@ describe('Create Resolver', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(user: 
+                        user: createUser(input: 
                             { 
                                 id: "another-id", 
                                 name: "another-user", 
@@ -116,7 +116,7 @@ describe('Create Resolver', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUsers(users: 
+                        user: createUsers(inputs: 
                         [
                             { 
                                 id: "new-id-1", 
