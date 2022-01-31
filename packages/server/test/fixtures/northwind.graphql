@@ -11,6 +11,7 @@ type Employee @model {
     FirstName: String
     LastName: String
     ReportsTo: Int
+    Country: String
 
     Manager: Employee @belongsTo(foreignKey: "ReportsTo")
     Manages: [Employee] @hasMany(foreignKey: "ReportsTo")
