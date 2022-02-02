@@ -1,6 +1,7 @@
 import { ObjectTypeComposer } from 'graphql-compose'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
 import { Sequelize } from 'sequelize'
+import { singularize } from 'sequelize/dist/lib/utils'
 import { normalizeTypeName } from '../../utils'
 import { associationsToInclude, createProjection } from '../utils'
 
@@ -9,7 +10,7 @@ export default (tc: ObjectTypeComposer, sequelize: Sequelize) => {
     const model = sequelize.models[typeName]
 
     tc.schemaComposer.Mutation.setField(
-        `create_${typeName.toLocaleLowerCase()}`,
+        `create_${singularize(typeName.toLocaleLowerCase())}`,
         {
             type: tc,
             args: {

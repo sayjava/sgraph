@@ -10,8 +10,13 @@ export const createFindResolver = ({
     types: ObjectTypeComposer[]
     sequelize: Sequelize
 }) => {
-    types.forEach((tc) => {
-        pkResolver({ tc, sequelize })
-        listResolver({ tc, sequelize })
-    })
+    types
+        .filter((tc) => {
+            const crud = tc.getDirectiveByName('crud')
+            return crud?.read !== false
+        })
+        .forEach((tc) => {
+            pkResolver({ tc, sequelize })
+            listResolver({ tc, sequelize })
+        })
 }

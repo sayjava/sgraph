@@ -1,5 +1,6 @@
 import { ObjectTypeComposer } from 'graphql-compose'
 import { Op, Sequelize } from 'sequelize'
+import { singularize } from 'sequelize/dist/lib/utils'
 import { normalizeTypeName } from '../../utils'
 
 export default ({
@@ -14,7 +15,7 @@ export default ({
     const pkName = model.primaryKeyAttribute || model.primaryKeyAttributes[0]
 
     tc.schemaComposer.Mutation.setField(
-        `delete_${typeName.toLocaleLowerCase()}_by_pk`,
+        `delete_${singularize(typeName.toLocaleLowerCase())}_by_pk`,
         {
             type: 'DeleteResponse!',
             args: {

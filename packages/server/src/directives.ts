@@ -8,7 +8,7 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
         `
     """ Marks this type as a model """
     directive @model(
-      """ An alternative tablee name for this model in the database  """
+      """ An alternative table name for this model in the database  """
       tableName: String
     ) on OBJECT
 
@@ -24,10 +24,18 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     """ Marks the field as a unique key"""
     directive @unique on FIELD_DEFINITION
 
+    """ CRUD  Toggles """
+    directive @crud(
+      create: Boolean,
+      read:   Boolean,
+      update: Boolean,
+      delete: Boolean 
+    ) on OBJECT
+
     """ Auto increment """
     directive @autoIncrement on FIELD_DEFINITION
     
-    """ UUID  """
+    """ UUID """
     directive @uuidv4 on FIELD_DEFINITION
     directive @uuidv1 on FIELD_DEFINITION
     

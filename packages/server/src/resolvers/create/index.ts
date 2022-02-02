@@ -10,8 +10,13 @@ export const createCreateResolver = ({
     types: ObjectTypeComposer[]
     sequelize: Sequelize
 }) => {
-    types.forEach((tc) => {
-        createSingle(tc, sequelize)
-        createMulti(tc, sequelize)
-    })
+    types
+        .filter((tc) => {
+            const crud = tc.getDirectiveByName('crud')
+            return crud?.create !== false
+        })
+        .forEach((tc) => {
+            createSingle(tc, sequelize)
+            createMulti(tc, sequelize)
+        })
 }

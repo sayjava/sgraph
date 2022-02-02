@@ -10,12 +10,17 @@ export const createDeleteResolver = ({
     types: ObjectTypeComposer[]
     sequelize: Sequelize
 }) => {
-    types.forEach((tc) => {
-        tc.schemaComposer.getOrCreateOTC('DeleteResponse', (rtc) => {
-            rtc.setField('affected', { type: 'Int' })
+    types
+        .filter((tc) => {
+            const crud = tc.getDirectiveByName('crud')
+            return crud?.delete !== false
         })
+        .forEach((tc) => {
+            tc.schemaComposer.getOrCreateOTC('DeleteResponse', (rtc) => {
+                rtc.setField('affected', { type: 'Int' })
+            })
 
-        pkResolver({ tc, sequelize })
-        listResolver({ tc, sequelize })
-    })
+            pkResolver({ tc, sequelize })
+            listResolver({ tc, sequelize })
+        })
 }
