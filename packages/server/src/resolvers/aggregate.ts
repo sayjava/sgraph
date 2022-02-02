@@ -90,7 +90,7 @@ export const createAggregates = ({
              * Create Query level association resolver
              */
             composer.Query.setField(
-                `${pluralize(typeName.toLocaleLowerCase())}Aggregate`,
+                `${typeName.toLocaleLowerCase()}_aggregate`,
                 {
                     type: aggregateType,
                     args: { where: { type: `${typeName}Filter` } },
@@ -104,7 +104,7 @@ export const createAggregates = ({
                     const assocTypeName = association.target.name
                     const assocType = composer.getOTC(assocTypeName)
 
-                    tc.setField(`${association.as}Aggregate`, {
+                    tc.setField(`${association.as}_aggregate`, {
                         type: `${assocTypeName}Aggregate`,
                         args: {
                             where: {

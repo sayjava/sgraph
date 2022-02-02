@@ -7,7 +7,7 @@ type Customer @model {
 }
 
 type Employee @model {
-    Id: Int @primaryKey
+    Id: Int @primaryKey @autoIncrement
     FirstName: String
     LastName: String
     ReportsTo: Int
@@ -19,11 +19,15 @@ type Employee @model {
 }
 
 type Order @model {
-    Id: Int @primaryKey
+    Id: Int @primaryKey @autoIncrement
     OrderDate: String @dateOnly
     Freight: Float
     ShipName: String
+    ShipAddress: String
     ShipCountry: String
+    ShipRegion: String
+    ShippedDate: String
+    RequiredDate: String
     CustomerId: String
     EmployeeId: String
 
@@ -39,6 +43,7 @@ type OrderDetail @model {
     UnitPrice: Float
     Quantity: Float
     UnitPrice: Float
+    Discount: Float
 
     OrderId: String
     ProductId: String

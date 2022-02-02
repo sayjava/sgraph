@@ -33,7 +33,7 @@ describe('Associations', () => {
             .post('/')
             .send({
                 query: `query {
-                    customer: customerByPk(Id: "ALFKI") {
+                    customer: find_customer_by_pk(id: "ALFKI") {
                             Id
                             ContactName
                             Orders(limit: 2) {
@@ -88,7 +88,7 @@ describe('Associations', () => {
             .post('/')
             .send({
                 query: `query {
-                    employee: employeeByPk(Id: "2") {
+                    employee: find_employee_by_pk(id: "2") {
                             Id
                             FirstName
                             Manages {
@@ -128,7 +128,7 @@ describe('Associations', () => {
             .post('/')
             .send({
                 query: `query {
-                    employee: employeeByPk(Id: "1") {
+                    employee: find_employee_by_pk(id: "1") {
                             Id
                             FirstName
                             Manager {
@@ -156,7 +156,7 @@ describe('Associations', () => {
             .post('/')
             .send({
                 query: `query {
-                    detail: orderdetailByPk(Id: "10248/11") {
+                    detail: find_orderdetail_by_pk(id: "10248/11") {
                             Id
                             Product {
                                 ProductName
@@ -182,7 +182,8 @@ describe('Associations', () => {
             .post('/')
             .send({
                 query: `query {
-                    orders:findOrders(limit: 1) {
+                    orders:find_orders(limit: 1) {
+                        records {
                           Id
                           OrderDate
                           Customer {
@@ -193,10 +194,11 @@ describe('Associations', () => {
                             ProductName
                           }
                         }
+                      }
                     }`,
             })
 
-        expect(res.body.data.orders).toMatchInlineSnapshot(`
+        expect(res.body.data.orders.records).toMatchInlineSnapshot(`
             Array [
               Object {
                 "Customer": Object {
@@ -228,7 +230,8 @@ describe('Associations', () => {
             .post('/')
             .send({
                 query: `query {
-                    order:findOrders(limit: 1) {
+                    order:find_orders(limit: 1) {
+                        records {
                           Id
                           Listings {
                             Quantity
@@ -240,14 +243,15 @@ describe('Associations', () => {
                             }
                           }
 
-                          ListingsAggregate {
+                          Listings_aggregate {
                             sum_Quantity
                           }
                         }
+                      }
                     }`,
             })
 
-        expect(res.body.data.order).toMatchInlineSnapshot(`
+        expect(res.body.data.order.records).toMatchInlineSnapshot(`
             Array [
               Object {
                 "Id": 10248,
@@ -280,7 +284,7 @@ describe('Associations', () => {
                     "Quantity": 5,
                   },
                 ],
-                "ListingsAggregate": Object {
+                "Listings_aggregate": Object {
                   "sum_Quantity": 27,
                 },
               },

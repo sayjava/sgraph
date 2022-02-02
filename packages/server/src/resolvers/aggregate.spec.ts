@@ -10,51 +10,49 @@ describe('Aggregate', () => {
 
     beforeAll(async () => {
         app = express()
-        sequelize = new Sequelize('sqlite::memory:', { logging: false })
+        sequelize = new Sequelize({
+            dialect: 'sqlite',
+            storage: './test/fixtures/northwind.sqlite',
+            logging: false,
+        })
         const typeDefs = readFileSync(
-            'test/fixtures/users_posts.graphql',
+            './test/fixtures/northwind.graphql',
             'utf-8'
         )
-        const { users, posts } = JSON.parse(
-            readFileSync('test/fixtures/users_posts.json', 'utf-8')
-        )
+
         const graphqlHttp = createHTTPGraphql({
             sequelize,
             typeDefs,
         })
 
         app.use(graphqlHttp)
-        await sequelize.sync({ force: true })
-
-        await sequelize.models.User.bulkCreate(users)
-        await sequelize.models.Post.bulkCreate(posts)
     })
 
-    describe('fieldd', () => {
+    describe('field', () => {
         it('sums, avg, min, max, sum, count', async () => {
             const res = await request(app)
                 .post('/')
                 .send({
                     query: `query {
-                        posts: postsAggregate(where: { views: { gt: 4000 } }) {
+                        orders: order_aggregate(where: { Freight: { gt: 400 } }) {
                             count
-                            total_views
-                            avg_views
-                            min_views
-                            sum_views
-                            max_views
+                            total_Freight
+                            avg_Freight
+                            min_Freight
+                            sum_Freight
+                            max_Freight
                         }
                     }`,
                 })
 
-            expect(res.body.data.posts).toMatchInlineSnapshot(`
+            expect(res.body.data.orders).toMatchInlineSnapshot(`
                 Object {
-                  "avg_views": 32709.5,
-                  "count": 2,
-                  "max_views": 56735,
-                  "min_views": 8684,
-                  "sum_views": 65419,
-                  "total_views": 65419,
+                  "avg_Freight": 456.6736300333031,
+                  "count": 3303,
+                  "max_Freight": 591.25,
+                  "min_Freight": 400.25,
+                  "sum_Freight": 1508393,
+                  "total_Freight": 1508393,
                 }
             `)
         })
@@ -64,132 +62,108 @@ describe('Aggregate', () => {
                 .post('/')
                 .send({
                     query: `query {
-                        authors: findUsers(where: { id: { eq:"id-1" } }) {
-                            name
-                            postsAggregate {
+                        order: find_order_by_pk(id: 20167) {
+                            ShipName
+                            Listings_aggregate {
                                 count
-                                avg_views
-                                min_views
-                                sum_views
-                                max_views
+                                avg_UnitPrice
+                                min_UnitPrice
+                                sum_UnitPrice
+                                max_UnitPrice
                             }
                         }
                     }`,
                 })
 
-            expect(res.body.data.authors).toMatchInlineSnapshot(`
-                Array [
-                  Object {
-                    "name": "danlard",
-                    "postsAggregate": Object {
-                      "avg_views": 2289.5,
-                      "count": 2,
-                      "max_views": 3345,
-                      "min_views": 1234,
-                      "sum_views": 4579,
-                    },
-                  },
-                ]
-            `)
-        })
-
-        it('fetches relationship aggregate with filter', async () => {
-            const res = await request(app)
-                .post('/')
-                .send({
-                    query: `query {
-                        authors: findUsers(where: { id: { eq:"id-1" } }) {
-                            name
-                            postsAggregate {
-                                count
-                                avg_views
-                                min_views
-                                sum_views
-                                max_views
-                            }
-                        }
-                    }`,
-                })
-
-            expect(res.body.data.authors).toMatchInlineSnapshot(`
-                Array [
-                  Object {
-                    "name": "danlard",
-                    "postsAggregate": Object {
-                      "avg_views": 2289.5,
-                      "count": 2,
-                      "max_views": 3345,
-                      "min_views": 1234,
-                      "sum_views": 4579,
-                    },
-                  },
-                ]
-            `)
-        })
-
-        it('fetches relationship aggregate with filter', async () => {
-            const res = await request(app)
-                .post('/')
-                .send({
-                    query: `query {
-                        authors: findUsers(where: { id: { eq:"id-2" } }) {
-                            name
-                            postsAggregate(where: { performance: { gt: 10 } }) {
-                                count
-                                avg_views
-                                min_views
-                                sum_views
-                                max_views
-                            }
-                        }
-                    }`,
-                })
-
-            expect(res.body.data.authors).toMatchInlineSnapshot(`
-                Array [
-                  Object {
-                    "name": "maschiko",
-                    "postsAggregate": Object {
-                      "avg_views": 56735,
-                      "count": 1,
-                      "max_views": 56735,
-                      "min_views": 56735,
-                      "sum_views": 56735,
-                    },
-                  },
-                ]
-            `)
-        })
-
-        it('pk with aggregates', async () => {
-            const res = await request(app)
-                .post('/')
-                .send({
-                    query: `query {
-                        authors: userByPk(id: "id-2") {
-                            name
-                            postsAggregate(where: { performance: { lt: 10 } }) {
-                                count
-                                avg_views
-                                min_views
-                                sum_views
-                                max_views
-                            }
-                        }
-                    }`,
-                })
-
-            expect(res.body.data.authors).toMatchInlineSnapshot(`
+            expect(res.body.data.order).toMatchInlineSnapshot(`
                 Object {
-                  "name": "maschiko",
-                  "postsAggregate": Object {
-                    "avg_views": 8684,
-                    "count": 1,
-                    "max_views": 8684,
-                    "min_views": 8684,
-                    "sum_views": 8684,
+                  "Listings_aggregate": Object {
+                    "avg_UnitPrice": 33.581320754716984,
+                    "count": 53,
+                    "max_UnitPrice": 263.5,
+                    "min_UnitPrice": 4.5,
+                    "sum_UnitPrice": 1779.8100000000002,
                   },
+                  "ShipName": "Vins et alcools Chevalier",
                 }
+            `)
+        })
+
+        it('fetches relationship aggregate with filter', async () => {
+            const res = await request(app)
+                .post('/')
+                .send({
+                    query: `query {
+                        order: find_order_by_pk(id: 20167) {
+                            ShipName
+                            Listings_aggregate (where: { UnitPrice: { gte: 40 } } ) {
+                                count
+                                avg_UnitPrice
+                                min_UnitPrice
+                                sum_UnitPrice
+                                max_UnitPrice
+                            }
+                        }
+                    }`,
+                })
+
+            expect(res.body.data.order).toMatchInlineSnapshot(`
+                Object {
+                  "Listings_aggregate": Object {
+                    "avg_UnitPrice": 83.18090909090908,
+                    "count": 11,
+                    "max_UnitPrice": 263.5,
+                    "min_UnitPrice": 40,
+                    "sum_UnitPrice": 914.9899999999999,
+                  },
+                  "ShipName": "Vins et alcools Chevalier",
+                }
+            `)
+        })
+
+        it('fetches orders', async () => {
+            const res = await request(app)
+                .post('/')
+                .send({
+                    query: `query {
+                        orders: find_orders(where: { Freight: { gt: 450 } }, limit: 2) {
+                            records {
+                                ShipName
+                                Listings_aggregate (where: { UnitPrice: { gte: 40 } } ) {
+                                    count
+                                    avg_UnitPrice
+                                    min_UnitPrice
+                                    sum_UnitPrice
+                                    max_UnitPrice
+                                }
+                            }
+                        }
+                    }`,
+                })
+
+            expect(res.body.data.orders.records).toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "Listings_aggregate": Object {
+                      "avg_UnitPrice": 77.26846153846154,
+                      "count": 13,
+                      "max_UnitPrice": 263.5,
+                      "min_UnitPrice": 40,
+                      "sum_UnitPrice": 1004.4899999999999,
+                    },
+                    "ShipName": "Furia Bacalhau e Frutos do Mar",
+                  },
+                  Object {
+                    "Listings_aggregate": Object {
+                      "avg_UnitPrice": 77.26846153846154,
+                      "count": 13,
+                      "max_UnitPrice": 263.5,
+                      "min_UnitPrice": 40,
+                      "sum_UnitPrice": 1004.49,
+                    },
+                    "ShipName": "Let's Stop N Shop",
+                  },
+                ]
             `)
         })
     })

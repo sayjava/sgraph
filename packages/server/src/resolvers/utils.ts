@@ -1,4 +1,6 @@
+import { ObjectTypeComposer, pluralize } from 'graphql-compose'
 import { ModelCtor, Model, Sequelize, Op, Association } from 'sequelize'
+import { normalizeTypeName } from '../utils'
 
 const DEFAULT_LIMIT = 10
 
@@ -37,14 +39,15 @@ export const extractChildrenFromTree = (tree: any, model: ModelCtor<any>) => {
 }
 
 export const associationsToInclude = (model: ModelCtor<Model>, tree: any) => {
-    return Object.keys(tree)
+    const values = Array.isArray(tree) ? tree[0] : tree
+    return Object.keys(values)
         .filter((attr) => model.associations[attr])
         .map((attr) => {
             const assoc = model.associations[attr]
             return {
                 as: assoc.as,
                 model: assoc.target,
-                includes: associationsToInclude(assoc.target, tree[attr]),
+                include: associationsToInclude(assoc.target, values[attr]),
             }
         })
 }
@@ -117,7 +120,7 @@ export const createProjection = (
         offset,
         where: argsToSequelizeWhere(args.where || {}),
         order: argsToSequelizeOrder({
-            order: args.order || {},
+            order: args.order_by || {},
             sequelize,
             modelName: typeName,
         }),
@@ -138,4 +141,18 @@ export const createProjection = (
     }
 
     return projection
+}
+
+export const createRelationship = (t: ObjectTypeComposer) => {
+    const typeName = normalizeTypeName(t.getTypeName())
+    return {
+        name: `find${pluralize(typeName)}`,
+        type: t.List.NonNull,
+        args: {
+            limit: 'Int',
+            offset: 'Int',
+            order: t.schemaComposer.getITC(`${typeName}OrderBy`),
+            where: t.schemaComposer.getITC(`${typeName}Filter`),
+        },
+    }
 }

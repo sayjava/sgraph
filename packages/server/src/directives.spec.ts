@@ -34,14 +34,13 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(input: 
+                        user: create_user(input: 
                             { 
                                 id: "email", 
-                                email: "faike@email.com", 
+                                email: "faike@email.com",
                             }
                         ) {
                             id
-                            queue
                         }
                     }`,
             })
@@ -49,7 +48,6 @@ describe('Validations', () => {
         expect(res.body.data.user).toMatchInlineSnapshot(`
             Object {
               "id": "email",
-              "queue": 1,
             }
         `)
     })
@@ -59,7 +57,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(input: 
+                        user: create_user(input: 
                             { 
                                 id: "email", 
                                 email: "faike@email.com"
@@ -105,7 +103,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(input: 
+                        user: create_user(input: 
                             { 
                                 id: "uuid-user", 
                                 email: "faike@email.com", 
@@ -131,7 +129,7 @@ describe('Validations', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: createUser(input: 
+                        user: create_user(input: 
                             { 
                                 id: "date-user", 
                                 email: "faike@email.com", 

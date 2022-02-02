@@ -1,6 +1,6 @@
 import { ObjectTypeComposer } from 'graphql-compose'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
-import { Op, Sequelize } from 'sequelize/dist'
+import { Op, Sequelize } from 'sequelize'
 import { normalizeTypeName } from '../../utils'
 import { createProjection } from '../utils'
 
