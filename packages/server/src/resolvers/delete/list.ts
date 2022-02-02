@@ -1,23 +1,22 @@
 import { ObjectTypeComposer, pluralize } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
-import { normalizeTypeName } from '../utils'
-import { argsToSequelizeWhere } from './utils'
+import { normalizeTypeName } from '../../utils'
+import { argsToSequelizeWhere } from '../utils'
 
-export const createDeleteResolver = ({
-    types,
+export default ({
+    tc,
     sequelize,
 }: {
-    types: ObjectTypeComposer[]
+    tc: ObjectTypeComposer
     sequelize: Sequelize
 }) => {
-    types.forEach((tc) => {
-        const typeName = normalizeTypeName(tc.getTypeName())
-        const model = sequelize.models[typeName]
+    const typeName = normalizeTypeName(tc.getTypeName())
+    const model = sequelize.models[typeName]
 
-        tc.schemaComposer.Mutation.setField(`delete${pluralize(typeName)}`, {
-            type: tc.schemaComposer.getOrCreateOTC('DeleteResponse', (rtc) => {
-                rtc.setField('affected', { type: 'Int' })
-            }).NonNull,
+    tc.schemaComposer.Mutation.setField(
+        `delete_${pluralize(typeName.toLocaleLowerCase())}`,
+        {
+            type: 'DeleteResponse',
             args: {
                 limit: {
                     type: 'Int',
@@ -33,6 +32,6 @@ export const createDeleteResolver = ({
                 const affected = await model.destroy({ where, ...limitArg })
                 return { affected }
             },
-        })
-    })
+        }
+    )
 }

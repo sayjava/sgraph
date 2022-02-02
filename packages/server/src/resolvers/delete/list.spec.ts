@@ -1,6 +1,6 @@
 import request from 'supertest'
 import express from 'express'
-import { createHTTPGraphql } from '../server'
+import { createHTTPGraphql } from '../../server'
 import { Sequelize } from 'sequelize'
 import { readFileSync } from 'fs'
 
@@ -29,47 +29,24 @@ describe('Delete Resolver', () => {
     })
 
     it('delete an order, deletes details', async () => {
-        const orderId = 22656
+        const freight = 400
         const deleteRes = await request(app)
             .post('/')
             .send({
                 query: `
-                    mutation($orderId: Int) {
-                        response: deleteOrders(where: { Id: { eq: $orderId } }) {
+                    mutation($freight: Float) {
+                        response: delete_orders(where: { Freight: { gte: $freight } }) {
                            affected
                         }
                     }`,
                 variables: {
-                    orderId,
+                    freight,
                 },
             })
-
-        const detailsRes = await request(app)
-            .post('/')
-            .send({
-                query: `query($orderId: String) {
-                        response: findOrderDetails(where: { OrderId: { eq: $orderId } }, limit: 1) {
-                           OrderId
-                           UnitPrice
-                        }
-                    }`,
-                variables: {
-                    orderId: String(orderId),
-                },
-            })
-
-        expect(detailsRes.body.data.response).toMatchInlineSnapshot(`
-            Array [
-              Object {
-                "OrderId": "22656",
-                "UnitPrice": 14,
-              },
-            ]
-        `)
 
         expect(deleteRes.body.data.response).toMatchInlineSnapshot(`
             Object {
-              "affected": 1,
+              "affected": 3310,
             }
         `)
     })

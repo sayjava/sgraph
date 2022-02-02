@@ -5,12 +5,9 @@ import { normalizeTypeName } from '../../utils'
 import { createProjection } from '../utils'
 
 const createFindProjection = (tree, sequelize) => {
-    const {
-        name,
-        args,
-        fieldsByTypeName: { OrderFindResponse },
-    } = tree
-    const { records } = OrderFindResponse
+    const { name, args, fieldsByTypeName } = tree
+    const [Response]: any[] = Object.values(fieldsByTypeName)
+    const { records } = Response
 
     const mappedTree = {
         name,
