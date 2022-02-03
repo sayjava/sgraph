@@ -1,10 +1,12 @@
 {
-    "name": "server-graphql",
+    "name": "@sayjava/sgraph",
     "version": "1.0.0",
     "main": "lib/index.js",
     "license": "MIT",
+    "bin": "lib/sgraph.js",
     "scripts": {
-        "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+        "dev": "ts-node-dev --respawn --transpile-only src/sgraph.ts",
+        "build": "tsc",
         "test": "jest"
     },
     "dependencies": {
@@ -12,6 +14,7 @@
         "express-graphql": "^0.12.0",
         "graphql-compose": "^9.0.6",
         "graphql-parse-resolve-info": "^4.12.0",
+        "rc": "^1.2.8",
         "sequelize": "^6.12.4",
         "sqlite3": "^4.2.0"
     },

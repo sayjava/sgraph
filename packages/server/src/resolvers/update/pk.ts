@@ -1,7 +1,6 @@
 import { ObjectTypeComposer } from 'graphql-compose'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
-import { Op, Sequelize } from 'sequelize'
-import { singularize } from 'sequelize/dist/lib/utils'
+import SQL, { Op, Sequelize } from 'sequelize'
 import { normalizeTypeName } from '../../utils'
 import { createProjection } from '../utils'
 
@@ -17,7 +16,7 @@ export default ({
     const pk = model.primaryKeyAttribute || model.primaryKeyAttributes[0]
 
     tc.schemaComposer.Mutation.setField(
-        `update_${singularize(typeName.toLocaleLowerCase())}_by_pk`,
+        `update_${SQL.Utils.singularize(typeName.toLocaleLowerCase())}_by_pk`,
         {
             type: tc.NonNull,
             args: {
