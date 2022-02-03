@@ -1,31 +1,18 @@
 import request from 'supertest'
 import express from 'express'
 import { createHTTPGraphql } from '../../server'
-import { Sequelize } from 'sequelize'
-import { readFileSync } from 'fs'
 
 describe('Single Create', () => {
     let app
-    let sequelize: Sequelize
 
     beforeAll(async () => {
         app = express()
-        sequelize = new Sequelize({
-            dialect: 'sqlite',
-            storage: './test/fixtures/northwind.sqlite',
-            logging: false,
-        })
-        const typeDefs = readFileSync(
-            './test/fixtures/northwind.graphql',
-            'utf-8'
-        )
-
-        const graphqlHttp = createHTTPGraphql({
-            sequelize,
-            typeDefs,
+        const { handler } = createHTTPGraphql({
+            typeDefs: './test/fixtures/northwind.graphql',
+            databaseUrl: 'sqlite:test/fixtures/northwind.sqlite',
         })
 
-        app.use(graphqlHttp)
+        app.use(handler)
     })
 
     it('creates a simple model', async () => {

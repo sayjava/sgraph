@@ -1,17 +1,14 @@
 import request from 'supertest'
 import express from 'express'
 import { createHTTPGraphql } from './server'
-import { Sequelize } from 'sequelize'
 
 describe('Validations', () => {
     let app
-    let sequelize: Sequelize
 
     beforeAll(async () => {
         app = express()
-        sequelize = new Sequelize('sqlite::memory:', { logging: false })
-        const graphqlHttp = createHTTPGraphql({
-            sequelize,
+        const { handler, sequelize } = createHTTPGraphql({
+            databaseUrl: 'sqlite::memory:',
             typeDefs: `
                 type User @model @autoTimestamp {
                     id: ID @primaryKey
@@ -25,8 +22,8 @@ describe('Validations', () => {
               `,
         })
 
-        app.use(graphqlHttp)
-        await sequelize.sync({ force: true })
+        sequelize.sync()
+        app.use(handler)
     })
 
     it('autoincrement', async () => {

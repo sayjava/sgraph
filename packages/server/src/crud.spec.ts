@@ -1,17 +1,14 @@
 import request from 'supertest'
 import express from 'express'
 import { createHTTPGraphql } from './server'
-import { Sequelize } from 'sequelize'
 
 describe('Validations', () => {
     let app
-    let sequelize: Sequelize
 
     beforeAll(async () => {
         app = express()
-        sequelize = new Sequelize('sqlite::memory:', { logging: false })
-        const graphqlHttp = createHTTPGraphql({
-            sequelize,
+        const { handler } = createHTTPGraphql({
+            databaseUrl: 'sqlite::memory:',
             typeDefs: `
                 type NoCreatePosts @model @crud(create: false) {
                     id: ID @primaryKey
@@ -35,8 +32,7 @@ describe('Validations', () => {
               `,
         })
 
-        app.use(graphqlHttp)
-        await sequelize.sync({ force: true })
+        app.use(handler)
     })
 
     it('skips the create mutation', async () => {
