@@ -18,7 +18,7 @@ export default (tc: ObjectTypeComposer, sequelize: Sequelize) => {
                 },
             },
             resolve: async (src, args, ctx, info) => {
-                const modelArgs = args.input
+                const modelArgs: any = args.input
 
                 const newModel = await model.create(modelArgs, {
                     include: associationsToInclude(model, modelArgs),

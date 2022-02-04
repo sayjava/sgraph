@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import express from 'express'
 import { useTiming, useLogger } from '@envelop/core'
+import bodyParser from 'body-parser'
 import { ServerConfig, createHTTPGraphql } from './server'
 
 interface SGraphConfig extends ServerConfig {
@@ -32,6 +33,7 @@ sequelize
     .authenticate()
     .then(() => {
         const server = express()
+        server.use(bodyParser.json())
         server.use(config.path, handler)
         server.listen(config.port, () =>
             console.log(`SGraph started on ${config.port}`)

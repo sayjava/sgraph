@@ -1,18 +1,15 @@
 import request from 'supertest'
 import express from 'express'
-import { createHTTPGraphql } from '../server'
+import { createTestServer } from '../server'
 
 describe('Associations', () => {
     let app
 
     beforeAll(async () => {
-        app = express()
-        const { handler } = createHTTPGraphql({
+        app = createTestServer({
             typeDefs: './test/fixtures/northwind.graphql',
             databaseUrl: 'sqlite:test/fixtures/northwind.sqlite',
         })
-
-        app.use(handler)
     })
 
     it('hasMany', async () => {

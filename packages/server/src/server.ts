@@ -1,9 +1,10 @@
 import type { IncomingMessage, ServerResponse } from 'http'
-import { graphqlHTTP } from 'express-graphql'
 import { SchemaComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
 import { readFileSync, existsSync } from 'fs'
 import { envelop, useSchema, Plugin } from '@envelop/core'
+import express from 'express'
+import bodyParser from 'body-parser'
 
 import { createTypeModels } from './models'
 import { createInputFilters } from './filters'
@@ -88,11 +89,52 @@ export const createHTTPGraphql = (config: ServerConfig): any => {
         plugins: [useSchema(baseSchema), ...plugins],
     })
 
-    const handler = graphqlHTTP(async (req) => {
-        const { schema, contextFactory } = getEnveloped({ req })
-        const context = await contextFactory({ sequelize })
-        return { schema, graphiql, context }
-    })
+    const handler = async (req, res) => {
+        try {
+            const { parse, validate, contextFactory, execute, schema } =
+                getEnveloped({ req })
+
+            const { query, variables } = req.body
+            const document = parse(query)
+            const validationErrors = validate(schema, document)
+
+            if (validationErrors.length > 0) {
+                return res.json({
+                    errors: validationErrors,
+                })
+            }
+
+            const context = await contextFactory()
+            const result = await execute({
+                document,
+                schema,
+                variableValues: variables,
+                contextValue: context,
+            })
+
+            res.set('Content-Type', 'application/json')
+            res.end(JSON.stringify(result))
+        } catch (error) {
+            console.error(error)
+            res.json({ errors: [error] })
+        }
+    }
 
     return { handler, composer, sequelize }
+}
+
+export const createServer = (config: ServerConfig) => {
+    const app = express()
+    app.use(bodyParser.json())
+    app.use(createHTTPGraphql(config).handler)
+    return app
+}
+
+export const createTestServer = (config: ServerConfig) => {
+    const app = express()
+    app.use(bodyParser.json())
+    const { handler, sequelize } = createHTTPGraphql(config)
+    sequelize.sync()
+    app.use(handler)
+    return app
 }

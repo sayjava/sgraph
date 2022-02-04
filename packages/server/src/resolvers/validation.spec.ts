@@ -1,13 +1,12 @@
 import request from 'supertest'
 import express from 'express'
-import { createHTTPGraphql } from '../server'
+import { createTestServer } from '../server'
 
 describe('Validations', () => {
     let app
 
     beforeAll(async () => {
-        app = express()
-        const { handler, sequelize } = createHTTPGraphql({
+        app = createTestServer({
             databaseUrl: 'sqlite::memory:',
             typeDefs: `
                 type User @model {
@@ -20,9 +19,6 @@ describe('Validations', () => {
                 }
               `,
         })
-
-        sequelize.sync()
-        app.use(handler)
     })
 
     it('email', async () => {
