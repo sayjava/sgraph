@@ -3,7 +3,8 @@
     "src/**/*.ts"
   ],
   "exclude": [
-    "src/**/*.spec.ts"
+    "src/**/*.spec.ts",
+    "lib"
   ],
   "compilerOptions": {
     /* Basic Options */
