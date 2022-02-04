@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import express from 'express'
+import { useTiming, useLogger } from '@envelop/core'
 import { ServerConfig, createHTTPGraphql } from './server'
 
 interface SGraphConfig extends ServerConfig {
@@ -21,7 +22,11 @@ if (!config.typeDefs) {
     throw new Error('typeDefs: A path to the schema definition is required')
 }
 
-const { handler, sequelize } = createHTTPGraphql(config)
+const { handler, sequelize } = createHTTPGraphql(
+    Object.assign(config, {
+        plugins: [useTiming(), useLogger()],
+    })
+)
 
 sequelize
     .authenticate()

@@ -3,5 +3,4 @@
     "typeDefs": "./test/fixtures/northwind.graphql",
     "databaseUrl": "sqlite:test/fixtures/northwind.original.sqlite",
     "graphiql": true
-
 }

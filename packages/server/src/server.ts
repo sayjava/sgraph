@@ -3,6 +3,8 @@ import { graphqlHTTP } from 'express-graphql'
 import { SchemaComposer } from 'graphql-compose'
 import { Sequelize } from 'sequelize'
 import { readFileSync, existsSync } from 'fs'
+import { envelop, useSchema, Plugin } from '@envelop/core'
+
 import { createTypeModels } from './models'
 import { createInputFilters } from './filters'
 import { createRelationships } from './relationships'
@@ -32,6 +34,11 @@ export interface ServerConfig {
      * Log SQL Statements
      */
     logging?: any
+
+    /**
+     * Envelope Plugins
+     */
+    plugins?: Plugin[]
 }
 
 export type GraphqlHandler = (
@@ -59,13 +66,10 @@ const createComposer = (defs: string): SchemaComposer => {
     return composer
 }
 
-export const createHTTPGraphql = ({
-    typeDefs,
-    graphiql,
-    databaseUrl,
-    logging,
-}: ServerConfig): HttpGraphql => {
+export const createHTTPGraphql = (config: ServerConfig): any => {
+    const { typeDefs, graphiql, databaseUrl, logging, plugins = [] } = config
     const composer = createComposer(typeDefs)
+
     const sequelize = new Sequelize(databaseUrl, {
         logging,
         logQueryParameters: !!logging,
@@ -79,10 +83,15 @@ export const createHTTPGraphql = ({
     createResolvers({ types, sequelize })
     createAggregates({ types, sequelize })
 
-    const handler = graphqlHTTP({
-        graphiql,
-        schema: composer.buildSchema(),
-        context: { sequelize },
+    const baseSchema = composer.buildSchema()
+    const getEnveloped = envelop({
+        plugins: [useSchema(baseSchema), ...plugins],
+    })
+
+    const handler = graphqlHTTP(async (req) => {
+        const { schema, contextFactory } = getEnveloped({ req })
+        const context = await contextFactory({ sequelize })
+        return { schema, graphiql, context }
     })
 
     return { handler, composer, sequelize }
