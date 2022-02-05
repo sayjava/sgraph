@@ -11,7 +11,7 @@
         "envelope"
     ],
     "scripts": {
-        "pretty": "prettier --write packages/**/*.ts",
+        "pretty": "prettier --write src/**/*.ts",
         "dev": "ts-node-dev --respawn --transpile-only src/sgraph.ts",
         "build": "tsc",
         "test": "jest"

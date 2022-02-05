@@ -1,5 +1,4 @@
 import request from 'supertest'
-import express from 'express'
 import { createTestServer } from '../server'
 
 describe('Associations', () => {
