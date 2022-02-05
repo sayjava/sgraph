@@ -22,5 +22,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
+    "skipDefaultLibCheck": true,
+    "checkJs": false,
+    "skipLibCheck": true
   }
 }
