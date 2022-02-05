@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import express from 'express'
-import { useTiming, useLogger } from '@envelop/core'
+import { useTiming } from '@envelop/core'
 import bodyParser from 'body-parser'
+import { altairExpress } from 'altair-express-middleware'
 import { ServerConfig, createHTTPGraphql } from './server'
 
 interface SGraphConfig extends ServerConfig {
@@ -10,7 +11,6 @@ interface SGraphConfig extends ServerConfig {
 }
 
 const config: SGraphConfig = require('rc')('sgraph', {
-    //defaults go here.
     port: 8080,
     path: '/graphql',
 })
@@ -24,9 +24,7 @@ if (!config.typeDefs) {
 }
 
 const { handler, sequelize } = createHTTPGraphql(
-    Object.assign(config, {
-        plugins: [useTiming(), useLogger()],
-    })
+    Object.assign(config, { plugins: [useTiming()] })
 )
 
 sequelize
@@ -35,6 +33,7 @@ sequelize
         const server = express()
         server.use(bodyParser.json())
         server.use(config.path, handler)
+        server.use('/', altairExpress({ endpointURL: config.path }))
         server.listen(config.port, () =>
             console.log(`SGraph started on ${config.port}`)
         )
