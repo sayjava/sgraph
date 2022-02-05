@@ -14,7 +14,7 @@
         "pretty": "prettier --write src/**/*.ts",
         "dev": "ts-node-dev --respawn --transpile-only src/sgraph.ts",
         "build": "tsc",
-        "test": "jest"
+        "test": "jest -i"
     },
     "dependencies": {
         "@envelop/core": "^2.0.0",
