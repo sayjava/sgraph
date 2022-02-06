@@ -1,6 +1,6 @@
 {
     "name": "@sayjava/sgraph",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Sgraph is a schema first graphql api server powered by the sequelize orm library and envelope plugins compatible",
     "homepage": "https://sayjava.github.io/sgraph",
     "license": "MIT",
