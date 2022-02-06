@@ -4,6 +4,14 @@
     "description": "Sgraph is a schema first graphql api server powered by the sequelize orm library and envelope plugins compatible",
     "homepage": "https://sayjava.github.io/sgraph",
     "license": "MIT",
+    "main": "lib/sgraph.js",
+    "bugs": {
+        "url": "https://github.com/sayjava/sgraph/issues"
+    },
+    "author": {
+        "name": "Raymond Ottun",
+        "url": "https://twitter.com/sayjava"
+    },
     "keywords": [
         "prisma",
         "graphql",
@@ -16,6 +24,7 @@
     "scripts": {
         "pretty": "prettier --write src/**/*.ts",
         "dev": "ts-node-dev --respawn --transpile-only src/sgraph.ts --config northwind/.sgraphrc",
+        "start": "node lib/sgraph.js",
         "build": "tsc",
         "test": "jest -i"
     },
@@ -29,9 +38,10 @@
         "graphql-parse-resolve-info": "^4.12.0",
         "rc": "^1.2.8",
         "sequelize": "^6.12.4",
-        "sqlite3": "^4.2.0"
+        "typescript": "^4.5.4"
     },
     "devDependencies": {
+        "sqlite3": "^4.2.0",
         "@types/jest": "^27.4.0",
         "eslint": "^8.6.0",
         "eslint-config-prettier": "^8.3.0",
@@ -40,7 +50,6 @@
         "prettier": "^2.5.1",
         "supertest": "^6.1.6",
         "ts-jest": "^27.1.2",
-        "ts-node-dev": "^1.1.8",
-        "typescript": "^4.5.4"
+        "ts-node-dev": "^1.1.8"
     }
 }
