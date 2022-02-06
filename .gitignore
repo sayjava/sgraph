@@ -1,3 +1,4 @@
 node_modules
-northwind.sqlite
+database.sqlite
 lib
+.DS_Store

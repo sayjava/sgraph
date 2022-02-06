@@ -8,19 +8,22 @@ import { ServerConfig, createHTTPGraphql } from './server'
 interface SGraphConfig extends ServerConfig {
     port: number
     path: string
+    ui: boolean
 }
 
 const config: SGraphConfig = require('rc')('sgraph', {
     port: 8080,
     path: '/graphql',
+    schema: 'schema.graphql',
+    ui: false,
 })
 
-if (!config.databaseUrl) {
-    throw new Error('databaseUrl is not set in the config or the command line')
+if (!config.database) {
+    throw new Error(' database is not set in the config or the command line')
 }
 
-if (!config.typeDefs) {
-    throw new Error('typeDefs: A path to the schema definition is required')
+if (!config.schema) {
+    throw new Error('schema: A path to the schema definition is required')
 }
 
 const { handler, sequelize } = createHTTPGraphql(
@@ -32,8 +35,10 @@ sequelize
     .then(() => {
         const server = express()
         server.use(bodyParser.json())
-        server.use(config.path, handler)
-        server.use('/', altairExpress({ endpointURL: config.path }))
+
+        server.use(config.path, altairExpress({ endpointURL: config.path }))
+
+        server.post(config.path, handler)
         server.listen(config.port, () =>
             console.log(`SGraph started on ${config.port}`)
         )

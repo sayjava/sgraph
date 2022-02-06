@@ -19,17 +19,12 @@ export interface ServerConfig {
     /**
      * Type definition or type definition path
      */
-    typeDefs: string
+    schema: string
 
     /**
      *
      */
-    graphiql?: boolean
-
-    /**
-     *
-     */
-    databaseUrl: string
+    database: string
 
     /**
      * Log SQL Statements
@@ -68,10 +63,10 @@ const createComposer = (defs: string): SchemaComposer => {
 }
 
 export const createHTTPGraphql = (config: ServerConfig): any => {
-    const { typeDefs, graphiql, databaseUrl, logging, plugins = [] } = config
+    const { schema: typeDefs, database, logging, plugins = [] } = config
     const composer = createComposer(typeDefs)
 
-    const sequelize = new Sequelize(databaseUrl, {
+    const sequelize = new Sequelize(database, {
         logging,
         logQueryParameters: !!logging,
     })

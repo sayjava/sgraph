@@ -6,8 +6,8 @@ describe('Aggregate', () => {
 
     beforeAll(async () => {
         app = createTestServer({
-            typeDefs: './test/fixtures/northwind.graphql',
-            databaseUrl: 'sqlite:test/fixtures/northwind.sqlite',
+            schema: './northwind/schema.graphql',
+            database: 'sqlite:northwind/database.sqlite',
         })
     })
 

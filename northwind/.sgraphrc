@@ -1,0 +1,6 @@
+{
+    "port": 8080,
+    "schema": "./northwind/schema.graphql",
+    "database": "sqlite:northwind/database.original.sqlite",
+    "ui": true
+}

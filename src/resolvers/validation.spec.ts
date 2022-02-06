@@ -7,8 +7,8 @@ describe('Validations', () => {
 
     beforeAll(async () => {
         app = createTestServer({
-            databaseUrl: 'sqlite::memory:',
-            typeDefs: `
+            database: 'sqlite::memory:',
+            schema: `
                 type User @model {
                     id: ID @primaryKey
                     email: String @validate_isEmail

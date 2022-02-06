@@ -14,7 +14,7 @@
     ],
     "scripts": {
         "pretty": "prettier --write src/**/*.ts",
-        "dev": "ts-node-dev --respawn --transpile-only src/sgraph.ts",
+        "dev": "ts-node-dev --respawn --transpile-only src/sgraph.ts --config northwind/.sgraphrc",
         "build": "tsc",
         "test": "jest -i"
     },
