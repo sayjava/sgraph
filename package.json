@@ -4,7 +4,10 @@
     "description": "Sgraph is a schema first graphql api server powered by the sequelize orm library and envelope plugins compatible",
     "homepage": "https://sayjava.github.io/sgraph",
     "license": "MIT",
-    "main": "lib/sgraph.js",
+    "main": "lib/index.js",
+    "bin": {
+        "sgraph": "lib/sgraph.js"
+    },
     "bugs": {
         "url": "https://github.com/sayjava/sgraph/issues"
     },
@@ -12,6 +15,9 @@
         "name": "Raymond Ottun",
         "url": "https://twitter.com/sayjava"
     },
+    "files": [
+        "lib/**"
+    ],
     "keywords": [
         "prisma",
         "graphql",
