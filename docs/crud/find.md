@@ -1,5 +1,0 @@
-# findModel
-
-## Directives
-
-@column

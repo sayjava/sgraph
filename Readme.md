@@ -4,18 +4,20 @@ A schema first approach to a graphql API
 
 ## Benefits
 
--   Instant CRUD API from graphql schema e.g `find_models`, `find_model_by_pk`, `create_model`
+-   Instant CRUD API from graphql schema e.g `find_models`, `find_model_by_pk`, `create_model` e.t.c
 -   Powered by [Sequelize ORM](https://https://sequelize.org). Supports all the database supported by sequelize e.g `sqlite`, `postgresql`, `mysql` e.t.c
--   Supports [Envelope Plugins](https://www.envelop.dev). e.g `JWT`, `Performance`, `Caching` e.t.c
--   Serverless compatible
--   Programmatic express middleware
--   Expose only what you want via the schema
+-   [Supports Envelope Plugins e.g JWT,`Performance`,`Caching`](https://sayjava.github.com/sgraph/plugins)
+-   [Serverless compatible](https://sayjava.github.com/sgraph/middleware)
+-   [Programmatic express middleware](https://sayjava.github.com/sgraph/middleware)
+-   [Expose only what you want via the schema](https://sayjava.github.com/sgraph/schema)
 
-## Getting started
+## Quick Start
 
 ```shell
-npx @sayjava/sgraph --schema schema.graphql --databaseUrl sqlite:northwind.sqlite
+npx @sayjava/sgraph --schema schema.graphql --database sqlite:northwind.sqlite
 ```
+
+![media/screenshot.png](site/static/screenshot.png)
 
 ```graphql
 type Customer @model {
