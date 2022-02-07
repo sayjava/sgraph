@@ -1,5 +1,5 @@
 const fs = require('fs')
 module.exports = async () => {
-    const dbPath = 'northwind/database.sqlite'
-    fs.copyFileSync('northwind/database.original.sqlite', dbPath)
+    fs.copyFileSync('northwind/functions/northwind.sqlite', 'jest/database.sqlite')
+    fs.copyFileSync('northwind/functions/schema.graphql', 'jest/schema.graphql')
 };

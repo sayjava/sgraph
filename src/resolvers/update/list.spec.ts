@@ -6,8 +6,8 @@ describe('Update Resolver', () => {
 
     beforeAll(async () => {
         app = createTestServer({
-            schema: './northwind/schema.graphql',
-            database: 'sqlite:northwind/database.sqlite',
+            schema: './jest/schema.graphql',
+            database: 'sqlite:jest/database.sqlite',
         })
     })
 

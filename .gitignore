@@ -1,4 +1,7 @@
 node_modules
-database.sqlite
+jest/database.sqlite
+jest/schema.graphql
 lib
 .DS_Store
+.firebase
+.npmrc
