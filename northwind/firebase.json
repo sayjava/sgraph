@@ -1,14 +1,21 @@
 {
-    "emulators": {
-        "hosting": {
-            "port": 9090
-        },
-        "functions": {
-            "port": 9091
-        }
-    },
+  "emulators": {
     "hosting": {
-        "site": "sgraph-80f58",
-        "public": "public"
+      "port": 9090
+    },
+    "functions": {
+      "port": 9091
     }
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "functions": {
+    "source": "functions"
+  }
 }
