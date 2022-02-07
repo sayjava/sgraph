@@ -22,3 +22,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SGRAPH_80F58 }}'
           projectId: sgraph-80f58
           entryPoint: northwind
+          channelId: live
