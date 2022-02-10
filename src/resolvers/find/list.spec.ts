@@ -20,7 +20,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { ShipName: { eq: "Wolski Zajazd" } }, limit: 2) {
                             count
-                            records {
+                            orders {
                                 Id
                                 ShipName
                             }
@@ -31,7 +31,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 170,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "Id": 10374,
                           "ShipName": "Wolski Zajazd",
@@ -52,7 +52,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { ShipName: { ne: "Wolski Zajazd" } }, limit: 2) {
                             count
-                            records {
+                            orders {
                                 Id
                                 ShipName
                             }
@@ -63,7 +63,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 16648,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "Id": 10248,
                           "ShipName": "Vins et alcools Chevalier",
@@ -84,7 +84,7 @@ describe('Find', () => {
                         query: `query {
                         users: find_orders(where: { EmployeeId: { is: "2" } }, limit: 2) {
                             count
-                            records {
+                            orders {
                                 EmployeeId
                                 ShipName
                             }
@@ -95,7 +95,7 @@ describe('Find', () => {
                 expect(res.body.data.users).toMatchInlineSnapshot(`
                     Object {
                       "count": 1805,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "EmployeeId": "2",
                           "ShipName": "Blondel père et fils",
@@ -116,7 +116,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { EmployeeId: { or: ["5", "2"] } } limit: 5) {
                             count 
-                            records {
+                            orders {
                                 Id
                                 EmployeeId
                             }
@@ -127,7 +127,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 3664,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "EmployeeId": "5",
                           "Id": 10248,
@@ -162,7 +162,7 @@ describe('Find', () => {
                             or: [{ CustomerId: { substring: "REGGC" } }, { ShipName: { substring: "Seven" } }]
                         }, limit: 5 ) {
                             count
-                            records {
+                            orders {
                                 CustomerId
                                 ShipName
                             }
@@ -173,7 +173,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 377,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "REGGC",
                           "ShipName": "Reggiani Caseifici",
@@ -208,7 +208,7 @@ describe('Find', () => {
                             and: [{ ShipName: { startsWith: "Seven" } }, { CustomerId: { eq: "RANCH" } }]
                         } ) {
                             count
-                            records {
+                            orders {
                                 CustomerId
                                 ShipName
                             }
@@ -219,7 +219,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 5,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "RANCH",
                           "ShipName": "Seven Seas Imports",
@@ -254,7 +254,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { ShipAddress: { like: "South House 300 Queensbridge" } }, limit: 5) {
                             count
-                            records {
+                            orders {
                                 CustomerId
                                 ShipAddress
                             }
@@ -265,7 +265,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 182,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "NORTS",
                           "ShipAddress": "South House 300 Queensbridge",
@@ -298,7 +298,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { ShipAddress: { notLike: "South House 300 Queensbridge" } }, limit: 5) {
                             count
-                            records {
+                            orders {
                                 CustomerId
                                 ShipAddress
                             }
@@ -309,7 +309,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 16636,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "VINET",
                           "ShipAddress": "59 rue de l'Abbaye",
@@ -342,7 +342,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { OrderDate: { startsWith: "2015-08-12" } }, limit: 5) {
                             count
-                            records {
+                            orders {
                                 Id
                                 OrderDate
                             }
@@ -353,7 +353,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 11,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "Id": 13098,
                           "OrderDate": "2015-08-12 21:14:12",
@@ -386,7 +386,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { ShipRegion: { endsWith: "Europe" } }, limit: 5) {
                             count
-                            records {
+                            orders {
                                 Id
                                 ShipRegion
                             }
@@ -397,7 +397,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 7813,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "Id": 10248,
                           "ShipRegion": "Western Europe",
@@ -430,7 +430,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { ShipAddress: { substring: "House 300" } }, limit: 5) {
                             count
-                            records {
+                            orders {
                                 Id
                                 ShipAddress
                             }
@@ -441,7 +441,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 182,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "Id": 10517,
                           "ShipAddress": "South House 300 Queensbridge",
@@ -476,7 +476,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { Freight: { gt: 200 } }, limit: 5) {
                             count
-                            records {
+                            orders {
                               CustomerId
                               Freight
                             }
@@ -487,7 +487,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 9792,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "MORGK",
                           "Freight": 328.25,
@@ -520,7 +520,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { Freight: { gte: 79.25 } }, limit: 5) {
                             count
-                            records {
+                            orders {
                               CustomerId
                               Freight
                             }
@@ -531,7 +531,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 13862,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "QUICK",
                           "Freight": 81.5,
@@ -564,7 +564,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { Freight: { lt: 79.25 } }, limit: 5) {
                             count
-                            records {
+                            orders {
                               CustomerId
                               Freight
                             }
@@ -575,7 +575,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 2956,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "VINET",
                           "Freight": 16.75,
@@ -608,7 +608,7 @@ describe('Find', () => {
                         query: `query {
                          orders: find_orders(where: { Freight: { lte: 20 } }, limit: 5) {
                             count
-                            records {
+                            orders {
                               CustomerId
                               Freight
                             }
@@ -619,7 +619,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 582,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "VINET",
                           "Freight": 16.75,
@@ -652,7 +652,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { Freight: { between: [20, 40] } }, limit: 5) {
                           count
-                          records {
+                          orders {
                             CustomerId
                             Freight
                           }
@@ -663,7 +663,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 1029,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "TOMSP",
                           "Freight": 22.25,
@@ -696,7 +696,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { Freight: { notBetween: [0, 400] } }, limit: 5) {
                           count
-                          records {
+                          orders {
                             CustomerId
                             Freight
                           }
@@ -707,7 +707,7 @@ describe('Find', () => {
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
                       "count": 3303,
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "CustomerId": "OLDWO",
                           "Freight": 498,
@@ -742,7 +742,7 @@ describe('Find', () => {
                         query: `query {
                         orders: find_orders(where: { Shipped: { eq: true } }) {
                             count
-                            records {
+                            orders {
                               CustomerId
                               Shipped
                             }
@@ -770,7 +770,7 @@ describe('Find', () => {
                     .send({
                         query: `query {
                         orders: find_orders( order_by: { RequiredDate: ASC }, limit: 5 ) {
-                          records {
+                          orders {
                             RequiredDate
                           }
                         }
@@ -779,7 +779,7 @@ describe('Find', () => {
 
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "RequiredDate": "2012-07-11 16:52:11",
                         },
@@ -806,7 +806,7 @@ describe('Find', () => {
                     .send({
                         query: `query {
                          orders: find_orders( order_by: { Freight: DESC }, limit: 5 ) {
-                          records {
+                          orders {
                             Freight
                           }
                          }
@@ -815,7 +815,7 @@ describe('Find', () => {
 
                 expect(res.body.data.orders).toMatchInlineSnapshot(`
                     Object {
-                      "records": Array [
+                      "orders": Array [
                         Object {
                           "Freight": 591.25,
                         },

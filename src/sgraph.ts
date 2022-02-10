@@ -9,6 +9,8 @@ interface SGraphConfig extends ServerConfig {
     port: number
     path: string
     ui: boolean
+    cors: boolean
+    tracing: boolean
 }
 
 const config: SGraphConfig = require('rc')('sgraph', {
@@ -16,6 +18,8 @@ const config: SGraphConfig = require('rc')('sgraph', {
     path: '/graphql',
     schema: 'schema.graphql',
     ui: false,
+    cors: true,
+    tracing: false,
 })
 
 if (!config.database) {

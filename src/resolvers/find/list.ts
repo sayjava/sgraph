@@ -4,10 +4,10 @@ import { Sequelize } from 'sequelize'
 import { normalizeTypeName } from '../../utils'
 import { createProjection } from '../utils'
 
-const createFindProjection = (tree, sequelize) => {
+const createFindProjection = (tree, sequelize, pluralName: string) => {
     const { name, args, fieldsByTypeName } = tree
     const [Response]: any[] = Object.values(fieldsByTypeName)
-    const { records } = Response
+    const records = Response[pluralName]
 
     const mappedTree = {
         name,
@@ -23,13 +23,14 @@ export const createTypeListResolver = (
 ) => {
     const typeName = normalizeTypeName(t.getTypeName())
     const model = sequelize.models[typeName]
+    const pluralName = pluralize(typeName.toLocaleLowerCase())
     return {
         name: `find${pluralize(typeName)}`,
         type: t.schemaComposer.createObjectTC({
             name: `${typeName}FindResponse`,
             fields: {
                 count: 'Int!',
-                records: t.NonNull.List.NonNull,
+                [pluralName]: t.NonNull.List.NonNull,
             },
         }),
         args: {
@@ -41,10 +42,14 @@ export const createTypeListResolver = (
         resolve: async (source, args, context, info) => {
             // @ts-ignore
             const resolveTree = parseResolveInfo(info)
-            const projection = createFindProjection(resolveTree, sequelize)
+            const projection = createFindProjection(
+                resolveTree,
+                sequelize,
+                pluralName
+            )
             const { rows, count } = await model.findAndCountAll(projection)
             const records = rows.map((r) => r.toJSON())
-            return { records, count }
+            return { [pluralName]: records, count }
         },
     }
 }

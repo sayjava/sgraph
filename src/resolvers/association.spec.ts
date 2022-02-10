@@ -166,7 +166,7 @@ describe('Associations', () => {
             .send({
                 query: `query {
                     orders:find_orders(limit: 1) {
-                        records {
+                        orders {
                           Id
                           OrderDate
                           Customer {
@@ -181,7 +181,7 @@ describe('Associations', () => {
                     }`,
             })
 
-        expect(res.body.data.orders.records).toMatchInlineSnapshot(`
+        expect(res.body.data.orders.orders).toMatchInlineSnapshot(`
             Array [
               Object {
                 "Customer": Object {
@@ -214,7 +214,7 @@ describe('Associations', () => {
             .send({
                 query: `query {
                     order:find_orders(limit: 1) {
-                        records {
+                        orders {
                           Id
                           Listings {
                             Quantity
@@ -234,7 +234,7 @@ describe('Associations', () => {
                     }`,
             })
 
-        expect(res.body.data.order.records).toMatchInlineSnapshot(`
+        expect(res.body.data.order.orders).toMatchInlineSnapshot(`
             Array [
               Object {
                 "Id": 10248,

@@ -110,7 +110,7 @@ describe('Aggregate', () => {
                 .send({
                     query: `query {
                         orders: find_orders(where: { Freight: { gt: 450 } }, limit: 2) {
-                            records {
+                            orders {
                                 ShipName
                                 Listings_aggregate (where: { UnitPrice: { gte: 40 } } ) {
                                     count
@@ -124,29 +124,31 @@ describe('Aggregate', () => {
                     }`,
                 })
 
-            expect(res.body.data.orders.records).toMatchInlineSnapshot(`
-                Array [
-                  Object {
-                    "Listings_aggregate": Object {
-                      "avg_UnitPrice": 77.26846153846154,
-                      "count": 13,
-                      "max_UnitPrice": 263.5,
-                      "min_UnitPrice": 40,
-                      "sum_UnitPrice": 1004.4899999999999,
+            expect(res.body.data.orders).toMatchInlineSnapshot(`
+                Object {
+                  "orders": Array [
+                    Object {
+                      "Listings_aggregate": Object {
+                        "avg_UnitPrice": 77.26846153846154,
+                        "count": 13,
+                        "max_UnitPrice": 263.5,
+                        "min_UnitPrice": 40,
+                        "sum_UnitPrice": 1004.4899999999999,
+                      },
+                      "ShipName": "Furia Bacalhau e Frutos do Mar",
                     },
-                    "ShipName": "Furia Bacalhau e Frutos do Mar",
-                  },
-                  Object {
-                    "Listings_aggregate": Object {
-                      "avg_UnitPrice": 77.26846153846154,
-                      "count": 13,
-                      "max_UnitPrice": 263.5,
-                      "min_UnitPrice": 40,
-                      "sum_UnitPrice": 1004.49,
+                    Object {
+                      "Listings_aggregate": Object {
+                        "avg_UnitPrice": 77.26846153846154,
+                        "count": 13,
+                        "max_UnitPrice": 263.5,
+                        "min_UnitPrice": 40,
+                        "sum_UnitPrice": 1004.49,
+                      },
+                      "ShipName": "Let's Stop N Shop",
                     },
-                    "ShipName": "Let's Stop N Shop",
-                  },
-                ]
+                  ],
+                }
             `)
         })
     })
