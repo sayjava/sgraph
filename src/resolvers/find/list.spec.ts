@@ -837,4 +837,42 @@ describe('Find', () => {
             })
         })
     })
+
+    describe('Pagination', () => {
+        it('pages offset and limit', async () => {
+            const res = await request(app)
+                .post('/')
+                .send({
+                    query: `query {
+                        orders: find_orders( limit: 5, offset: 10 ) {
+                          orders {
+                            ShipName
+                          }
+                        }
+                    }`,
+                })
+
+            expect(res.body.data.orders).toMatchInlineSnapshot(`
+                Object {
+                  "orders": Array [
+                    Object {
+                      "ShipName": "Ernst Handel",
+                    },
+                    Object {
+                      "ShipName": "Centro comercial Moctezuma",
+                    },
+                    Object {
+                      "ShipName": "Ottilies Käseladen",
+                    },
+                    Object {
+                      "ShipName": "Que Delícia",
+                    },
+                    Object {
+                      "ShipName": "Rattlesnake Canyon Grocery",
+                    },
+                  ],
+                }
+            `)
+        })
+    })
 })
