@@ -40,7 +40,6 @@ type Order @model {
 
 type OrderDetail @model {
     Id: String @primaryKey
-    UnitPrice: Float
     Quantity: Float
     UnitPrice: Float
     Discount: Float

@@ -1,15 +1,14 @@
-# Sgraph
+# sGraph
 
-A schema first approach to a graphql API
+`sGraph` is a schema first approach graphql API server development.
 
 ## Benefits
 
--   Instant CRUD API from graphql schema e.g `find_models`, `find_model_by_pk`, `create_model` e.t.c
--   Powered by [Sequelize ORM](https://https://sequelize.org). Supports all the database supported by sequelize e.g `sqlite`, `postgresql`, `mysql` e.t.c
--   [Supports Envelope Plugins e.g JWT,`Performance`,`Caching`](https://sayjava.github.com/sgraph/plugins)
+-   Instant CRUD API from a Graphql Schema
+-   Powered by [Sequelize ORM](https://https://sequelize.org). Supports all the database supported by sequelize
+-   [Supports Envelope Plugins e.g JWT, `Performance`, `Caching`](https://sayjava.github.com/sgraph/plugins)
 -   [Serverless compatible](https://sayjava.github.com/sgraph/middleware)
--   [Programmatic express middleware](https://sayjava.github.com/sgraph/middleware)
--   [Expose only what you want via the schema](https://sayjava.github.com/sgraph/schema)
+-   [Express middleware](https://sayjava.github.com/sgraph/middleware)
 
 ## Quick Start
 
@@ -22,7 +21,6 @@ npx @sayjava/sgraph --schema schema.graphql --database sqlite:northwind.sqlite
 ```graphql
 type Customer @model {
     Id: String @primaryKey
-    CompanyName: String
     ContactName: String
 
     Orders: [Order] @hasMany(foreignKey: "CustomerId")
@@ -30,7 +28,7 @@ type Customer @model {
 
 type Order @model {
     Id: Int @primaryKey @autoIncrement
-    OrderDate: String @dateOnly
+    OrderDate: Date
     Freight: Float
     ShipName: String
     CustomerId: String
@@ -50,9 +48,12 @@ Find customers with name starting with `Ana` and their `orders`
     ) {
         records {
             ContactName
-
             Orders(limit: 2) {
                 ShipName
+            }
+
+            Orders_aggregate {
+                max_Freight
             }
         }
     }
@@ -71,3 +72,13 @@ Find sum of freight made by a customer
     }
 }
 ```
+
+## Supported Databases
+
+-   SQLite
+-   MySQL
+-   PostgresSQL
+-   MariaDB
+-   Microsoft SQL Server
+-   Amazon Redshift
+-   Snowflake’s Data Cloud
