@@ -11,10 +11,16 @@ describe('Validations', () => {
             schema: `
                 type User @model {
                     id: ID @primaryKey
-                    email: String @validate_isEmail
-                    ipAddress: String @validate_isIP
+                    email: Email
+                    ip4: IPv4
+                    ip6: IPv6
+                    url: URL
+                    creditCard: CreditCard
+                    when: Date
+                    uuid: UUID
+
                     address: String @validate_contains(value: "UK_")
-                    postcode: String @validate_is(value: "^([A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}|GIR ?0A{2})$")
+                    postcode: String @validate_is(value: "[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}")
                     queue: Int @autoIncrement
                 }
               `,
@@ -51,7 +57,7 @@ describe('Validations', () => {
                             { 
                                 id: "email", 
                                 email: "faike@email.com", 
-                                ipAddress: "1234567", 
+                                ip4: "1234567", 
                             }
                         ) {
                             id
@@ -60,7 +66,7 @@ describe('Validations', () => {
             })
 
         expect(res.body.errors[0].message).toMatchInlineSnapshot(
-            `"Validation error: Validation isIP on ipAddress failed"`
+            `"Validation error: Validation isIPv4 on ip4 failed"`
         )
     })
 
@@ -73,7 +79,7 @@ describe('Validations', () => {
                             { 
                                 id: "email", 
                                 email: "faike@email.com", 
-                                ipAddress: "127.0.0.1",
+                                ip4: "127.0.0.1",
                                 address: "AB_No_10" 
                             }
                         ) {
@@ -96,7 +102,7 @@ describe('Validations', () => {
                             { 
                                 id: "email", 
                                 email: "faike@email.com", 
-                                ipAddress: "127.0.0.1",
+                                ip4: "127.0.0.1",
                                 address: "UK_No_10"
                                 postcode: "12343"
                             }
@@ -109,6 +115,138 @@ describe('Validations', () => {
         expect(res.body.errors[0].message).toMatchInlineSnapshot(
             `"Validation error: Validation is on postcode failed"`
         )
+    })
+
+    it('url', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: create_user(input: 
+                            { 
+                                id: "email", 
+                                email: "faike@email.com", 
+                                ip4: "127.0.0.1",
+                                address: "UK_No_10"
+                                postcode: "SW1A2AA"
+                                url: "some_useless_url"
+                            }
+                        ) {
+                            id
+                        }
+                    }`,
+            })
+
+        expect(res.body.errors[0].message).toMatchInlineSnapshot(
+            `"Validation error: Validation isUrl on url failed"`
+        )
+    })
+
+    it('credit card', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: create_user(input: 
+                            { 
+                                id: "email", 
+                                email: "faike@email.com", 
+                                ip4: "127.0.0.1",
+                                address: "UK_No_10"
+                                postcode: "SW1A2AA"
+                                url: "https://yahoo.com"
+                                creditCard: 1111
+                            }
+                        ) {
+                            id
+                        }
+                    }`,
+            })
+
+        expect(res.body.errors[0].message).toMatchInlineSnapshot(
+            `"Validation error: Validation isCreditCard on creditCard failed"`
+        )
+    })
+
+    it('date', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: create_user(input: 
+                            { 
+                                id: "email", 
+                                email: "faike@email.com", 
+                                ip4: "127.0.0.1",
+                                address: "UK_No_10"
+                                postcode: "SW1A2AA"
+                                url: "https://yahoo.com"
+                                creditCard: 1111
+                                when: "some-day"
+                            }
+                        ) {
+                            id
+                        }
+                    }`,
+            })
+
+        expect(res.body.errors[0].message).toMatchInlineSnapshot(
+            `"Query error: Invalid date"`
+        )
+    })
+
+    it('uuid', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: create_user(input: 
+                            { 
+                                id: "email", 
+                                email: "faike@email.com", 
+                                ip4: "127.0.0.1",
+                                address: "UK_No_10"
+                                postcode: "SW1A2AA"
+                                url: "https://yahoo.com"
+                                creditCard: "4242 4242 4242 4242"
+                                when: "2011-11-05"
+                                uuid: "none-uuid"
+                            }
+                        ) {
+                            id
+                        }
+                    }`,
+            })
+
+        expect(res.body.errors[0].message).toMatchInlineSnapshot(
+            `"Validation error: Validation isUUID on uuid failed"`
+        )
+    })
+
+    it('validates all', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: create_user(input: 
+                            { 
+                                id: "email", 
+                                email: "faike@email.com", 
+                                ip4: "127.0.0.1",
+                                address: "UK_No_10"
+                                postcode: "SW1A2AA"
+                                url: "https://yahoo.com"
+                                creditCard: "4242 4242 4242 4242"
+                                when: "2011-11-05"
+                                uuid: "b3426978-b8ec-4fad-9f10-d030e95a23ef"
+                            }
+                        ) {
+                            id
+                        }
+                    }`,
+            })
+
+        expect(res.body.errors).toMatchInlineSnapshot(`undefined`)
     })
 
     it('bulk validation', async () => {
@@ -125,7 +263,7 @@ describe('Validations', () => {
                                 { 
                                     id: "email", 
                                     email: "faike@email.com", 
-                                    ipAddress: "127.0.0.1",
+                                    ip4: "127.0.0.1",
                                     address: "UK_No_10"
                                     postcode: "12343"
                                 }

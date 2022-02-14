@@ -1,5 +1,5 @@
 import { ObjectTypeComposer, pluralize } from 'graphql-compose'
-import { Association, Op, Sequelize } from 'sequelize'
+import { Association, DataTypes, Op, Sequelize } from 'sequelize'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
 import { normalizeTypeName } from '../utils'
 import { argsToSequelizeWhere } from './utils'
@@ -76,7 +76,10 @@ export const createAggregates = ({
              *  */
             Object.entries(model.getAttributes())
                 .filter(([_, field]) => {
-                    return numberTypes.includes(field.type.toString({}))
+                    return (
+                        field.type instanceof DataTypes.INTEGER ||
+                        field.type instanceof DataTypes.FLOAT
+                    )
                 })
                 .forEach(([fieldName]) => {
                     aggregateTypes.forEach((fn) => {

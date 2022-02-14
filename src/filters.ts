@@ -1,5 +1,5 @@
 import { ObjectTypeComposer } from 'graphql-compose'
-import { Op, Sequelize } from 'sequelize'
+import { DataTypes, Op, Sequelize } from 'sequelize'
 import { normalizeTypeName } from './utils'
 
 const createBasicAttributes = (dataType: string) => {
@@ -129,42 +129,34 @@ export const createInputFilters = ({
                         const attrs = Object.entries(model.getAttributes())
 
                         attrs.forEach(([name, atr]) => {
-                            switch (atr.type) {
-                                case 'String':
-                                case 'ID':
-                                case 'Text':
-                                    tc.setField(name, {
-                                        type: StringInputFilter,
-                                        description: `Filter for ${name}`,
-                                    })
-                                    break
-
-                                case 'Int':
-                                    tc.setField(name, {
-                                        type: IntFilter,
-                                        description: `Filter for ${name}`,
-                                    })
-                                    break
-
-                                case 'Float':
-                                    tc.setField(name, {
-                                        type: FloatFilter,
-                                        description: `Filter for ${name}`,
-                                    })
-                                    break
-
-                                case 'Boolean':
-                                    tc.setField(name, {
-                                        type: BooleanFilter,
-                                        description: `Filter for ${name}`,
-                                    })
-                                    break
-
-                                default:
-                                    tc.setField(name, {
-                                        type: BasicFilter,
-                                        description: `Filter for ${name}`,
-                                    })
+                            if (
+                                atr.type instanceof DataTypes.STRING ||
+                                atr.type instanceof DataTypes.TEXT
+                            ) {
+                                tc.setField(name, {
+                                    type: StringInputFilter,
+                                    description: `Filter for ${name}`,
+                                })
+                            } else if (atr.type instanceof DataTypes.INTEGER) {
+                                tc.setField(name, {
+                                    type: IntFilter,
+                                    description: `Filter for ${name}`,
+                                })
+                            } else if (atr.type instanceof DataTypes.FLOAT) {
+                                tc.setField(name, {
+                                    type: FloatFilter,
+                                    description: `Filter for ${name}`,
+                                })
+                            } else if (atr.type instanceof DataTypes.BOOLEAN) {
+                                tc.setField(name, {
+                                    type: BooleanFilter,
+                                    description: `Filter for ${name}`,
+                                })
+                            } else {
+                                tc.setField(name, {
+                                    type: BasicFilter,
+                                    description: `Filter for ${name}`,
+                                })
                             }
                         })
                     })

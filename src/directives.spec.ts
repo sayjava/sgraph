@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { createTestServer } from './server'
 
-describe('Validations', () => {
+describe('DB Types', () => {
     let app
 
     beforeAll(async () => {
@@ -10,12 +10,12 @@ describe('Validations', () => {
             schema: `
                 type User @model @autoTimestamp {
                     id: ID @primaryKey
-                    email: String @validate_isEmail
+                    email: Email
                     queue: Int @autoIncrement
-                    uuid1: String @uuidv1
-                    uuid4: String @uuidv4
-                    date: String @dateTime
-                    dateOnly: String @date
+                    uuid: UUID
+                    date: DateTime
+                    dateOnly: Date
+                    address: JSON
                 }
               `,
         })
@@ -102,16 +102,14 @@ describe('Validations', () => {
                             }
                         ) {
                             id
-                            uuid1
-                            uuid4
+                            uuid
                         }
                     }`,
             })
 
         expect(res.body.data.user).toEqual(
             expect.objectContaining({
-                uuid1: expect.any(String),
-                uuid4: expect.any(String),
+                uuid: expect.any(String),
             })
         )
     })
@@ -140,5 +138,35 @@ describe('Validations', () => {
                 dateOnly: expect.any(String),
             })
         )
+    })
+
+    it('creates json', async () => {
+        const res = await request(app)
+            .post('/')
+            .send({
+                query: `mutation {
+                        user: create_user(input: 
+                            { 
+                                id: "json-user", 
+                                address: {
+                                    street: "No 10",
+                                    postcode: "ECR 2CA",
+                                    house: 3
+                                }
+                            }
+                        ) {
+                            id
+                            address
+                        }
+                    }`,
+            })
+
+        expect(res.body.data.user.address).toMatchInlineSnapshot(`
+            Object {
+              "house": 3,
+              "postcode": "ECR 2CA",
+              "street": "No 10",
+            }
+        `)
     })
 })

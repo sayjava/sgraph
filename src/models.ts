@@ -19,39 +19,71 @@ const createValidations = (directives: Directive[]) => {
     return validate
 }
 
-const DBTypes = {
-    uuidv1: {
-        type: DataTypes.UUIDV1,
-        defaultValue: DataTypes.UUIDV1,
-    },
-    uuidv4: {
-        type: DataTypes.UUIDV4,
-        defaultValue: DataTypes.UUIDV4,
-    },
-    dateTime: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
-    },
-    date: {
-        type: DataTypes.DATEONLY,
-        defaultValue: DataTypes.NOW,
-    },
-}
-
-const getDBType = ({
-    directives,
-    typeName,
-}: {
-    directives: Directive[]
-    typeName: string
-}) => {
-    const typeDirective = directives.find((d) => !!DBTypes[d.name])
-
-    if (typeDirective) {
-        return DBTypes[typeDirective.name]
+const getDBType = (typeName: string) => {
+    const types = {
+        ID: {
+            type: DataTypes.STRING,
+            validate: {},
+        },
+        Int: {
+            type: DataTypes.INTEGER,
+            validate: {},
+        },
+        Float: {
+            type: DataTypes.FLOAT,
+            validate: {},
+        },
+        UUID: {
+            type: DataTypes.UUID,
+            defaultValue: DataTypes.UUIDV4,
+            validate: { isUUID: 4 },
+        },
+        Date: {
+            type: DataTypes.DATEONLY,
+            defaultValue: DataTypes.NOW,
+            validate: { isDate: true },
+        },
+        DateTime: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW,
+            validate: { isDate: true },
+        },
+        Email: {
+            type: DataTypes.STRING,
+            validate: { isEmail: true },
+        },
+        URL: {
+            type: DataTypes.STRING,
+            validate: { isUrl: true },
+        },
+        CreditCard: {
+            type: DataTypes.STRING,
+            validate: { isCreditCard: true },
+        },
+        IPv4: {
+            type: DataTypes.STRING,
+            validate: { isIPv4: true },
+        },
+        IPv6: {
+            type: DataTypes.STRING,
+            validate: { isIPv6: true },
+        },
+        String: {
+            type: DataTypes.STRING,
+            validate: {},
+        },
+        JSON: {
+            type: DataTypes.JSON,
+            validate: {},
+        },
     }
 
-    return { type: typeName }
+    return (
+        types[typeName] || {
+            type: DataTypes.STRING,
+            validate: {},
+        }
+    )
 }
 
 const typeToAttributes = (
@@ -61,9 +93,9 @@ const typeToAttributes = (
     const attributes = {}
     const fields = obj.getFields()
 
-    Object.entries(fields).forEach(([key, config]) => {
+    Object.entries(fields).forEach(([fieldName, config]) => {
         const typeName = normalizeTypeName(config.type.getTypeName())
-        const field = fields[key]
+        const field = fields[fieldName]
         const directives = field.directives || []
 
         if (composer.isScalarType(typeName)) {
@@ -71,25 +103,29 @@ const typeToAttributes = (
                 (d) => d.name === 'primaryKey'
             )
 
-            const defaultCol = { args: { name: key } }
+            const defaultColumn = { args: { name: fieldName } }
             const unique = !!directives.find((d) => d.name === 'unique')
             const allowNull = field.astNode.type.kind !== 'NonNullType'
             const column = directives.find((d) => d.name === 'column')
-            const validate = createValidations(directives || [])
 
             const autoIncrement = !!directives.find(
                 (d) => d.name === 'autoIncrement'
             )
 
-            const type = getDBType({ directives, typeName })
-            attributes[key] = {
-                ...type,
+            const dbType = getDBType(typeName)
+            const directiveValidation = createValidations(directives)
+            dbType.validate = Object.assign(
+                dbType.validate,
+                directiveValidation
+            )
+
+            attributes[fieldName] = {
+                ...dbType,
                 unique,
                 primaryKey,
                 allowNull,
                 autoIncrement,
-                validate,
-                field: (column || defaultCol).args.name,
+                field: (column || defaultColumn).args.name,
             }
         }
     })
