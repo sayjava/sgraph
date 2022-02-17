@@ -35,6 +35,11 @@ export interface ServerConfig {
      * Envelope Plugins
      */
     plugins?: Plugin[]
+
+    /**
+     * Cors
+     */
+    cors?: boolean
 }
 
 export type GraphqlHandler = (
@@ -120,8 +125,16 @@ export const createHTTPGraphql = (config: ServerConfig): any => {
 
 export const createServer = (config: ServerConfig) => {
     const app = express()
-    app.use(bodyParser.json())
-    app.use(createHTTPGraphql(config).handler)
+    const handler = createHTTPGraphql(config)
+    const cors = (_, res, next) => {
+        if (config.cors) {
+            res.set('Access-Control-Allow-Origin', '*')
+            res.set('Access-Control-Allow-Headers', 'Content-Type')
+        }
+        next()
+    }
+    app.use(cors, bodyParser.json())
+    app.use(handler)
     return app
 }
 

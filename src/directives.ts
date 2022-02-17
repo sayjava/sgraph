@@ -87,8 +87,7 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     directive @validate_equals             on FIELD_DEFINITION 
 
     directive @validate_contains           (value: String!)     on FIELD_DEFINITION
-    directive @validate_isUUID             (value: Int!)        on FIELD_DEFINITION
-    directive @validate_len                (value: [String!]!)  on FIELD_DEFINITION
+    directive @validate_len                (value: [Int!]!)     on FIELD_DEFINITION
     directive @validate_isAfter            (value: String!)     on FIELD_DEFINITION
     directive @validate_isBefore           (value: String!)     on FIELD_DEFINITION
     directive @validate_max                (value: Int!)        on FIELD_DEFINITION
@@ -102,9 +101,9 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
     scalar Date
     scalar DateTime
     scalar URL
-    scalar CreditCard
     scalar IPv4
     scalar IPv6
+    scalar JSON
     `
     )
 }

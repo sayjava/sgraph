@@ -1,8 +1,7 @@
 ---
-title: API
+title: CRUD API
+sidebar_position: 3
 ---
-
-# CRUD APIs
 
 `sGraph` generates a full fledge crud api for each type annotated with the `@model` directive in the schema definition. The generated APIs can be configured using the [@crud](/directives) directive.
 
@@ -353,3 +352,5 @@ mutation delete_orders(where: { Freight: { gte: 400 } }) {
 }
 
 ```
+
+## Aggregates
