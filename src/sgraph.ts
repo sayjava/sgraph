@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import express from 'express'
 import { useTiming } from '@envelop/core'
+import { useApolloTracing } from '@envelop/apollo-tracing'
 import bodyParser from 'body-parser'
 import { altairExpress } from 'altair-express-middleware'
+import cors from 'cors'
 import { ServerConfig, createHTTPGraphql } from './server'
 
 interface SGraphConfig extends ServerConfig {
@@ -31,7 +33,7 @@ if (!config.schema) {
 }
 
 const { handler, sequelize } = createHTTPGraphql(
-    Object.assign(config, { plugins: [useTiming()] })
+    Object.assign(config, { plugins: [useApolloTracing()] })
 )
 
 sequelize
@@ -40,7 +42,9 @@ sequelize
         const server = express()
         server.use(bodyParser.json())
 
-        server.use(config.path, altairExpress({ endpointURL: config.path }))
+        if (config.cors) {
+            server.use(cors({ origin: '*' }))
+        }
 
         server.post(config.path, handler)
         server.listen(config.port, () =>

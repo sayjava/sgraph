@@ -5,6 +5,7 @@ import { readFileSync, existsSync } from 'fs'
 import { envelop, useSchema, Plugin } from '@envelop/core'
 import express from 'express'
 import bodyParser from 'body-parser'
+import cors from 'cors'
 
 import { createTypeModels } from './models'
 import { createInputFilters } from './filters'
@@ -126,12 +127,8 @@ export const createHTTPGraphql = (config: ServerConfig): any => {
 export const createServer = (config: ServerConfig) => {
     const app = express()
     const handler = createHTTPGraphql(config)
-    const cors = (_, res, next) => {
-        if (config.cors) {
-            res.set('Access-Control-Allow-Origin', '*')
-            res.set('Access-Control-Allow-Headers', 'Content-Type')
-        }
-        next()
+    if (config.cors) {
+        app.use(cors({ origin: '*' }))
     }
     app.use(cors, bodyParser.json())
     app.use(handler)
