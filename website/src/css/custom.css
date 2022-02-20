@@ -7,6 +7,7 @@
 /* You can override the default Infima variables here. */
 
 @import url(https://unpkg.com/graphiql/graphiql.min.css);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Source+Code+Pro:400,700);
 
 :root {
     --ifm-color-primary: #2e8555;
