@@ -1,12 +1,12 @@
 import request from 'supertest'
-import express from 'express'
-import { createTestServer } from '../server'
+import { createServer } from '../server'
 
 describe('Validations', () => {
     let app
 
     beforeAll(async () => {
-        app = createTestServer({
+        const { server } = createServer({
+            path: '/',
             database: 'sqlite::memory:',
             schema: `
                 type User @model {
@@ -25,6 +25,8 @@ describe('Validations', () => {
                 }
               `,
         })
+
+        app = server
     })
 
     it('email', async () => {

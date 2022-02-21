@@ -1,11 +1,12 @@
 import request from 'supertest'
-import { createTestServer } from './server'
+import { createServer } from './server'
 
 describe('DB Types', () => {
     let app
 
     beforeAll(async () => {
-        app = createTestServer({
+        const { server } = createServer({
+            path: '/',
             database: 'sqlite::memory:',
             schema: `
                 type User @model @autoTimestamp {
@@ -19,6 +20,8 @@ describe('DB Types', () => {
                 }
               `,
         })
+
+        app = server
     })
 
     it('autoincrement', async () => {

@@ -1,14 +1,16 @@
 import request from 'supertest'
-import { createTestServer } from '../../server'
+import { createServer } from '../../server'
 
 describe('Delete Resolver', () => {
     let app
 
     beforeAll(async () => {
-        app = createTestServer({
+        const { server } = createServer({
+            path: '/',
             schema: './jest/schema.graphql',
             database: 'sqlite:jest/database.sqlite',
         })
+        app = server
     })
 
     it('delete order details by id', async () => {

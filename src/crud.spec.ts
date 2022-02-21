@@ -1,11 +1,12 @@
 import request from 'supertest'
-import { createTestServer } from './server'
+import { createServer } from './server'
 
 describe('Validations', () => {
     let app
 
     beforeAll(async () => {
-        app = createTestServer({
+        const { server } = createServer({
+            path: '/',
             database: 'sqlite::memory:',
             schema: `
                 type NoCreatePosts @model @crud(create: false) {
@@ -29,6 +30,8 @@ describe('Validations', () => {
                 }
               `,
         })
+
+        app = server
     })
 
     it('skips the create mutation', async () => {

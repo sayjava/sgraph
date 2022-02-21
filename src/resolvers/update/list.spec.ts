@@ -1,14 +1,16 @@
 import request from 'supertest'
-import { createTestServer } from '../../server'
+import { createServer } from '../../server'
 
 describe('Update Resolver', () => {
     let app
 
     beforeAll(async () => {
-        app = createTestServer({
+        const { server } = createServer({
+            path: '/',
             schema: './jest/schema.graphql',
             database: 'sqlite:jest/database.sqlite',
         })
+        app = server
     })
 
     it('simple record update', async () => {

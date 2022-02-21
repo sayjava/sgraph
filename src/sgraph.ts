@@ -1,11 +1,7 @@
 #!/usr/bin/env node
-import express from 'express'
-import { useTiming } from '@envelop/core'
 import { useApolloTracing } from '@envelop/apollo-tracing'
-import bodyParser from 'body-parser'
-import { altairExpress } from 'altair-express-middleware'
-import cors from 'cors'
-import { ServerConfig, createHTTPGraphql } from './server'
+import { ServerConfig } from './server'
+import { createServer } from '.'
 
 interface SGraphConfig extends ServerConfig {
     port: number
@@ -32,25 +28,15 @@ if (!config.schema) {
     throw new Error('schema: A path to the schema definition is required')
 }
 
-const { handler, sequelize } = createHTTPGraphql(
+const { server, sequelize } = createServer(
     Object.assign(config, { plugins: [useApolloTracing()] })
 )
 
 sequelize
     .authenticate()
     .then(() => {
-        const server = express()
-        server.use(bodyParser.json())
-
-        if (config.cors) {
-            server.use(cors({ origin: '*' }))
-        }
-
-        server.post(config.path, handler)
         server.listen(config.port, () =>
-            console.log(`SGraph started on ${config.port}`)
+            console.log(`SGraph started on ${config.port} on ${config.path}`)
         )
     })
-    .catch((e) => {
-        console.error(e)
-    })
+    .catch(console.error)

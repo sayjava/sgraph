@@ -41,6 +41,11 @@ export interface ServerConfig {
      * Cors
      */
     cors?: boolean
+
+    /**
+     * path to mount
+     */
+    path: string
 }
 
 export type GraphqlHandler = (
@@ -125,21 +130,15 @@ export const createHTTPGraphql = (config: ServerConfig): any => {
 }
 
 export const createServer = (config: ServerConfig) => {
-    const app = express()
-    const handler = createHTTPGraphql(config)
-    if (config.cors) {
-        app.use(cors({ origin: '*' }))
-    }
-    app.use(cors, bodyParser.json())
-    app.use(handler)
-    return app
-}
-
-export const createTestServer = (config: ServerConfig) => {
-    const app = express()
-    app.use(bodyParser.json())
+    const server = express()
     const { handler, sequelize } = createHTTPGraphql(config)
-    sequelize.sync()
-    app.use(handler)
-    return app
+
+    // auto sync memory databases
+    config.database === 'sqlite::memory:' && sequelize.sync()
+
+    config.cors && server.use(cors({ origin: '*' }))
+    server.use(bodyParser.json())
+    server.post(config.path, handler)
+
+    return { server, sequelize }
 }
