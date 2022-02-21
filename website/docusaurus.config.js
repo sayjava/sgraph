@@ -15,6 +15,9 @@ const config = {
   favicon: 'img/favicon.ico',
   organizationName: 'sayjava', // Usually your GitHub org/user name.
   projectName: 'sgraph', // Usually your repo name.
+  customFields: {
+    graphqlEndpoint: 'http://localhost:8080/graphql',
+  },
 
   presets: [
     [
@@ -61,6 +64,9 @@ const config = {
             docId: 'guide/schema',
             position: 'left',
             label: 'Guide',
+          },
+          {
+            to: 'playground', label: 'Playground', position: 'left'
           },
           {
             href: 'https://github.com/sayjava/github',

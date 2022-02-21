@@ -1,19 +1,22 @@
 <div align="center">
-<h1>sGraph</h1>
-  <a href="https://www.sgraph.dev/docs/getting-started/quickstart">Quickstart</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://www.sgraph.dev/">Website</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://www.sgraph.dev/docs/">Docs</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://github.com/sgraph/examples/">Examples</a>
-  <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-  <a href="https://twitter.com/sayhava">Twitter</a>
+  <h1>sGraph</h1>
+  <span align="center">Turn your schema into a full fledge API</span>
+  <div>
+    <a href="https://www.sgraph.dev/docs/getting-started/quickstart">Quickstart</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <a href="https://www.sgraph.dev/">Website</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <a href="https://www.sgraph.dev/docs/">Docs</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <a href="https://github.com/sgraph/examples/">Examples</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <a href="https://twitter.com/sayhava">Twitter</a>
+  </div>
 </div>
 
 ## What is sGraph?
 
-`sGraph` is a schema driven GraphQL API server powered by the trusted [Sequelize SQL ORM Library](https://sequelize.org). It exposes
+`sGraph` is a schema driven GraphQL API server powered by the trusted [Sequelize SQL ORM Library](https://sequelize.org). Exposes exactly what you want from your database using a declarative graphql schema.
 
 ## Features
 
@@ -22,19 +25,18 @@
 -   Extensive field aggregation API. `max`, `min`, `avg` e.t.c
 -   Builtin field validations with directives. e.g `@validate_max(value: 20)`, `@validate_len(value: [2, 10])` e.t.c
 -   Readable scalar fields e.g `URL`, `Email`, `Date` e.t.c
--   Powered by [Sequelize ORM](https://sequelize.org). Supports all the database supported by sequelize
--   Supports [ GraphQL Envelope](https://envlope.dev) Plugins e.g `JWT`, `Performance`, `Caching`
--   Builtin [Altair GraphQL Client](https://altair.sirmuel.design/) in standalone server
+-   Powered by [Sequelize ORM](https://sequelize.org). Supports all the databases supported by sequelize. (`MySQL`, `SQLite`, `Postgresql`) e.t.c
+-   Supports [Envelope Plugins](https://envlope.dev) Plugins e.g `JWT`, `Performance`, `Caching`
 -   Serverless ready
--   Express middleware
+-   Programmable via express middleware
 
 ## sGraph Use cases
 
--   Quickly spin up a GraphQL API from an existing database
--   Read-only public facing APIs
+-   Quickly spin up a GraphQL API for an existing database
+-   Generate read-only public/client facing APIs
 -   Eliminate redundant CRUD code
 -   Spin up cheap serverless APIs for small to medium sized projects
--   Use with SSR projects
+-   Seamlessly integrate with your existing project via middleware, or serverless functions
 
 ## Quick Start
 
