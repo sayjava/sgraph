@@ -109,6 +109,26 @@ describe('Find', () => {
                 `)
             })
 
+            it('count', async () => {
+                const res = await request(app)
+                    .post('/')
+                    .send({
+                        query: `query {
+                        users: find_orders(where: { EmployeeId: { is: "2" } }, limit: 2) {
+                          count
+                        }
+                    }`,
+                    })
+
+                expect(res.body.data).toMatchInlineSnapshot(`
+                    Object {
+                      "users": Object {
+                        "count": 16818,
+                      },
+                    }
+                `)
+            })
+
             it('or', async () => {
                 const res = await request(app)
                     .post('/')

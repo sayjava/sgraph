@@ -9,12 +9,16 @@ const createFindProjection = (tree, sequelize, pluralName: string) => {
     const [Response]: any[] = Object.values(fieldsByTypeName)
     const records = Response[pluralName]
 
-    const mappedTree = {
-        name,
-        args,
-        fieldsByTypeName: records.fieldsByTypeName,
+    if (records) {
+        const mappedTree = {
+            name,
+            args,
+            fieldsByTypeName: records.fieldsByTypeName,
+        }
+        return createProjection(mappedTree, sequelize)
     }
-    return createProjection(mappedTree, sequelize)
+
+    return { include: [], limit: 0 }
 }
 
 export const createTypeListResolver = (
