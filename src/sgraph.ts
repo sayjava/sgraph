@@ -2,6 +2,7 @@
 import { useApolloTracing } from '@envelop/apollo-tracing'
 import { ServerConfig } from './server'
 import { createServer } from '.'
+import fs from 'fs'
 
 interface SGraphConfig extends ServerConfig {
     port: number
@@ -24,7 +25,7 @@ if (!config.database) {
     throw new Error(' database is not set in the config or the command line')
 }
 
-if (!config.schema) {
+if (!fs.existsSync(config.schema)) {
     throw new Error('schema: A path to the schema definition is required')
 }
 

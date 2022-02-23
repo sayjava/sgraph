@@ -53,6 +53,12 @@ Supported configuration file formats are:
 }
 ```
 
+## Databases
+
+### SQLite
+
+This is a bundled
+
 ## sGraph Middleware
 
 Bring your own sever. If you have an existing server or an SSR application, `sGraph` can be used as a middleware without spinning up a new server
