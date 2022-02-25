@@ -38,14 +38,14 @@ export default ({
         {
             type: responseTc.NonNull,
             args: {
-                input: `Update${typeName}Input`,
+                data: `Update${typeName}Input`,
                 limit: 'Int',
                 where: {
                     type: `${typeName}Filter!`,
                 },
             },
             resolve: async (src, args, ctx, info) => {
-                const values = args.input
+                const values = args.data
                 const where = argsToSequelizeWhere(args.where)
                 const limit: any = args.limit ? { limit: args.limit } : {}
 

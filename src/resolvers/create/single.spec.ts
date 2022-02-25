@@ -18,7 +18,7 @@ describe('Single Create', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        employee: create_employee(input: 
+                        employee: create_employee(employee: 
                             { 
                                 FirstName: "Employee-11", 
                                 LastName: "Nortwind-11", 
@@ -49,7 +49,7 @@ describe('Single Create', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        customer: create_customer(input: 
+                        customer: create_customer(customer: 
                             { 
                                 Id: "AROUT-2",
                                 CompanyName: "Customer-1", 

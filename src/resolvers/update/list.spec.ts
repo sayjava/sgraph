@@ -19,7 +19,7 @@ describe('Update Resolver', () => {
             .send({
                 query: `mutation {
                         orders: update_orders (
-                            input: {  ShipName: "xyz" }
+                            data: {  ShipName: "xyz" }
                             where: { EmployeeId: { eq: "1" } }
                             limit: 5
                         ) 
@@ -77,7 +77,7 @@ describe('Update Resolver', () => {
             .send({
                 query: `mutation {
                         orders: update_orders (
-                            input: {  ShipName: "new_shipping_name" }
+                            data: {  ShipName: "new_shipping_name" }
                             where: { EmployeeId: { eq: "unknown_order" } }
                             limit: 5
                         ) 

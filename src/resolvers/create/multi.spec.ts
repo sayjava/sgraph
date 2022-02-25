@@ -18,7 +18,7 @@ describe('Multi Create', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        employees: create_employees(inputs: 
+                        employees: create_employees(employees: 
                         [
                             { 
                                 FirstName: "Employee-12", 
@@ -65,7 +65,7 @@ describe('Multi Create', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        orders: create_orders(inputs: 
+                        orders: create_orders(orders: 
                         [
                             {
                                 Id: 28066,

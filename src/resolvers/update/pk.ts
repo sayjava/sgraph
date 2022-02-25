@@ -20,14 +20,14 @@ export default ({
         {
             type: tc.NonNull,
             args: {
-                input: `Update${typeName}Input`,
+                data: `Update${typeName}Input`,
                 id: 'ID!',
             },
             resolve: async (src, args, ctx, info) => {
-                const { input, id } = args
+                const { data, id } = args
                 const where = { [pk]: { [Op.eq]: id } }
 
-                const [affected] = await model.update(input, { where })
+                const [affected] = await model.update(data, { where })
 
                 if (affected === 0) {
                     throw Error(

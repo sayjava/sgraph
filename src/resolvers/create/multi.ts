@@ -7,19 +7,20 @@ import { associationsToInclude, createProjection } from '../utils'
 export default (tc: ObjectTypeComposer, sequelize: Sequelize) => {
     const typeName = normalizeTypeName(tc.getTypeName())
     const model = sequelize.models[typeName]
+    const pluralName = pluralize(typeName.toLocaleLowerCase())
 
     tc.schemaComposer.Mutation.setField(
         `create_${pluralize(typeName.toLocaleLowerCase())}`,
         {
             type: tc.List.NonNull,
             args: {
-                inputs: {
+                [pluralName]: {
                     type: `[${typeName}Input!]!`,
                 },
             },
             resolve: async (src, args, ctx, info) => {
                 try {
-                    const modelArgs = args.inputs as any[]
+                    const modelArgs = args[pluralName] as any[]
                     const newModels = await model.bulkCreate(modelArgs, {
                         include: associationsToInclude(model, modelArgs),
                         validate: true,

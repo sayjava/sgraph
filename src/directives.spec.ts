@@ -29,7 +29,7 @@ describe('DB Types', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: create_user(input: 
+                        user: create_user(user: 
                             { 
                                 id: "email", 
                                 email: "faike@email.com",
@@ -52,7 +52,7 @@ describe('DB Types', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: create_user(input: 
+                        user: create_user(user: 
                             { 
                                 id: "email", 
                                 email: "faike@email.com"
@@ -68,7 +68,7 @@ describe('DB Types', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        users: update_users(input: 
+                        users: update_users(data: 
                             { 
                                 email: "new@email.com", 
                             },
@@ -98,7 +98,7 @@ describe('DB Types', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: create_user(input: 
+                        user: create_user(user: 
                             { 
                                 id: "uuid-user", 
                                 email: "faike@email.com", 
@@ -122,7 +122,7 @@ describe('DB Types', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: create_user(input: 
+                        user: create_user(user: 
                             { 
                                 id: "date-user", 
                                 email: "faike@email.com", 
@@ -148,7 +148,7 @@ describe('DB Types', () => {
             .post('/')
             .send({
                 query: `mutation {
-                        user: create_user(input: 
+                        user: create_user(user: 
                             { 
                                 id: "json-user", 
                                 address: {

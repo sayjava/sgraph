@@ -20,7 +20,7 @@ describe('Update PK Resolver', () => {
                 query: `mutation {
                         employee: update_employee_by_pk ( 
                             id: "1",
-                            input: {  FirstName: "James" }
+                            data: {  FirstName: "James" }
                         ) 
                         {
                             Id
@@ -48,7 +48,7 @@ describe('Update PK Resolver', () => {
                 query: `mutation {
                         employee: update_employee_by_pk ( 
                             id: "unknown_pk",
-                            input: {  FirstName: "James" }
+                            data: {  FirstName: "James" }
                         ) 
                         {
                             Id

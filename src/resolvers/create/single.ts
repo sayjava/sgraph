@@ -13,12 +13,12 @@ export default (tc: ObjectTypeComposer, sequelize: Sequelize) => {
         {
             type: tc,
             args: {
-                input: {
+                [typeName.toLocaleLowerCase()]: {
                     type: `${typeName}Input`,
                 },
             },
             resolve: async (src, args, ctx, info) => {
-                const modelArgs: any = args.input
+                const modelArgs: any = args[typeName.toLocaleLowerCase()]
 
                 const newModel = await model.create(modelArgs, {
                     include: associationsToInclude(model, modelArgs),
