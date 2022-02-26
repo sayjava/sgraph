@@ -10,13 +10,13 @@ The `sGraph` server ships with good features to get up and running with a simple
 **NodeJS**
 
 ```shell
-npx @sayjava/sgraph --schema schema.graphql --database sqlite:some-sqlite.db
+npx @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
 ```
 
 **Docker**
 
 ```shell
-docker run @sayjava/sgraph
+docker run -v $(pwd):/app @sayjava/sgraph --schema /app/schema.graphql --database sqlite::memory:
 ```
 
 ## Server Configuration
@@ -53,11 +53,17 @@ Supported configuration file formats are:
 }
 ```
 
-## Databases
+## Supported Databases
+
+`sGraph` supports all the same databases that are supported by `Sequelize ORM`
 
 ### SQLite
 
-This is a bundled
+### MySQL
+
+### PostgreSQL
+
+### OracleDB
 
 ## sGraph Middleware
 
@@ -66,7 +72,7 @@ Bring your own sever. If you have an existing server or an SSR application, `sGr
 ```js
 import express from 'express'
 import { useTiming } from '@envelop/core'
-import { createHTTPGraphql } from './server'
+import { createHTTPGraphql } from '@sayjava/sgraph'
 
 const server = express()
 const { handler } = createHTTPGraphql({

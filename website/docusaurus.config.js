@@ -61,7 +61,7 @@ const config = {
           },
           {
             type: 'doc',
-            docId: 'guide/schema',
+            docId: 'schema',
             position: 'left',
             label: 'Guide',
           },
