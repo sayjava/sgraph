@@ -99,9 +99,9 @@ const typeToAttributes = (
         const directives = field.directives || []
 
         if (composer.isScalarType(typeName)) {
-            const primaryKey = !!field.directives.find(
-                (d) => d.name === 'primaryKey'
-            )
+            const primaryKey =
+                !!field.directives.find((d) => d.name === 'primaryKey') ||
+                typeName === 'ID'
 
             const defaultColumn = { args: { name: fieldName } }
             const unique = !!directives.find((d) => d.name === 'unique')

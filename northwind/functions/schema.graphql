@@ -1,5 +1,5 @@
 type Customer @model {
-    Id: String @primaryKey
+    Id: ID
     CompanyName: String
     ContactName: String
 
@@ -39,7 +39,7 @@ type Order @model {
 }
 
 type OrderDetail @model {
-    Id: String @primaryKey
+    Id: ID
     Quantity: Float
     UnitPrice: Float
     Discount: Float
@@ -55,6 +55,7 @@ type Product @model {
     Id: Int @primaryKey @autoIncrement
     ProductName: String
     UnitPrice: Float
+    ReorderLevel: Int
     CategoryId: Int
 
     Category: Category @belongsTo(sourceKey: "CategoryId")
