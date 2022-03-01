@@ -12,26 +12,25 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
 
 :root {
-    --ifm-color-primary: #2083fe;
-    --ifm-color-primary-dark: #0473fe;
-    --ifm-color-primary-darker: #016df2;
-    --ifm-color-primary-darkest: #0159c7;
-    --ifm-color-primary-light: #3c93fe;
-    --ifm-color-primary-lighter: #4b9bfe;
-    --ifm-color-primary-lightest: #75b2fe;
+    --ifm-color-primary: #34495e;
+    --ifm-color-primary-dark: #2f4255;
+    --ifm-color-primary-darker: #2c3e50;
+    --ifm-color-primary-darkest: #243342;
+    --ifm-color-primary-light: #395067;
+    --ifm-color-primary-lighter: #3c546c;
+    --ifm-color-primary-lightest: #445f7a;
+}
 
+:root {
     --ifm-heading-font-family: 'Spartan', sans-serif;
     --ifm-font-family-base: 'Spartan', sans-serif;
-
     --ifm-code-background: none;
-    --ifm-code-color: #6672e8;
-
     --ifm-code-font-family: 'JetBrains Mono', monospace;
 }
 
 code {
-    color: var(--ifm-code-color);
-    font-weight: 600;
+    color: var(--ifm-color-primary-darkest);
+    font-weight: 700;
     border: none;
 }
 

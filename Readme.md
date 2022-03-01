@@ -115,7 +115,7 @@ Read the [API docs](website/docs/guide/api.md) for the full set of available API
     -   [Code](chinook)
     -   [Live Playground](https://chinook.sgraph.dev)
 
-## Architecture
+## sGraph Architecture
 
 Underneath, `sGraph` maps each defined GraphQL type to [Sequelize Model](https://sequelize.org/v7/manual/model-basics.html#model-definition) which is turn mapped to a database table. `sGraph` then generates a full API for each defined type and its associations. For example, a simple definition like
 
@@ -236,6 +236,32 @@ All databases supported by the [Sequelize ORM](https://sequelize.org/v7/manual/g
 -   [Schema Guide](website/docs/guide/schema.mdx)
 -   [API Documentation](website/docs/guide/api.md)
 -   [Plugin Documentation](website/docs/plugins.md)
+
+## Programmatic Middleware
+
+`sGraph` can be incorporated into an existing application by using it as an express middleware either in a stand alone application or as a serverless function
+
+```js
+const { createServer } = require('@sayjava/sgraph-slim')
+const express = require('express')
+const app = express()
+
+const { handler: middleware } = createServer({
+    database: 'databse:connection',
+    schema: 'path-to-schema',
+    cors: true
+
+    // list of instantiated envelop plugins
+    plugins: [],
+})
+
+app.use(middleware)
+app.listen(8080, () => console.log('Serer is up'))
+```
+
+## Limitations
+
+-   GraphQL subscriptions are not yet supported
 
 ## Development
 
