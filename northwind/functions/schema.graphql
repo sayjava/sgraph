@@ -3,7 +3,7 @@ type Customer @model {
     CompanyName: String
     ContactName: String
 
-    Orders: [Order] @hasMany(foreignKey: "CustomerId")
+    Orders: [Order] @hasMany
 }
 
 type Employee @model {
@@ -31,7 +31,7 @@ type Order @model {
     CustomerId: String
     EmployeeId: String
 
-    Customer: Customer @belongsTo(sourceKey: "CustomerId")
+    Customer: Customer @belongsTo
     Employee: Employee @belongsTo(sourceKey: "EmployeeId")
     Products: [Product] @belongsToMany(through: "OrderDetail")
 

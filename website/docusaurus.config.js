@@ -63,7 +63,13 @@ const config = {
             type: 'doc',
             docId: 'schema',
             position: 'left',
-            label: 'Guide',
+            label: 'Schema',
+          },
+          {
+            type: 'doc',
+            docId: 'plugins',
+            position: 'left',
+            label: 'Plugins',
           },
           {
             to: 'playground', label: 'Playground', position: 'left'

@@ -2,6 +2,6 @@
 title: Plugins
 ---
 
-`sGraph` incorporates [Envelope Plugins](https://envlope.dev)
+`sGraph` incorporates [Envelope Plugins](https://envlope.dev) into its framework
 
 Envelope Plugins

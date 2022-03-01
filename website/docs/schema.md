@@ -1,58 +1,116 @@
 ---
 title: Schema
-sidebar_position: 1
+sidebar_position: 2
 ---
 
-`sGraph` uses a `schema first` approach to GraphQL API development. The behavior of the API is used to mostly controlled by the type definitions and their relationships in the schema. Each defined GraphQL Type must be mapped to a database SQL table for an API to be generated for that type.
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-**Example Schema**
+`sGraph` uses a `schema first` approach to GraphQL API development. The behavior of the API is used to mostly controlled by the type definitions and their associations in the schema.
+
+Here is the simplest form of a type definition in a schema. This type is mapped to an underlying table in the database
 
 ```graphql
 type Employee @model {
-    Id: Int @primaryKey
+    # This corresponds to the primary key of the Employee table
+    Id: ID
+
     FirstName: String
     LastName: String
 }
 ```
 
-## Declaration
+### Architecture
 
-Every type requires at least one field marked as the `@primaryKey` and this should correspond to the primary key field of the underlying database table. The name of the type is used to map to the SQL table.
+`sGraph` is powered by [Sequelize ORM](https://www.sequelize.org), so underneath, each defined type in the schema is mapped directly to a sequelize model which is in turn mapped to a database table. Each defined type in the schema will be mapped to a corresponding table in the underlying database.
 
-| Directive          | Description                                                                                                                            | Args                                                                   | Default Behavior                               |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
-| **@model**         | Maps a type to a database table using the Type name. The name can be modified by the `tableName` argument                              | `{ tableName: String }`                                                | The type name will used for the SQL Table name |
-| **@autoTimestamp** | Automatically injects `createdAt` and `updatedAt`                                                                                      | none                                                                   | now                                            |
-| **@crud**          | Controls what CRUD API is generated for this type. In some cases, it might be helpful to disable mutations on a public API for example | `{ create: Boolean, read: Boolean, update: Boolean, delete: Boolean }` | Full CRUD is enabled by default                |
-| **@autoIncrement** | Marks a field to auto increment                                                                                                        |                                                                        | Auto increment this field                      |
+```mermaid
+classDiagram
 
-### Special Scalar Types
+    SchemaEmployee <|.. SequelizeEmployee: Mapped
 
-`sGraph` ships with special scalar types that are automatically validated before insertion into the database.
+    class SchemaEmployee {
+        string Id
+        string FirstName
+        string LastName
+    }
 
-| Type           | Description                               | Underlying Type           |
-| -------------- | ----------------------------------------- | ------------------------- |
-| **UUID**       | UUID.                                     | UUID, defaults to UUID    |
-| **Email**      | Email Format                              | String                    |
-| **DateTime**   | Timestamps                                | Date, defaults to now     |
-| **Date**       | Date Only                                 | DateTime, defaults to now |
-| **URL**        | URL RFC format                            | String                    |
-| **CreditCard** | Credit card format                        | String                    |
-| **IPV4**       | IP address version 4                      | String                    |
-| **IPV6**       | IP address version 6                      | String                    |
-| **JSON**       | JSON format for databases that support it | JSON                      |
+
+    class SequelizeEmployee {
+        string Id
+        string FirstName
+        string LastName
+    }
+
+```
+
+## Definition
+
+`sGraph` schema uses a collection of directives to influence how the eventual API is generated. The generated APIs are dynamic therefore, any changes in the schema will be reflected in API when the server is restarted.
+
+### Primary Key
+
+Every type requires at least one field marked as the `@primaryKey` or typed as `ID` and this will correspond to the `primary key` field of the underlying database table. The name of the type is used to map to the SQL table.
+
+<Tabs>
+<TabItem value="id" label="By ID">
+
+```graphql
+type Employee {
+    Id: ID
+}
+```
+
+</TabItem>
+<TabItem value="directive" label="By Directive">
+
+```graphql
+type Employee {
+    Id: Int @primaryKey
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Modelling
+
+| Directive        | Description                                                                                                                            | Args                                                                   | Default Behavior                                     |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------- |
+| `@model`         | Maps a type to a database table using the Type name. The name can be modified by the `tableName` argument                              | `{ tableName: String }`                                                | The type name will used for the SQL Table name       |
+| `@autoTimestamp` | Automatically creates `createdAt` and `updatedAt` fields for types                                                                     | none                                                                   | now                                                  |
+| `@crud`          | Controls what CRUD API is generated for this type. In some cases, it might be helpful to disable mutations on a public API for example | `{ create: Boolean, read: Boolean, update: Boolean, delete: Boolean }` | Full CRUD is enabled by default                      |
+| `@autoIncrement` | Marks a field to auto increment                                                                                                        |                                                                        | Auto increment this field                            |
+| `@column`        | Remaps a field to a column in the database                                                                                             | `{ name: String }`                                                     | The field name maps directly to the database columns |
 
 **Example Schema**
 
 ```graphql
-type Post {
-    id: UUID @primaryKey
-    permalink: URL!
-    authorId: Email!
-    origin: IPV4
-    content: JSON
+type Employee
+    @model(tableName: "employees")
+    @autoTimestamp
+    @crud(delete: false) {
+    id: ID
+    logins: Int @autoIncrement
+    firstName: String @column(name: "FirstName")
 }
 ```
+
+### Special Scalar Types
+
+`sGraph` ships with special scalar types that are automatically validated before insertion into the database and makes the schema more readable and contextual
+
+| Type         | Description                               | Underlying Type           |
+| ------------ | ----------------------------------------- | ------------------------- |
+| `UUID`       | UUIDV4                                    | UUID                      |
+| `Email`      | Email formatted field                     | String                    |
+| `DateTime`   | Database timestamp                        | Date, defaults to now     |
+| `Date`       | Date only (without the time component)    | DateTime, defaults to now |
+| `URL`        | URL formatted field                       | String                    |
+| `CreditCard` | Credit card formatted field               | String                    |
+| `IPV4`       | IP address version 4                      | String                    |
+| `IPV6`       | IP address version 6                      | String                    |
+| `JSON`       | JSON format for databases that support it | JSON                      |
 
 :::info
 
@@ -60,65 +118,84 @@ These scalar fields are automatically validated before insertion into the databa
 
 :::
 
+**Example Schema**
+
+```graphql
+type Post @model(tableName: 'Posts') @autoTimestamp {
+    id: UUID @primaryKey
+    permalink: URL! @column(name: "perma_link")
+    authorId: Email
+    origin: IPV4
+    content: JSON
+    birthday: Date
+}
+```
+
 ### Field Validations
 
-`sGraph` supports all the validations supported by [Sequelize](https://sequelize.org/v7/manual/validations-and-constraints.html). Validations that are applied before insertion into the database.
+`sGraph` supports all the validations supported by [Sequelize](https://sequelize.org/v7/manual/validations-and-constraints.html). Validations are applied before insertion into the database.
 
-| Directive                    | Description                                                   | Args             |
-| ---------------------------- | ------------------------------------------------------------- | ---------------- |
-| **@validate_isAlpha**        | will only allow letters                                       | None             |
-| **@validate_isAlphanumeric** | will only allow alphanumeric characters, so "\_abc" will fail | None             |
-| **@validate_isNumeric**      | will only allow numbers                                       | None             |
-| **@validate_isLowercase**    | checks for lowercase                                          | None             |
-| **@validate_isUppercase**    | checks for uppercase                                          | None             |
-| **@validate_notEmpty**       | don't allow empty strings                                     | None             |
-| **@validate_equals**         | only allow a specific value                                   | `value: String`  |
-| **@validate_contains**       | force specific substrings                                     | `value: String`  |
-| **@validate_len**            | only allow values with a certain length                       | `value: [Int!]!` |
-| **@validate_isAfter**        | only allow date strings after a specific date                 | `value: String`  |
-| **@validate_isBefore**       | only allow date strings before a specific date                | `value: String`  |
-| **@validate_max**            | only allow values below this max                              | `value: Int`     |
-| **@validate_is**             | matches this a RegExp                                         | `value: String`  |
-| **@validate_not**            | does not match a RegExp                                       | `value: String`  |
+| Directive                  | Description                                                   | Args             |
+| -------------------------- | ------------------------------------------------------------- | ---------------- |
+| `@validate_isAlpha`        | will only allow letters                                       | None             |
+| `@validate_isAlphanumeric` | will only allow alphanumeric characters, so "\_abc" will fail | None             |
+| `@validate_isNumeric`      | will only allow numbers                                       | None             |
+| `@validate_isLowercase`    | checks for lowercase                                          | None             |
+| `@validate_isUppercase`    | checks for uppercase                                          | None             |
+| `@validate_notEmpty`       | don't allow empty strings                                     | None             |
+| `@validate_equals`         | only allow a specific value                                   | `value: String`  |
+| `@validate_contains`       | force specific substrings                                     | `value: String`  |
+| `@validate_len`            | only allow values with a certain length                       | `value: [Int!]!` |
+| `@validate_isAfter`        | only allow date strings after a specific date                 | `value: String`  |
+| `@validate_isBefore`       | only allow date strings before a specific date                | `value: String`  |
+| `@validate_max`            | only allow values below this max                              | `value: Int`     |
+| `@validate_is`             | matches this a RegExp                                         | `value: String`  |
+| `@validate_not`            | does not match a RegExp                                       | `value: String`  |
+
+**Example Schema**
+
+```graphql
+type Profile @model {
+    id: ID @primaryKey
+
+    # Validate post code
+    postcode: String @validate_is(value: "[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}")
+
+    # Title must be Mr|Mrs
+    title: String @validate_contains(value: "Mr")
+
+    #  Must be at least 18 years
+    dob: String @validate_isAfter(value: "2004-01-01")
+
+    # Address is of 20 characters long
+    address: String @validate_len(value: 20)
+}
+```
 
 ## Associations
 
-`sGraph` supports all the different types of associations supported by the [Sequelize ORM](https://sequelize.org/v7/manual/assocs.html) and the respective parameters.
+`sGraph` supports all the types of associations supported by the [Sequelize ORM](https://sequelize.org/v7/manual/assocs.html) and the respective parameters.
 
 Here are the supported associations that are directly mapped to the associations supported by `Sequelize`. All association options supported by Sequelize are also supported.
 
-| Association             | Directive        |
+| Database Relationship   | Directive        |
 | ----------------------- | ---------------- |
 | One-to-One, Many-to-One | `@belongsTo`     |
 | Many-to-One             | `@hasMany`       |
 | Many-to-Many            | `@belongsToMany` |
 | One-to-One              | `@hasOne`        |
 
-To illustrate how to define associations in a schema, this documentation will use this sample entity relationship.
+### @belongsTo: One-to-One relationships
+
+To model a `one-to-one` relationship
 
 ```mermaid
 erDiagram
-    Customer ||--o{ Order: Orders
-    Order    ||--o{ OrderDetail: Listings
     OrderDetail ||..|| Product: Product
-
-    Customer {
-        string Id PK
-        string ContactName
-        string CompanyName
-    }
-
-    Order {
-        int    Id PK
-        float  Freight
-        string CustomerId FK
-    }
 
     OrderDetail {
         int Id PK
-        float UnitPrice
         float Quantity
-        string CustomerId FK
         string ProductId FK
     }
 
@@ -128,100 +205,251 @@ erDiagram
     }
 ```
 
-### One-to-One
+<Tabs>
+<TabItem value="schema" label="Schema">
 
 ```graphql
+type OrderDetail @model {
+    Id: String @primaryKey
+    ProductId: String
 
+    Product: Product @belongsTo(sourceKey: "ProductId")
+}
+
+type Product @model {
+    Id: Int @primaryKey @autoIncrement
+    ProductName: String
+}
 ```
 
-**Self Referential**
+</TabItem>
+<TabItem value="query" label="Query">
 
 ```graphql
+{
+    find_orderdetails(limit: 2) {
+        orderdetails {
+            Product {
+                ProductName
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+`OnUpdate` and `onDelete`
+
+| Argument      | Description |
+| ------------- | ----------- |
+| `RESTRICT`    | do          |
+| `SET NULL`    | fake        |
+| `SET DEFAULT` | fake        |
+| `CASCADE`     | fake        |
+| `NO ACTION`   | fake        |
+
+### @hasMany: One-to-Many Relationships
+
+Modelling `one-to-many` database relationships
+
+```mermaid
+erDiagram
+Customer ||--o{ Order: has_orders
+
+Order {
+    string Id PK
+    string ShipCountry
+    string CustomerId FK
+}
+
+Customer {
+    string Id PK
+    string ContactName
+}
 
 ```
 
-**Sample Query**
+<Tabs>
 
-```graphql
-
-```
-
-### One-to-Many
-
-```graphql {5,12}
- type Customer @model {
-    Id: String @primaryPk
-    ContactName: String
-
-    Orders: [Order] @hasMany(foreignKey: 'CustomerId')
- }
-
- type Order @model {
-    Id: Int @primaryKey
-    CustomerId: String
-
-    Customer: Customer @belongsTo(sourceKey: 'CustomerId')
- }
-
-```
-
-### Many-to-Many
+<TabItem value="schema" label="Schema">
 
 ```graphql
 type Customer @model {
-    Id: String @primaryPk
+    ID: String
     ContactName: String
+
+    Orders: [Order] @hasMany(foreignKey: 'CustomerId')
+}
+
+type Order @model {
+    Id: ID
+    ShipCountry: String
+    CustomerId: String
+}
+```
+
+</TabItem>
+
+<TabItem value="query" label="Query">
+
+```graphql
+{
+    find_customers(limit: 2) {
+        customers {
+            Orders(limit: 5) {
+                ShippedDate
+            }
+        }
+    }
+}
+```
+
+</TabItem>
+
+</Tabs>
+
+### @belongsToMany: Many-to-Many Relationships
+
+Modelling `many-to-many` relationships
+
+```mermaid
+erDiagram
+Order ||--o{ OrderDetail: has
+Product ||--o{ OrderDetail: belongs
+
+Order {
+    string Id PK
+    date   OrderDate
+    string ShipName
+    string ShipAddress
+}
+
+OrderDetail {
+    int Id PK
+    string CustomerId FK
+    string ProductId FK
+}
+
+Product {
+    int Id PK
+    string ProductName
+    float UnitPrice
+    int ReorderLevel
+}
+
+```
+
+<Tabs>
+<TabItem value="schema" label="Schema">
+
+```graphql
+type Order @model {
+    Id: ID
+    OrderDate: Date
 
     Products: [Product] @belongsToMany(through: "OrderDetail")
 }
+
+type OrderDetail @model {
+    Id: ID
+    Quantity: Float
+
+    # The many-to-many relationship expects these Ids to exist on this table in this exact format. i.e ModelId
+    # If this not the case, the column name can be mapped instead.
+    OrderId: String
+    # This is an example of how to keep the schema rules mapped to the underlying database
+    ProductId: String @column(name: "ProductId")
+
+    Order: Product @belongsTo(sourceKey: "OrderId")
+    Product: Product @belongsTo(sourceKey: "ProductId")
+}
+
+type Product @model {
+    Id: ID
+    ProductName: String
+    UnitPrice: Float
+}
 ```
 
-**Sample Query**
+</TabItem>
+
+<TabItem value="query" label="Query">
 
 ```graphql
-    find_customers_byPk(id: 'some-id') {
-        products {
-            ProductName
+# Find the products attached to an order with price greater than 20
+{
+    find_orders(limit: 1) {
+        orders {
+            Products(where: { UnitPrice: { gt: 20 } }) {
+                UnitPrice
+                ProductName
+            }
         }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
+
+:::info
+To successfully model a `many-to-many` relationship, remember to make sure that the joint table has the respective `ModelId` columns or map them in the schema as the schema above
+:::
+
+### Self Referential Relationships
+
+Combining `@belongsTo` and `@hasMany` to model a self referential relationships.
+
+In this example, an `Employee` can `manage` other employees but can also be `managed` by another employee.
+
+```mermaid
+erDiagram
+    Employee |o..o| Employee: Manager
+    Employee }o..o{ Employee: Manages
+
+    Employee {
+        int Id
+        string FirstName
+        int ReportsTo FK
     }
 ```
 
-:::info
-Remember to use `@column` to map this because sequelize expects this column to be `ModelId`
-:::
-
-### Referential Integrity
-
-## Example Type Definition
+<Tabs>
+<TabItem value="apple" label="Schema" default>
 
 ```graphql
-"""
-sGraph will generate a Read-Only API for this type
-"""
-type Employee
-    @autoTimestamp
-    @model(tableName: 'employees')
-    @crud(create: false, update: false, delete: false) {
+type Employee @model {
+    Id: Int @primaryKey
+    FirstName: String
+    ReportsTo: Int
 
-    id: UUID! @primaryKey
-
-    logs: Int! @autoIncrement
-
-    """ UK passport number """
-    passport: String! @validate_is(value: "^[0-9]{10}GBR[0-9]{7}[U,M,F]{1}[0-9]{9}$")
-
-    """ Maps this field to a different table column  """
-    email: Email @column(name: 'employee_email')
-
-    url: URL
-
-    """ Must be a phone number """
-    phoneNumber:  String @validate_isNumeric
-
-    """ No date will be accepted after this date """
-    registeredDate: Date  @validate_isBefore(value: '27-04-1990')
-
-    """ Postcode must contain ECR1  """
-    postcode: String  @validate_contains(value: 'ECR1')
+    Manager: Employee @belongsTo(foreignKey: "ReportsTo")
+    Manages: [Employee] @hasMany(foreignKey: "ReportsTo")
 }
 ```
+
+</TabItem>
+
+<TabItem value="query" label="Query">
+
+```graphql
+{
+    find_employee_by_pk(id: 5) {
+        FirstName
+        Manager {
+            FirstName
+        }
+        Manages {
+            FirstName
+        }
+        Manages_aggregate {
+            count
+        }
+    }
+}
+```
+
+</TabItem>
+</Tabs>
