@@ -22,9 +22,9 @@ It is easy in 3 steps
 
 -   Define a graphql schema
 -   Provide database credentials
--   Get an API
+-   Get back an API
 
-**with a simple schema like this**
+**with a simple schema like this (schema.graphql)**
 
 ```graphql schema.graphql
 type Customer @model {
@@ -42,7 +42,13 @@ type Order @model {
 }
 ```
 
-**you get an API like this**
+and start the server
+
+```shell
+npx @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
+```
+
+**you get a GraphQL API like this**
 
 ```graphql
 {
@@ -69,12 +75,11 @@ type Order @model {
 -   Builtin field validations with directives. e.g `@validate_max(value: 20)`, `@validate_len(value: [2, 10])` e.t.c
 -   Readable scalar fields with validation e.g `URL`, `Email`, `Date` e.t.c
 -   Powered by [Sequelize ORM](https://sequelize.org). Supports all the databases supported by sequelize. (`MySQL`, `SQLite`, `Postgresql`) e.t.c
--   Supports [Envelope Plugins](https://envlope.dev) Plugins e.g `JWT`, `Performance`, `Caching`
--   Easily versioned API, just version the schema
+-   Supports [Envelop Plugins](https://www.envelop.dev) Plugins e.g `JWT`, `Performance`, `Caching`
 -   Serverless ready
 -   Programmable via express middleware
 
-## sGraph Use cases
+## sGraph use cases
 
 -   Quickly spin up a GraphQL API for an existing database
 -   Generate read-only public/client facing APIs
@@ -85,6 +90,8 @@ type Order @model {
 
 ## Quick Start
 
+Start a sample API with the above schema with an in memory sqlite database
+
 with npm
 
 ```shell
@@ -94,12 +101,32 @@ npx @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
 with docker
 
 ```shell
-docker run @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
+docker run -v $(pwd):/app @sayjava/sgraph --schema /app/schema.graphql --database sqlite::memory:
 ```
 
 Read the [API docs](website/docs/guide/api.md) for the full set of available APIs
 
+# Examples & Playground
+
+-   Northwind Sample Database
+    -   [Code](northwind)
+    -   [Live Playground](https://northwind.sgraph.dev)
+-   Chinook Sample Database
+    -   [Code](chinook)
+    -   [Live Playground](https://chinook.sgraph.dev)
+
 ## Architecture
+
+Underneath, `sGraph` maps each defined GraphQL type to [Sequelize Model](https://sequelize.org/v7/manual/model-basics.html#model-definition) which is turn mapped to a database table. `sGraph` then generates a full API for each defined type and its associations. For example, a simple definition like
+
+```graphql
+type Customer @model {
+    Id: ID
+    Quantity: Float
+}
+```
+
+will internally yield an API like this
 
 ```mermaid
 classDiagram
@@ -171,26 +198,37 @@ classDiagram
   OrderFilter -- FloatFilter
 ```
 
+### Integrating with envelop plugins
+
+`sGraph` wraps its internal schema with the [Envelop](https://www.envelop.dev) framework. That means the incredible list of available [envelope plugins](https://www.envelop.dev/plugins) can be tacked on to the server to even improve its functionalities with minium code.
+
+`sGraph` itself includes some plugins like [apolloTracing](https://www.envelop.dev/plugins/use-apollo-tracing) and [useDepthLimit](https://www.envelop.dev/plugins/use-depth-limit).
+
+```mermaid
+    classDiagram
+        direction LR
+        EnvelopSchema --* SGraphSchema : wraps
+        EnvelopSchema --o ApolloTracingPlugin : uses
+        EnvelopSchema --o DepthLimitPlugin : uses
+        EnvelopSchema --o OtherPlugins : uses
+        sGraphServer --*  EnvelopSchema : exposes
+```
+
+see [plugins docs](website/docs/plugins.md) on how to simply integrate new plugins into the server
+
 ## Supported Databases
 
-All databases supported by the `Sequelize ORM` are supported by `sGraph`
+All databases supported by the [Sequelize ORM](https://sequelize.org/v7/manual/getting-started.html#connecting-to-a-database) are supported by `sGraph`. The server comes bundled with `sqlite`, `postgres` and `mysql` database drivers. a quick start but for a more streamlined server, the `@sayjava/sgraph-slim` server comes just with just the basic server but the driver for the database will have to be installed.
 
--   SQLite
--   MySQL
--   PostgresSQL
--   MariaDB
--   Microsoft SQL Server
--   Amazon Redshift
--   Snowflake’s Data Cloud
-
-# Examples & Playground
-
--   Northwind
-    -   [Code](northwind)
-    -   [Live Playground](https://northwind.sgraph.dev)
--   Chinook [Coming Soon]
-    -   [Code](chinook)
-    -   [Live Playground](https://chinook.sgraph.dev)
+| Database               | Dependencies   | Bundled | Connection                                     |
+| ---------------------- | -------------- | ------- | ---------------------------------------------- |
+| SQLite                 | `sqlite3`      | Yes     | `sqlite:path-to-file.sqlite`                   |
+| Postgres               | `pg pg-hstore` | Yes     | `postgres://user:pass@example.com:5432/dbname` |
+| MySQL                  | `mysql2`       | Yes     | `mysql://user:pass@example.com:5432`           |
+| MariaDB                | `mariadb`      | No      | `mariadb://user:pass@example.com:5432`         |
+| Microsoft SQL Server   | `tedious`      | No      | `mysql://user:pass@example.com:5432`           |
+| Amazon Redshift        | `ibm_db`       | No      | `mysql://user:pass@example.com:5432`           |
+| Snowflake’s Data Cloud | `odbc`         | No      | `mysql://user:pass@example.com:5432`           |
 
 ## Documentation
 
