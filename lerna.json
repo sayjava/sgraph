@@ -4,7 +4,14 @@
     "npmClient": "yarn",
     "command": {
         "publish": {
-            "ignoreChanges": ["ignored-file", "*.md"],
+            "ignoreChanges": [
+                "**/*.md",
+                "**/*.json",
+                "**/test/**",
+                "examples/**/.*"
+            ],
+            "allowBranch": "main",
+            "conventionalCommits": true,
             "message": "chore(release): publish",
             "registry": "https://npm.pkg.github.com"
         }

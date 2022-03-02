@@ -25,7 +25,9 @@
     ],
     "scripts": {
         "pretty": "prettier --write **/src/**/*.{ts,js}",
-        "bootstrap": "lerna bootstrap"
+        "bootstrap": "lerna bootstrap",
+        "prepublish": "lerna run build",
+        "prerelease": "lerna publish --conventional-prerelease"
     },
     "devDependencies": {
         "eslint": "^8.6.0",
