@@ -1,12 +1,12 @@
 {
     "name": "northwind",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "sGraph northwind example",
     "scripts": {
         "start": "sgraph"
     },
     "dependencies": {
-        "@sayjava/sgraph": "*"
+        "@sayjava/sgraph": "^0.1.0"
     },
     "private": true
 }

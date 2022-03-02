@@ -1,6 +1,6 @@
 {
     "name": "@sayjava/sgraph-core",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "sGraph core library",
     "homepage": "https://sgraph.dev/",
     "license": "MIT",

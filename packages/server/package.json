@@ -1,6 +1,6 @@
 {
     "name": "@sayjava/sgraph",
-    "version": "0.0.3",
+    "version": "0.1.0",
     "description": "sGraph is a schema driven graphql api server powered by Sequelize ORM",
     "homepage": "https://sgraph.dev/",
     "repository": "git@gitlab.com:sayjava/sgraph.git",
@@ -32,7 +32,7 @@
     "dependencies": {
         "@envelop/apollo-tracing": "^3.0.0",
         "@envelop/depth-limit": "^1.2.3",
-        "@sayjava/sgraph-core": "*",
+        "@sayjava/sgraph-core": "^0.0.1",
         "altair-express-middleware": "^4.4.0",
         "chalk": "^5.0.0",
         "rc": "^1.2.8",
