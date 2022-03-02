@@ -4,6 +4,7 @@
     "homepage": "https://sgraph.dev/",
     "license": "MIT",
     "private": "true",
+    "repository": "git@gitlab.com:sayjava/sgraph.git",
     "bugs": {
         "url": "https://github.com/sayjava/sgraph/issues"
     },

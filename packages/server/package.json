@@ -3,6 +3,7 @@
     "version": "0.0.3",
     "description": "sGraph is a schema driven graphql api server powered by Sequelize ORM",
     "homepage": "https://sgraph.dev/",
+    "repository": "git@gitlab.com:sayjava/sgraph.git",
     "keywords": [
         "graphql",
         "sequelize",

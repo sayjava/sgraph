@@ -5,6 +5,7 @@
     "homepage": "https://sgraph.dev/",
     "license": "MIT",
     "main": "lib/index.js",
+    "repository": "git@gitlab.com:sayjava/sgraph.git",
     "bugs": {
         "url": "https://github.com/sayjava/sgraph/issues"
     },
