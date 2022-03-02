@@ -1,7 +1,7 @@
 import createSingle from './single'
 import createMulti from './multi'
 import { ObjectTypeComposer } from 'graphql-compose'
-import { Sequelize } from 'sequelize/dist'
+import { Sequelize } from 'sequelize'
 
 export const createCreateResolver = ({
     types,

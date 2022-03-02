@@ -1,5 +1,5 @@
 import { ObjectTypeComposer } from 'graphql-compose'
-import { Sequelize } from 'sequelize/dist'
+import { Sequelize } from 'sequelize'
 import { normalizeTypeName } from '../utils'
 
 export const createInputs = ({

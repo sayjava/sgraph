@@ -1,6 +1,6 @@
 import { ObjectTypeComposer, pluralize } from 'graphql-compose'
 import { parseResolveInfo } from 'graphql-parse-resolve-info'
-import { Sequelize } from 'sequelize/dist'
+import { Sequelize } from 'sequelize'
 import { normalizeTypeName } from '../../utils'
 import { argsToSequelizeWhere, createProjection } from '../utils'
 import { newWhereFromValues } from './utils'
