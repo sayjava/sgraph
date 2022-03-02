@@ -1,0 +1,7 @@
+{
+    "port": 8080,
+    "schema": "schema.graphql",
+    "database": "sqlite:northwind.sqlite",
+    "ui": true,
+    "tracing": true
+}

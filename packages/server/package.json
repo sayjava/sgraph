@@ -1,0 +1,41 @@
+{
+    "name": "@sayjava/sgraph",
+    "version": "0.0.3",
+    "description": "sGraph is a schema driven graphql api server powered by Sequelize ORM",
+    "homepage": "https://sgraph.dev/",
+    "keywords": [
+        "graphql",
+        "sequelize",
+        "postgraphile",
+        "prisma",
+        "hasura",
+        "graphql-server"
+    ],
+    "license": "MIT",
+    "scripts": {
+        "start": "node index.mjs"
+    },
+    "bin": {
+        "sgraph": "index.mjs"
+    },
+    "bugs": {
+        "url": "https://github.com/sayjava/sgraph/issues"
+    },
+    "author": {
+        "name": "Raymond Ottun",
+        "url": "https://twitter.com/sayjava"
+    },
+    "files": [
+        "index.mjs"
+    ],
+    "dependencies": {
+        "@envelop/apollo-tracing": "^3.0.0",
+        "@envelop/depth-limit": "^1.2.3",
+        "@sayjava/sgraph-core": "*",
+        "altair-express-middleware": "^4.4.0",
+        "chalk": "^5.0.0",
+        "rc": "^1.2.8",
+        "sqlite3": "^5.0.2"
+    },
+    "type": "module"
+}

@@ -1,16 +1,16 @@
-import React from 'react';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
+import React from 'react'
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import Layout from '@theme/Layout'
 
-import GraphiQL from 'graphiql';
-import { createGraphiQLFetcher } from '@graphiql/toolkit';
+import GraphiQL from 'graphiql'
+import { createGraphiQLFetcher } from '@graphiql/toolkit'
 
 export default function PlaygroundPage() {
-    const { siteConfig } = useDocusaurusContext();
+    const { siteConfig } = useDocusaurusContext()
 
     const fetcher = createGraphiQLFetcher({
         url: siteConfig.customFields.graphqlEndpoint,
-    });
+    })
 
     const initialQuery = `{ 
     find_customers(limit: 2) {
@@ -25,10 +25,15 @@ export default function PlaygroundPage() {
     return (
         <Layout
             title={`${siteConfig.title}`}
-            description="Northwind API Graphql">
+            description="Northwind API Graphql"
+        >
             <main style={{ height: '100vh', marginTop: '20px' }}>
-                <div className='container' style={{ height: "80%" }}>
-                    <GraphiQL fetcher={fetcher} editorTheme={'solarized light'} query={initialQuery}>
+                <div className="container" style={{ height: '80%' }}>
+                    <GraphiQL
+                        fetcher={fetcher}
+                        editorTheme={'solarized light'}
+                        query={initialQuery}
+                    >
                         <GraphiQL.Footer>
                             <span>Nuclear war</span>
                         </GraphiQL.Footer>
@@ -36,5 +41,5 @@ export default function PlaygroundPage() {
                 </div>
             </main>
         </Layout>
-    );
+    )
 }

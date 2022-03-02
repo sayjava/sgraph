@@ -1,0 +1,8 @@
+{
+    "port": 8080,
+    "schema": "../../examples/northwind/schema.graphql",
+    "database": "sqlite:../../examples/northwind/northwind.sqlite",
+    "ui": true,
+    "tracing": true,
+    "depthLimit": 2
+}

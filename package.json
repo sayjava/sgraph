@@ -1,13 +1,9 @@
 {
-    "name": "@sayjava/sgraph",
-    "version": "0.0.3",
-    "description": "Sgraph is a schema first graphql api server powered by the sequelize orm library and envelope plugins compatible",
+    "name": "sgraph",
+    "description": "sGraph is a schema driven graphql api server powered by the sequelize orm library and envelope plugins compatible",
     "homepage": "https://sgraph.dev/",
     "license": "MIT",
-    "main": "lib/index.js",
-    "bin": {
-        "sgraph": "lib/sgraph.js"
-    },
+    "private": "true",
     "bugs": {
         "url": "https://github.com/sayjava/sgraph/issues"
     },
@@ -28,35 +24,14 @@
         "envelope"
     ],
     "scripts": {
-        "pretty": "prettier --write src/**/*.ts",
-        "dev": "ts-node-dev --respawn --transpile-only src/sgraph.ts --config northwind/.sgraphrc",
-        "start": "node lib/sgraph.js",
-        "build": "tsc",
-        "test": "jest -i"
-    },
-    "dependencies": {
-        "@envelop/apollo-tracing": "^3.0.0",
-        "@envelop/core": "^2.0.0",
-        "body-parser": "^1.19.1",
-        "cors": "^2.8.5",
-        "express": "^4.17.2",
-        "graphql": "^15.8.0",
-        "graphql-compose": "^9.0.6",
-        "graphql-parse-resolve-info": "^4.12.0",
-        "rc": "^1.2.8",
-        "sequelize": "^6.12.4",
-        "typescript": "^4.5.4"
+        "pretty": "prettier --write **/src/**/*.{ts,js}",
+        "bootstrap": "lerna bootstrap"
     },
     "devDependencies": {
-        "@types/jest": "^27.4.0",
         "eslint": "^8.6.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^4.0.0",
-        "jest": "^27.4.5",
-        "prettier": "^2.5.1",
-        "sqlite3": "^4.2.0",
-        "supertest": "^6.1.6",
-        "ts-jest": "^27.1.2",
-        "ts-node-dev": "^1.1.8"
+        "lerna": "^4.0.0",
+        "prettier": "^2.5.1"
     }
 }

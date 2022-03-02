@@ -5,3 +5,5 @@ lib
 .DS_Store
 .firebase
 .npmrc
+coverage
+yarn-error.log

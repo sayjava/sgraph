@@ -1,0 +1,50 @@
+{
+    "name": "@sayjava/sgraph-core",
+    "version": "0.0.0",
+    "description": "sGraph core library",
+    "homepage": "https://sgraph.dev/",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "bugs": {
+        "url": "https://github.com/sayjava/sgraph/issues"
+    },
+    "author": {
+        "name": "Raymond Ottun",
+        "url": "https://twitter.com/sayjava"
+    },
+    "files": [
+        "lib/**"
+    ],
+    "keywords": [
+        "prisma",
+        "graphql",
+        "sequelize",
+        "hasura",
+        "dgraph",
+        "postgraphile",
+        "envelop"
+    ],
+    "scripts": {
+        "build": "tsc",
+        "test": "jest -i"
+    },
+    "dependencies": {
+        "@envelop/core": "^2.0.0",
+        "body-parser": "^1.19.1",
+        "cors": "^2.8.5",
+        "express": "^4.17.2",
+        "graphql": "^15.8.0",
+        "graphql-compose": "^9.0.6",
+        "graphql-parse-resolve-info": "^4.12.0",
+        "sequelize": "^6.12.4",
+        "typescript": "^4.5.4"
+    },
+    "devDependencies": {
+        "@types/jest": "^27.4.0",
+        "jest": "^27.4.5",
+        "sqlite3": "^4.2.0",
+        "supertest": "^6.1.6",
+        "ts-jest": "^27.1.2",
+        "ts-node-dev": "^1.1.8"
+    }
+}
