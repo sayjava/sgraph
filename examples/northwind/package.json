@@ -8,5 +8,10 @@
     "dependencies": {
         "@sayjava/sgraph": "^0.1.0"
     },
+    "files": [
+        "northwind.sqlite",
+        "schema.graphql",
+        ".sgraphrc"
+    ],
     "private": true
 }
