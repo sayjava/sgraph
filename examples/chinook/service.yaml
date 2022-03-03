@@ -1,9 +1,9 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: chinook
+  name: northwind
 spec:
   template:
     spec:
       containers:
-      - image: chinook
+      - image: northwind

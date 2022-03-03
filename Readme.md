@@ -109,8 +109,8 @@ Read the [API docs](website/docs/guide/api.md) for the full set of available API
 # Examples & Playground
 
 -   Northwind Sample Database
-    -   [Code](northwind)
-    -   [Live Playground](https://northwind.sgraph.dev)
+    -   [Code](examples/northwind)
+    -   [Live Playground](https://northwind-kp54hrqc6q-ew.a.run.app/graphql/)
 -   Chinook Sample Database
     -   [Code](chinook)
     -   [Live Playground](https://chinook.sgraph.dev)

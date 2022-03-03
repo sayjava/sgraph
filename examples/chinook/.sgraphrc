@@ -1,0 +1,7 @@
+{
+    "port": 8080,
+    "schema": "schema.graphql",
+    "database": "sqlite:chinook.sqlite",
+    "ui": true,
+    "tracing": true
+}

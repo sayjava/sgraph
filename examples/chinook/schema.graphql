@@ -1,0 +1,68 @@
+type Customer @model {
+    Id: ID
+    CompanyName: String
+    ContactName: String
+
+    Orders: [Order] @hasMany
+}
+
+type Employee @model {
+    Id: Int @primaryKey @autoIncrement
+    FirstName: String
+    LastName: String
+    ReportsTo: Int
+    Country: String
+
+    Manager: Employee @belongsTo(foreignKey: "ReportsTo")
+    Manages: [Employee] @hasMany(foreignKey: "ReportsTo")
+    FulfilledOrders: [Order] @hasMany(foreignKey: "EmployeeId")
+}
+
+type Order @model {
+    Id: Int @primaryKey @autoIncrement
+    OrderDate: String @dateOnly
+    Freight: Float
+    ShipName: String
+    ShipAddress: String
+    ShipCountry: String
+    ShipRegion: String
+    ShippedDate: String
+    RequiredDate: String
+    CustomerId: String
+    EmployeeId: String
+
+    Customer: Customer @belongsTo
+    Employee: Employee @belongsTo(sourceKey: "EmployeeId")
+    Products: [Product] @belongsToMany(through: "OrderDetail")
+
+    Listings: [OrderDetail] @hasMany(foreignKey: "OrderId")
+}
+
+type OrderDetail @model {
+    Id: ID
+    Quantity: Float
+    UnitPrice: Float
+    Discount: Float
+
+    OrderId: String
+    ProductId: String
+
+    Product: Product @belongsTo(sourceKey: "ProductId")
+    Order: Product @belongsTo(sourceKey: "OrderId")
+}
+
+type Product @model {
+    Id: Int @primaryKey @autoIncrement
+    ProductName: String
+    UnitPrice: Float
+    ReorderLevel: Int
+    CategoryId: Int
+
+    Category: Category @belongsTo(sourceKey: "CategoryId")
+}
+
+type Category @model {
+    Id: Int @primaryKey @autoIncrement
+    CategoryName: String
+    Description: String
+}
