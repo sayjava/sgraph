@@ -4,5 +4,5 @@
     "database": "sqlite:../../examples/northwind/northwind.sqlite",
     "ui": true,
     "tracing": true,
-    "depthLimit": 2
+    "depthLimit": 4
 }

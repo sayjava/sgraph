@@ -1,0 +1,18 @@
+.editor {
+    max-width: 1200px;
+    padding: 20px 0;
+    margin: auto;
+}
+
+.editor .topBar {
+    padding: 25px;
+}
+
+.editor .graphiql-container {
+    height: 35rem;
+}
+
+.editor button[title='Copy Query (Shift-Ctrl-C)'],
+.editor button[title='Merge Query (Shift-Ctrl-M)'] {
+    display: none;
+}

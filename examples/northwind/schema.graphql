@@ -1,4 +1,4 @@
-type Customer @model {
+type Customer @model @crud(delete: false, update: false) {
     Id: ID
     CompanyName: String
     ContactName: String
@@ -6,7 +6,7 @@ type Customer @model {
     Orders: [Order] @hasMany
 }
 
-type Employee @model {
+type Employee @model @crud(delete: false) {
     Id: Int @primaryKey @autoIncrement
     FirstName: String
     LastName: String
@@ -18,7 +18,7 @@ type Employee @model {
     FulfilledOrders: [Order] @hasMany(foreignKey: "EmployeeId")
 }
 
-type Order @model {
+type Order @model @crud(delete: false) {
     Id: Int @primaryKey @autoIncrement
     OrderDate: String @dateOnly
     Freight: Float
@@ -38,7 +38,7 @@ type Order @model {
     Listings: [OrderDetail] @hasMany(foreignKey: "OrderId")
 }
 
-type OrderDetail @model {
+type OrderDetail @model @crud(delete: false, update: false) {
     Id: ID
     Quantity: Float
     UnitPrice: Float
@@ -51,11 +51,13 @@ type OrderDetail @model {
     Order: Product @belongsTo(sourceKey: "OrderId")
 }
 
-type Product @model {
+type Product @model @crud(delete: false, update: false) {
     Id: Int @primaryKey @autoIncrement
     ProductName: String
     UnitPrice: Float
     ReorderLevel: Int
+    SupplierId: Int
+    QuantityPerUnit: Float
     CategoryId: Int
 
     Category: Category @belongsTo(sourceKey: "CategoryId")
@@ -65,4 +67,6 @@ type Category @model {
     Id: Int @primaryKey @autoIncrement
     CategoryName: String
     Description: String
+
+    Products: [Product] @hasMany
 }

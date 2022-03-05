@@ -14,24 +14,24 @@ describe('Delete Resolver', () => {
     })
 
     it('delete an order, deletes details', async () => {
-        const freight = 400
+        const name = 'Produce'
         const deleteRes = await request(app)
             .post('/')
             .send({
                 query: `
-                    mutation($freight: Float) {
-                        response: delete_orders(where: { Freight: { gte: $freight } }) {
+                    mutation($name: String) {
+                        response: delete_categories(where: { CategoryName: { like: $name } }) {
                            affected
                         }
                     }`,
                 variables: {
-                    freight,
+                    name,
                 },
             })
 
         expect(deleteRes.body.data.response).toMatchInlineSnapshot(`
             Object {
-              "affected": 3310,
+              "affected": 1,
             }
         `)
     })

@@ -1,5 +1,5 @@
 {
-    "name": "northwind",
+    "name": "chinook",
     "version": "0.0.1",
     "description": "sGraph northwind example",
     "scripts": {

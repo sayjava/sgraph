@@ -19,12 +19,12 @@ describe('Delete Resolver', () => {
             .send({
                 query: `
                     mutation($orderDetailsId: ID!) {
-                        response: delete_orderdetail_by_pk(id: $orderDetailsId) {
+                        response: delete_category_by_pk(id: $orderDetailsId) {
                             affected
                         }
                     }`,
                 variables: {
-                    orderDetailsId: '10258/2',
+                    orderDetailsId: '1',
                 },
             })
 

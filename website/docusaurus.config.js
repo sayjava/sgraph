@@ -16,7 +16,7 @@ const config = {
     organizationName: 'sayjava', // Usually your GitHub org/user name.
     projectName: 'sgraph', // Usually your repo name.
     customFields: {
-        graphqlEndpoint: 'http://localhost:8080/graphql',
+        graphqlEndpoint: process.env.NODE_ENV === 'product' ? 'https://northwind-kp54hrqc6q-ew.a.run.app/graphql' : 'http://localhost:8080/graphql',
     },
 
     presets: [
