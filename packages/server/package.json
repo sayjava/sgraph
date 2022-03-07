@@ -14,7 +14,8 @@
     ],
     "license": "MIT",
     "scripts": {
-        "start": "node index.mjs"
+        "start": "node index.mjs --database 'sqlite::memory:' --schema schema.graphql",
+        "dev": "node index.mjs"
     },
     "bin": {
         "sgraph": "index.mjs"

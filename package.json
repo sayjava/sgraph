@@ -26,6 +26,8 @@
     ],
     "scripts": {
         "pretty": "prettier --write **/src/**/*.{ts,js}",
+        "test": "lerna run test",
+        "build": "lerna run build",
         "bootstrap": "lerna bootstrap",
         "prepublish": "lerna run build",
         "prerelease": "lerna publish --conventional-prerelease"

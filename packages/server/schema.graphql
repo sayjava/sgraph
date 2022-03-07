@@ -1,0 +1,13 @@
+type Customer @model {
+    Id: ID
+    ContactName: String
+    Orders: [Order] @hasMany
+}
+
+type Order @model {
+    Id: Int @primaryKey @autoIncrement
+    OrderDate: Date
+    Freight: Float
+    CustomerId: String
+    Customer: Customer @belongsTo
+}

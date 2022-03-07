@@ -2,11 +2,11 @@
   <h1>sGraph</h1>
   <h3 align="center">Turn your graphql schema into a full API</h3>
   <div>
-    <a href="https://www.sgraph.dev/docs/getting-started/quickstart">Quickstart</a>
+    <a href="https://sayjava.github.io/sgraph/start">Quickstart</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://www.sgraph.dev/">Website</a>
+    <a href="https://sayjava.github.io/sgraph">Website</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://www.sgraph.dev/docs/">Docs</a>
+    <a href="https://sayjava.github.io/sgraph/schema">Docs</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
     <a href="https://github.com/sgraph/examples/">Examples</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -34,7 +34,7 @@ type Customer @model {
 }
 
 type Order @model {
-    Id: Int @primaryKey
+    Id: Int @primaryKey @autoIncrement
     OrderDate: Date
     Freight: Float
     CustomerId: String
@@ -48,11 +48,28 @@ and start the server
 npx @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
 ```
 
-**you get a GraphQL API like this**
+**you can now create customers and orders like this**
 
 ```graphql
-{
-    find_customers(where: { ContactName: { startsWith: "Anne" } }, limit: 10) {
+mutation {
+    create_customer(
+        customer: {
+            Id: "first-customer"
+            ContactName: "John Doe"
+            Orders: [
+                { OrderDate: "2021-06-01", Freight: 20 }
+                { OrderDate: "2021-06-01", Freight: 10 }
+            ]
+        }
+    )
+}
+```
+
+**you can query customers and orders like this**
+
+```graphql
+query {
+    find_customers(where: { ContactName: { startsWith: "John" } }, limit: 10) {
         count
         customers {
             ContactName
@@ -66,6 +83,8 @@ npx @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
     }
 }
 ```
+
+For a full list of the available APIs see the [full docs](https://sayjava.github.io/sgraph)
 
 ## Features
 
@@ -92,26 +111,20 @@ npx @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
 
 Start a sample API with the above schema with an in memory sqlite database
 
-with npm
-
 ```shell
 npx @sayjava/sgraph --schema schema.graphql --database sqlite::memory:
 ```
 
-with docker
-
-```shell
-docker run -v $(pwd):/app @sayjava/sgraph --schema /app/schema.graphql --database sqlite::memory:
-```
-
 Read the [API docs](website/docs/guide/api.md) for the full set of available APIs
+
+## Schema Definition
 
 # Examples & Playground
 
 -   Northwind Sample Database
     -   [Code](examples/northwind)
     -   [Live Playground](https://northwind-kp54hrqc6q-ew.a.run.app/graphql/)
--   Chinook Sample Database
+-   Chinook Sample Database (Coming soon)
     -   [Code](chinook)
     -   [Live Playground](https://chinook.sgraph.dev)
 
@@ -120,13 +133,13 @@ Read the [API docs](website/docs/guide/api.md) for the full set of available API
 Underneath, `sGraph` maps each defined GraphQL type to [Sequelize Model](https://sequelize.org/v7/manual/model-basics.html#model-definition) which is turn mapped to a database table. `sGraph` then generates a full API for each defined type and its associations. For example, a simple definition like
 
 ```graphql
-type Customer @model {
+type Order @model {
     Id: ID
     Quantity: Float
 }
 ```
 
-will internally yield an API like this
+will internally generate a GraphQL API like this
 
 ```mermaid
 classDiagram
@@ -198,7 +211,7 @@ classDiagram
   OrderFilter -- FloatFilter
 ```
 
-### Integrating with envelop plugins
+### Integration with envelop plugins
 
 `sGraph` wraps its internal schema with the [Envelop](https://www.envelop.dev) framework. That means the incredible list of available [envelope plugins](https://www.envelop.dev/plugins) can be tacked on to the server to even improve its functionalities with minium code.
 
@@ -224,11 +237,11 @@ All databases supported by the [Sequelize ORM](https://sequelize.org/v7/manual/g
 | ---------------------- | -------------- | ------- | ---------------------------------------------- |
 | SQLite                 | `sqlite3`      | Yes     | `sqlite:path-to-file.sqlite`                   |
 | Postgres               | `pg pg-hstore` | Yes     | `postgres://user:pass@example.com:5432/dbname` |
-| MySQL                  | `mysql2`       | Yes     | `mysql://user:pass@example.com:5432`           |
-| MariaDB                | `mariadb`      | No      | `mariadb://user:pass@example.com:5432`         |
-| Microsoft SQL Server   | `tedious`      | No      | `mysql://user:pass@example.com:5432`           |
-| Amazon Redshift        | `ibm_db`       | No      | `mysql://user:pass@example.com:5432`           |
-| Snowflake’s Data Cloud | `odbc`         | No      | `mysql://user:pass@example.com:5432`           |
+| MySQL                  | `mysql2`       | Yes     | `mysql://user:pass@example.com:3306`           |
+| MariaDB                | `mariadb`      | No      | `mariadb://user:pass@example.com:3306`         |
+| Microsoft SQL Server   | `tedious`      | No      | Check the sequelize docs                       |
+| Amazon Redshift        | `ibm_db`       | No      | Check the sequelize docs                       |
+| Snowflake’s Data Cloud | `odbc`         | No      | Check the sequelize docs                       |
 
 ## Documentation
 
@@ -242,7 +255,7 @@ All databases supported by the [Sequelize ORM](https://sequelize.org/v7/manual/g
 `sGraph` can be incorporated into an existing application by using it as an express middleware either in a stand alone application or as a serverless function
 
 ```js
-const { createServer } = require('@sayjava/sgraph-slim')
+const { createServer } = require('@sayjava/sgraph-core')
 const express = require('express')
 const app = express()
 
@@ -262,17 +275,20 @@ app.listen(8080, () => console.log('Serer is up'))
 ## Limitations
 
 -   GraphQL subscriptions are not yet supported
+-   Upsert not yet supported
+-   Composite Index
+-   Schema migration
 
 ## Development
 
 Install dependencies
 
 ```shell
-npm i
+yarn bootstrap
 ```
 
 Start the server
 
 ```shell
-npm run dev
+cd packages/server && yarn dev
 ```
