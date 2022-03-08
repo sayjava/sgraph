@@ -6,7 +6,7 @@
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
     <a href="https://sayjava.github.io/sgraph">Website</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="https://sayjava.github.io/sgraph/schema">Docs</a>
+    <a href="https://sayjava.github.io/sgraph/api">Docs</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
     <a href="https://github.com/sgraph/examples/">Examples</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
@@ -61,7 +61,9 @@ mutation {
                 { OrderDate: "2021-06-01", Freight: 10 }
             ]
         }
-    )
+    ) {
+        Id
+    }
 }
 ```
 
@@ -233,15 +235,15 @@ see [plugins docs](website/docs/plugins.md) on how to simply integrate new plugi
 
 All databases supported by the [Sequelize ORM](https://sequelize.org/v7/manual/getting-started.html#connecting-to-a-database) are supported by `sGraph`. The server comes bundled with `sqlite`, `postgres` and `mysql` database drivers. a quick start but for a more streamlined server, the `@sayjava/sgraph-slim` server comes just with just the basic server but the driver for the database will have to be installed.
 
-| Database               | Dependencies   | Bundled | Connection                                     |
-| ---------------------- | -------------- | ------- | ---------------------------------------------- |
-| SQLite                 | `sqlite3`      | Yes     | `sqlite:path-to-file.sqlite`                   |
-| Postgres               | `pg pg-hstore` | Yes     | `postgres://user:pass@example.com:5432/dbname` |
-| MySQL                  | `mysql2`       | Yes     | `mysql://user:pass@example.com:3306`           |
-| MariaDB                | `mariadb`      | No      | `mariadb://user:pass@example.com:3306`         |
-| Microsoft SQL Server   | `tedious`      | No      | Check the sequelize docs                       |
-| Amazon Redshift        | `ibm_db`       | No      | Check the sequelize docs                       |
-| Snowflake’s Data Cloud | `odbc`         | No      | Check the sequelize docs                       |
+| Database               | Dependencies   | Bundled | Connection                                                                       |
+| ---------------------- | -------------- | ------- | -------------------------------------------------------------------------------- |
+| SQLite                 | `sqlite3`      | Yes     | `sqlite:path-to-file.sqlite`                                                     |
+| Postgres               | `pg pg-hstore` | Yes     | `postgres://user:pass@example.com:5432/dbname`                                   |
+| MySQL                  | `mysql2`       | Yes     | `mysql://user:pass@example.com:3306`                                             |
+| MariaDB                | `mariadb`      | No      | `mariadb://user:pass@example.com:3306`                                           |
+| Microsoft SQL Server   | `tedious`      | No      | [Check the sequelize docs](https://sequelize.org/v6/manual/getting-started.html) |
+| Amazon Redshift        | `ibm_db`       | No      | [Check the sequelize docs](https://sequelize.org/v6/manual/getting-started.html) |
+| Snowflake’s Data Cloud | `odbc`         | No      | [Check the sequelize docs](https://sequelize.org/v6/manual/getting-started.html) |
 
 ## Documentation
 

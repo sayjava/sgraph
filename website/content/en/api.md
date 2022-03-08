@@ -1,6 +1,7 @@
 ---
 title: API
-sidebar_position: 3
+position: 4
+category: Guide
 ---
 
 `sGraph` generates a full CRUD API for each type annotated with the `@model` directive in the schema definition. The generated APIs can be further tuned using the [@crud](/directives) directive. Any of this APIs can be disabled.

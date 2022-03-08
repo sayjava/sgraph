@@ -7,3 +7,5 @@ lib
 .npmrc
 coverage
 yarn-error.log
+website/yarn.lock
+.nuxt

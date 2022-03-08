@@ -1,0 +1,10 @@
+{
+  "title": "sGraph GraphQL API Server",
+  "url": "https://sayjava.github.com/sgraph",
+  "logo": {
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "github": "sayjava/sgraph",
+  "twitter": "@sayjava"
+}

@@ -1,10 +1,8 @@
 ---
 title: Schema
-sidebar_position: 2
+position: 3
+category: Guide
 ---
-
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 `sGraph` uses a `schema first` approach to GraphQL API development. The behavior of the API is used to mostly controlled by the type definitions and their associations in the schema.
 
@@ -24,25 +22,20 @@ type Employee @model {
 
 `sGraph` is powered by [Sequelize ORM](https://www.sequelize.org), so underneath, each defined type in the schema is mapped directly to a sequelize model which is in turn mapped to a database table. Each defined type in the schema will be mapped to a corresponding table in the underlying database.
 
-```mermaid
+<mermaid>
 classDiagram
-
     SchemaEmployee <|.. SequelizeEmployee: Mapped
-
     class SchemaEmployee {
         string Id
         string FirstName
         string LastName
     }
-
-
     class SequelizeEmployee {
         string Id
         string FirstName
         string LastName
     }
-
-```
+</mermaid>
 
 ## Definition
 
@@ -178,16 +171,21 @@ type Profile @model {
 
 Here are the supported associations that are directly mapped to the associations supported by `Sequelize`. All association options supported by Sequelize are also supported.
 
-| Database Relationship   | Directive        |
-| ----------------------- | ---------------- |
-| One-to-One, Many-to-One | `@belongsTo`     |
-| Many-to-One             | `@hasMany`       |
-| Many-to-Many            | `@belongsToMany` |
-| One-to-One              | `@hasOne`        |
+| Database Relationship | Directive               |
+| --------------------- | ----------------------- |
+| One-to-One            | `@belongsTo`, `@hasOne` |
+| One-to-Many           | `@hasMany`              |
+| Many-to-Many          | `@belongsToMany`        |
 
-### @belongsTo: One-to-One relationships
+What directive to use depends on the typ of relationship between the types and the source of that relationship
 
-To model a `one-to-one` relationship
+### One-to-One relationships
+
+To model a `one-to-one` relationship, use both the `@hasOne` and `@belongsTo` directive to create single direction or bi-directional relationship between types.
+
+#### @belongsTo
+
+Using this example below, an `OrderDetail` references a `Product`, therefore it (`OrderDetails`) holds the key to the relationship between it and the `Product`.
 
 ```mermaid
 erDiagram
@@ -205,29 +203,28 @@ erDiagram
     }
 ```
 
-<Tabs>
-<TabItem value="schema" label="Schema">
+In this case an `OrderDetail` is said to **belong** to a `Product` because `OrderDetail` owns the relationship. `OrderDetail` is referred to as the **source type** and `Product` is the **target type**. The **source type** defines the relationship
 
 ```graphql
-type OrderDetail @model {
-    Id: String @primaryKey
-    ProductId: String
-
-    Product: Product @belongsTo(sourceKey: "ProductId")
+type Customer @model {
+    Id: ID
+    ContactName: String
+    Orders: [Order] @hasMany(onDelete: "CASCADE")
 }
 
-type Product @model {
+type Order @model {
     Id: Int @primaryKey @autoIncrement
-    ProductName: String
+    OrderDate: Date
+    Freight: Float
+    CustomerId: String
+    Customer: Customer
+        @belongsTo(foreignKey: "CustomerId", onDelete: "SET NULL")
 }
 ```
 
-</TabItem>
-<TabItem value="query" label="Query">
-
 ```graphql
 {
-    find_orderdetails(limit: 2) {
+    find_orderdetails(limit: 1) {
         orderdetails {
             Product {
                 ProductName
@@ -237,43 +234,32 @@ type Product @model {
 }
 ```
 
-</TabItem>
-</Tabs>
+**Options**
 
-`OnUpdate` and `onDelete`
+| Argument       | Description                                            | Options                                                               | Default    |
+| -------------- | ------------------------------------------------------ | --------------------------------------------------------------------- | ---------- |
+| **foreignKey** | Set a custom `foreignKey` to used for the relationship |                                                                       |            |
+| **sourceKey**  | Customize field in the source for the relationship     |                                                                       |            |
+| **onDelete**   | The behavior if the target model is deleted            | `RESTRICT` \| `CASCADE` \| `NO ACTION` \| `SET DEFAULT` \| `SET NULL` | `SET NULL` |
+| **onUpdate**   | The behavior if the target model is updated            | `RESTRICT` \| `CASCADE` \| `NO ACTION` \| `SET DEFAULT` \| `SET NULL` | `SET NULL` |
 
-| Argument      | Description |
-| ------------- | ----------- |
-| `RESTRICT`    | do          |
-| `SET NULL`    | fake        |
-| `SET DEFAULT` | fake        |
-| `CASCADE`     | fake        |
-| `NO ACTION`   | fake        |
-
-### @hasMany: One-to-Many Relationships
+### One-to-Many
 
 Modelling `one-to-many` database relationships
 
-```mermaid
+<mermaid>
 erDiagram
 Customer ||--o{ Order: has_orders
-
 Order {
     string Id PK
     string ShipCountry
     string CustomerId FK
 }
-
 Customer {
     string Id PK
     string ContactName
 }
-
-```
-
-<Tabs>
-
-<TabItem value="schema" label="Schema">
+</mermaid>
 
 ```graphql
 type Customer @model {
@@ -290,9 +276,6 @@ type Order @model {
 }
 ```
 
-</TabItem>
-
-<TabItem value="query" label="Query">
 
 ```graphql
 {
@@ -306,11 +289,8 @@ type Order @model {
 }
 ```
 
-</TabItem>
 
-</Tabs>
-
-### @belongsToMany: Many-to-Many Relationships
+### Many-to-Many
 
 Modelling `many-to-many` relationships
 
@@ -341,8 +321,6 @@ Product {
 
 ```
 
-<Tabs>
-<TabItem value="schema" label="Schema">
 
 ```graphql
 type Order @model {
@@ -373,9 +351,7 @@ type Product @model {
 }
 ```
 
-</TabItem>
 
-<TabItem value="query" label="Query">
 
 ```graphql
 # Find the products attached to an order with price greater than 20
@@ -391,9 +367,6 @@ type Product @model {
 }
 ```
 
-</TabItem>
-</Tabs>
-
 :::info
 To successfully model a `many-to-many` relationship, remember to make sure that the joint table has the respective `ModelId` columns or map them in the schema as the schema above
 :::
@@ -404,20 +377,18 @@ Combining `@belongsTo` and `@hasMany` to model a self referential relationships.
 
 In this example, an `Employee` can `manage` other employees but can also be `managed` by another employee.
 
-```mermaid
+<mermaid>
 erDiagram
     Employee |o..o| Employee: Manager
     Employee }o..o{ Employee: Manages
-
     Employee {
         int Id
         string FirstName
         int ReportsTo FK
     }
-```
+</mermaid>
 
-<Tabs>
-<TabItem value="apple" label="Schema" default>
+
 
 ```graphql
 type Employee @model {
@@ -430,9 +401,6 @@ type Employee @model {
 }
 ```
 
-</TabItem>
-
-<TabItem value="query" label="Query">
 
 ```graphql
 {
@@ -451,5 +419,3 @@ type Employee @model {
 }
 ```
 
-</TabItem>
-</Tabs>

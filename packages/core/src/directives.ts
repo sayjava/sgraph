@@ -48,7 +48,6 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
       sourceKey: String
       onDelete: String
       onUpdate: String
-      through: String
     ) on FIELD_DEFINITION
 
     directive @belongsTo(
@@ -56,7 +55,6 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
       sourceKey: String
       onDelete: String
       onUpdate: String
-      through: String
     ) on FIELD_DEFINITION
 
     directive @hasMany(
@@ -64,7 +62,6 @@ export const extendSchemaWithDirectives = (composer: SchemaComposer) => {
       sourceKey: String
       onDelete: String
       onUpdate: String
-      through: String
     ) on FIELD_DEFINITION
 
     directive @belongsToMany(

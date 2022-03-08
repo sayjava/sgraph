@@ -1,7 +1,7 @@
 type Customer @model {
     Id: ID
     ContactName: String
-    Orders: [Order] @hasMany
+    Orders: [Order] @hasMany(onDelete: "CASCADE")
 }
 
 type Order @model {
@@ -9,5 +9,6 @@ type Order @model {
     OrderDate: Date
     Freight: Float
     CustomerId: String
-    Customer: Customer @belongsTo
+    Customer: Customer
+        @belongsTo(foreignKey: "CustomerId", onDelete: "SET NULL")
 }

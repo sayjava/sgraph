@@ -29,6 +29,7 @@ if (!fs.existsSync(config.schema)) {
 
 const plugins = [useDepthLimit({ maxDepth: config.depthLimit })]
 config.tracing && plugins.push(useApolloTracing())
+
 const { server, sequelize } = createServer(
     Object.assign(config, { plugins })
 )

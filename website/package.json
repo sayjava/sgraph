@@ -1,42 +1,16 @@
 {
-    "name": "website",
-    "version": "0.0.0",
+    "name": "sgraph-docs",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
-        "docusaurus": "docusaurus",
-        "start": "docusaurus start",
-        "build": "docusaurus build",
-        "swizzle": "docusaurus swizzle",
-        "deploy": "docusaurus deploy",
-        "clear": "docusaurus clear",
-        "serve": "docusaurus serve",
-        "write-translations": "docusaurus write-translations",
-        "write-heading-ids": "docusaurus write-heading-ids"
+        "dev": "nuxt",
+        "build": "nuxt build",
+        "start": "nuxt start",
+        "generate": "nuxt generate"
     },
     "dependencies": {
-        "@docusaurus/core": "^2.0.0-beta.16",
-        "@docusaurus/preset-classic": "^2.0.0-beta.16",
-        "@mdx-js/react": "^1.6.21",
-        "clsx": "^1.1.1",
-        "graphiql": "^1.5.19",
-        "graphql": "^16.3.0",
-        "mdx-mermaid": "^1.2.1",
+        "@nuxt/content-theme-docs": "^0.11.1",
         "mermaid": "^8.14.0",
-        "prism-react-renderer": "^1.2.1",
-        "react": "^17.0.1",
-        "react-dom": "^17.0.1",
-        "react-redux": "^7.2.6"
-    },
-    "browserslist": {
-        "production": [
-            ">0.5%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
+        "nuxt": "^2.15.8"
     }
 }
