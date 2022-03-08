@@ -25,11 +25,11 @@ jobs:
 
       - name: Install dependencies
         run: yarn
-        working-directory: docs
+        working-directory: website
 
       - name: Generate
         run: yarn generate
-        working-directory: docs
+        working-directory: website
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
