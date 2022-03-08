@@ -1,9 +1,7 @@
 name: Docs
 on:
     push:
-        paths:
-            - 'website/**'
-        branches: [main]
+      branches: [main]
 
 jobs:
   cd:
